@@ -89,7 +89,7 @@ class Logger{
 
     public function log($iLevel, $sMessage, $aContext=array())
     {
-        if (!($iLevel & $this->iLogLevel) || empty($this->aWriter)) {
+        if (!($iLevel & $this->iLogLevel) || empty($this->aWriter) || !$sMessage) {
             goto END;
         }
         $sMessage = self::interpolate($sMessage, $aContext);
