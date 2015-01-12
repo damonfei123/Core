@@ -32,6 +32,11 @@ class HttpResponse{
         $this->iHttpStatus = $iHttpStatus;
     }
 
+    public function getStatus()
+    {
+        return $this->iHttpStatus;
+    }
+
     protected $sProtocol = 'HTTP/1.1';
     public function setProtocol($sProtocol='HTTP/1.1')
     {

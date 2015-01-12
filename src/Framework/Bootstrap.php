@@ -28,6 +28,11 @@ class Bootstrap{
     const S_RUN_CLI  = 'cli';
     const S_RUN_HTTP = 'http';
 
+    private static $mCBUncaughtException = array(
+        'Hummer\\Framework\\Bootstrap',
+        'handleUnCaughtError'
+    );
+
     public function __construct(
         $Configure,
         $sEnv = null
@@ -57,12 +62,16 @@ class Bootstrap{
 
     public static function setHandle(
         $mCBErrorHandle = array('Hummer\\Framework\\Bootstrap', 'handleError'),
-        $iErrType = null
+        $iErrType = null,
+        $mCBUncaughtException = null
     ) {
         set_error_handler(
             $mCBErrorHandle,
             $iErrType === null ? (E_ALL | E_STRICT) : (int)$iErrType
         );
+        if ($mCBUncaughtException !== null) {
+            self::$mCBUncaughtException = $mCBUncaughtException;
+        }
     }
 
     public static function handleError($iErrNum, $sErrStr, $sErrFile, $iErrLine, $sErrContext)
@@ -93,6 +102,58 @@ class Bootstrap{
                     break;
             }
         }
+    }
+
+    public static function handleUnCaughtError(\Exception $E)
+    {
+        $CTX  = Context::getInst();
+        $sStr = $E->getMessage();
+        if ($CTX === null || !$CTX->isRegister('Log')) {
+            trigger_error($sStr, E_USER_ERROR);
+            return;
+        }
+        $CTX->Log->error($sStr);
+        if ($CTX->sRunMode === self::S_RUN_HTTP) {
+            if ($CTX->HttpResponse->getStatus() < 400) {
+                $CTX->HttpResponse->setStatus(500);
+            }
+            if ($CTX->isRegister('mCBErrPage')) {
+                call_user_func($CTX->mCBErrPage, $E);
+            }
+            $CTX->HttpResponse->send();
+        }
+        exit(1);
+    }
+
+    public static function setDefaultErrorPage()
+    {
+        $CTX = Context::getInst();
+        if ($CTX->sRunMode !== self::S_RUN_HTTP) {
+            return;
+        }
+        $RES = $CTX->HttpResponse;
+        $CTX->register(
+            'mCBErrPage',
+            function (\Exception $E) use ($RES){
+                $aArr = $E->getTrace();
+                foreach ($aArr as $iK => $aItem) {
+                    if (isset($aItem['args'])) {
+                        unset($aItem[$iK]['args']);
+                    }
+                }
+                $RES->setContent(
+                    sprintf(
+                        '<h1>%s</h1><h2>%d:%s</h2><h3>File:%s;Line:%s</h3><div><pre>%s</pre></div>',
+                        get_class($E),
+                        $E->getCode(),
+                        $E->getMessage(),
+                        $E->getFile(),
+                        $E->getLine(),
+                        print_r($aArr, true)
+                    )
+                );
+            }
+        );
     }
 
     public function run($sRouteKey=null)
@@ -130,6 +191,8 @@ class Bootstrap{
             }
         }catch(InvalidClassException $E){
             $Log->fatal($E->getMessage());
+            call_user_func(self::$mCBUncaughtException, $E);
+            exit(1);
         }catch(\SmartyException $E){
             #Smarty Exception
             $Log->warn($E->getMessage());
@@ -142,6 +205,8 @@ class Bootstrap{
         }catch(\Exception $E){
             #Uncatch Error
             $Log->warn($E->getMessage());
+            call_user_func(self::$mCBUncaughtException, $E);
+            exit(1);
         }
 
         $Log->info(sprintf('RUN END: Time: %s, Mem: %s',

@@ -37,9 +37,14 @@ class Context{
     public function registerMulti($aRegisterMap)
     {
         foreach ($aRegisterMap as $sK => $mV) {
-            $this->__aVarRegister__[$sK] = true;
-            $this->$sK = $mV;
+            $this->register($sK, $mV);
         }
+    }
+
+    public function register($sK, $mV)
+    {
+        $this->__aVarRegister__[$sK] = true;
+        $this->$sK = $mV;
     }
 
     public function isRegister($sRegName)
