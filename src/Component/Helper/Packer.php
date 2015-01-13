@@ -19,7 +19,7 @@ class Packer{
     private $aAopCallBack;
 
     /**
-     *  execute.after = array(array(Hummer\Component\RDS\AopPDO', 'pdoAfter'))
+     *  execute.after = array(array(Hummer\Component\RDB\ORM\AopPDO', 'pdoAfter'))
      **/
     public function __construct($obj, $aAopCallBack=array())
     {

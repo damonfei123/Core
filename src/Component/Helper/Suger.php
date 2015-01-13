@@ -29,14 +29,17 @@ class Suger{
     public static function createObjAdaptor(
         $sNS,
         array $aClassAndArgs,
-        $sAdaptorClassPre='Adaptor_'
+        $sAdaptorClassPre  = 'Adaptor_',
+        $sAdaptorClassTail = ''
     ) {
         if (empty($aClassAndArgs)) {
             throw new \InvalidArgumentException('[Suger] : Error');
         }
         $sClassName = array_shift($aClassAndArgs);
         if ($sClassName[0] === '@') {
-            $sClassName = $sNS . '\\' . $sAdaptorClassPre . substr($sClassName, 1);
+            $sClassName = sprintf('%s%s%s%s%s',
+                $sNS, '\\', $sAdaptorClassPre, substr($sClassName, 1), $sAdaptorClassTail
+            );
         }
         return self::createObj($sClassName, $aClassAndArgs);
     }

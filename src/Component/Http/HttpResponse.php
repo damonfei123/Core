@@ -26,7 +26,11 @@ class HttpResponse{
         $this->BagHeader = new Bag_Base();
     }
 
+    /**
+     *  @var $iHttpStatus
+     **/
     protected $iHttpStatus = 200;
+
     public function setStatus($iHttpStatus=200)
     {
         $this->iHttpStatus = $iHttpStatus;
@@ -43,7 +47,11 @@ class HttpResponse{
         $this->sProtocol = $sProtocol;
     }
 
+    /**
+     *  @var $sContent Http Body
+     **/
     protected $sContent;
+
     public function getContent()
     {
         return $this->sContent;
@@ -89,7 +97,11 @@ class HttpResponse{
         return true;
     }
 
+    /**
+     *  @var $aPreCookie Set Cookie
+     **/
     protected $aPreCookie = array();
+
     public function setCookie(
         $sName,
         $sValue,

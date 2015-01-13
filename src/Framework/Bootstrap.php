@@ -15,9 +15,10 @@
 namespace Hummer\Framework;
 
 use Hummer\Component\Route\Route;
-use Hummer\Component\RDS\Factory;
+use Hummer\Component\Helper\Time;
 use Hummer\Component\Helper\Helper;
 use Hummer\Component\Context\Context;
+use Hummer\Component\RDB\ORM\Factory;
 use Hummer\Component\Http\HttpRequest;
 use Hummer\Component\Http\HttpResponse;
 use Hummer\Component\Route\RouteErrorException;
@@ -25,11 +26,21 @@ use Hummer\Component\Context\InvalidClassException;
 
 class Bootstrap{
 
+    /**
+     *  @var S_RUN_CLI Run PHP WITH Cli
+     **/
     const S_RUN_CLI  = 'cli';
+
+    /**
+     *  @var S_RUN_HTTP Run PHP With Http
+     **/
     const S_RUN_HTTP = 'http';
 
+    /**
+     *  UnCaught Error
+     **/
     private static $mCBUncaughtException = array(
-        'Hummer\\Framework\\Bootstrap',
+        'Hummer\\Framework\\Handle',
         'handleUnCaughtError'
     );
 
@@ -57,169 +68,87 @@ class Bootstrap{
         }elseif(self::S_RUN_CLI == $aRegisterMap['sRunMode']){
             $aRegisterMap['aArgv'] = $GLOBALS['argv'];
         }
+        #Register
         $this->Context->registerMulti($aRegisterMap);
-    }
-
-    public static function setHandle(
-        $mCBErrorHandle = array('Hummer\\Framework\\Bootstrap', 'handleError'),
-        $iErrType = null,
-        $mCBUncaughtException = null
-    ) {
-        set_error_handler(
-            $mCBErrorHandle,
-            $iErrType === null ? (E_ALL | E_STRICT) : (int)$iErrType
-        );
-        if ($mCBUncaughtException !== null) {
-            self::$mCBUncaughtException = $mCBUncaughtException;
-        }
-    }
-
-    public static function handleError($iErrNum, $sErrStr, $sErrFile, $iErrLine, $sErrContext)
-    {
-        $sStr = sprintf('Catch Error[%d] : %s In File [%s], line %d ',
-            $iErrNum,
-            $sErrStr,
-            $sErrFile,
-            $iErrLine
-        );
-        $C = Context::getInst();
-        if ($C === null || !$C->isRegister('Log')) {
-            trigger_error($sStr, E_USER_WARNING);
-        }else{
-            switch ($iErrNum)
-            {
-                case E_NOTICE:
-                case E_USER_NOTICE:
-                    $C->Log->notice($sStr);
-                    break;
-                case E_USER_ERROR:
-                    $C->Log->error($sStr);
-                    throw new \ErrorException('[Bootstrap] : Error' . $sStr);
-                    break;
-                case E_USER_WARNING:
-                default:
-                    $C->Log->warn($sStr);
-                    break;
-            }
-        }
-    }
-
-    public static function handleUnCaughtError(\Exception $E)
-    {
-        $CTX  = Context::getInst();
-        $sStr = $E->getMessage();
-        if ($CTX === null || !$CTX->isRegister('Log')) {
-            trigger_error($sStr, E_USER_ERROR);
-            return;
-        }
-        $CTX->Log->error($sStr);
-        if ($CTX->sRunMode === self::S_RUN_HTTP) {
-            if ($CTX->HttpResponse->getStatus() < 400) {
-                $CTX->HttpResponse->setStatus(500);
-            }
-            if ($CTX->isRegister('mCBErrPage')) {
-                call_user_func($CTX->mCBErrPage, $E);
-            }
-            $CTX->HttpResponse->send();
-        }
-        exit(1);
-    }
-
-    public static function setDefaultErrorPage()
-    {
-        $CTX = Context::getInst();
-        if ($CTX->sRunMode !== self::S_RUN_HTTP) {
-            return;
-        }
-        $RES = $CTX->HttpResponse;
-        $CTX->register(
-            'mCBErrPage',
-            function (\Exception $E) use ($RES){
-                $aArr = $E->getTrace();
-                foreach ($aArr as $iK => $aItem) {
-                    if (isset($aItem['args'])) {
-                        unset($aItem[$iK]['args']);
-                    }
-                }
-                $RES->setContent(
-                    sprintf(
-                        '<h1>%s</h1><h2>%d:%s</h2><h3>File:%s;Line:%s</h3><div><pre>%s</pre></div>',
-                        get_class($E),
-                        $E->getCode(),
-                        $E->getMessage(),
-                        $E->getFile(),
-                        $E->getLine(),
-                        print_r($aArr, true)
-                    )
-                );
-            }
-        );
     }
 
     public function run($sRouteKey=null)
     {
         $sTS = microtime(true);
-        $C   = $this->Context;
-        $Log = $C->Log;
-        $Log->info('RUN START');
+        $this->Context->Log->info('RUN START');
         try{
-            switch ($C->sRunMode)
-            {
-                case self::S_RUN_HTTP:
-                    $aCallBack = $C->Route->generateFromHttp(
-                        $C->HttpRequest,
-                        $C->HttpResponse,
-                        $C->Config->get($sRouteKey === null ? 'route.http' : $sRouteKey)
-                    );
-                    foreach ($aCallBack as $CallBack) {
-                        $CallBack->call();
-                    }
-                    #send header & content
-                    $C->HttpResponse->send();
-                    break;
-                case self::S_RUN_CLI:
-                    $aCallBack = $C->Route->generateFromCli(
-                        $C->aArgv,
-                        $C->Config->get($sRouteKey === null ? 'route.cli' : $sRouteKey)
-                    );
-                    foreach ($aCallBack as $CallBack) {
-                        $CallBack->call();
-                    }
-                    break;
-                default:
-                    throw new \RuntimeException('[Bootstrap] : ERROR RUN MODE');
-            }
+            $this->Context->sRunMode === self::S_RUN_HTTP ?
+                $this->runHttp($sRouteKey) :
+                $this->runCli($sRouteKey);
         }catch(InvalidClassException $E){
-            $Log->fatal($E->getMessage());
+            $this->Context->Log->fatal($E->getMessage());
             call_user_func(self::$mCBUncaughtException, $E);
             exit(1);
         }catch(\SmartyException $E){
             #Smarty Exception
-            $Log->warn($E->getMessage());
+            $this->Context->Log->warn($E->getMessage());
         }catch(RouteErrorException $E){
             #Route Error
-            $C->HttpResponse->setStatus(404);
-            $C->HttpResponse->setContent($C->Template->fetch($C->Config->get('syspage.404')));
-            $C->HttpResponse->send();
-            $Log->fatal($E->getMessage());
+            $this->Context->HttpResponse->setStatus(404);
+            $this->Context->HttpResponse->setContent(
+                $this->Context->Template->fetch($this->Context->Config->get('syspage.404'))
+            );
+            $this->Context->HttpResponse->send();
+            $this->Context->Log->fatal($E->getMessage());
         }catch(\Exception $E){
             #Uncatch Error
-            $Log->warn($E->getMessage());
+            $this->Context->Log->warn($E->getMessage());
             call_user_func(self::$mCBUncaughtException, $E);
             exit(1);
         }
-
-        $Log->info(sprintf('RUN END: Time: %s, Mem: %s',
-            self::humanTime(round(microtime(true) - $sTS, 6) * 1000),
+        #End Log
+        $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s',
+            Time::humanTime(round(microtime(true) - $sTS, 6) * 1000),
             Helper::Mem()
         ));
     }
 
-    private static function humanTime($iMicsecond)
+    /**
+     *  Route Run Mode With Cli
+     **/
+    protected function runHttp($sRouteKey=null)
     {
-        if ((int)$iMicsecond < 1000) {
-            return sprintf('%s%s', $iMicsecond, 'ms');
+        $aCallBack = $this->Context->Route->generateFromHttp(
+            $this->Context->HttpRequest,
+            $this->Context->HttpResponse,
+            $this->Context->Config->get($sRouteKey === null ? 'route.http' : $sRouteKey)
+        );
+        foreach ($aCallBack as $CallBack) {
+            $CallBack->call();
         }
-        return gmstrftime('%H时%M分%S秒', $iMicsecond/1000);
+        #send header & content
+        $this->Context->HttpResponse->send();
+    }
+
+    /**
+     *  Route Run Mode With Cli
+     **/
+    protected function runCli($sRouteKey=null)
+    {
+        $aCallBack = $this->Context->Route->generateFromCli(
+            $this->Context->aArgv,
+            $this->Context->Config->get($sRouteKey === null ? 'route.cli' : $sRouteKey)
+        );
+        foreach ($aCallBack as $CallBack) {
+            $CallBack->call();
+        }
+    }
+
+    public static function setHandle(
+        $mCBErrorHandle = array('Hummer\\Framework\\Handle', 'handleError'),
+        $iErrType = null,
+        $mCBUncaughtException = null
+    ) {
+        Handle::setHandle($mCBErrorHandle, $iErrType, $mCBUncaughtException);
+    }
+
+    public static function setDefaultErrorPage()
+    {
+        Handle::setDefaultErrorPage();
     }
 }

@@ -19,8 +19,19 @@ use Hummer\Component\Helper\Helper;
 
 class C_Base{
 
+    /**
+     *  @var $Context Global CTX
+     **/
     protected $Context;
+
+    /**
+     *  @var $Config Framework\Configure\Configure;
+     **/
     protected $Config;
+
+    /**
+     *  @var $bCalledDisplay isDisplayed
+     **/
     protected $bCalledDisplay = false;
 
     public function __construct($sTpl=null)

@@ -15,6 +15,7 @@
 namespace Hummer\Component\Context;
 
 use Hummer\Component\Configure\Configure;
+
 /**
  *  上下文
  **/

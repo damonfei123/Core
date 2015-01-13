@@ -19,4 +19,12 @@ class Time {
     {
         return date($sFormat, $iSec === null ? time() : $iSec);
     }
+
+    public static function humanTime($iMicsecond)
+    {
+        if ((int)$iMicsecond < 1000) {
+            return sprintf('%s%s', $iMicsecond, 'ms');
+        }
+        return gmstrftime('%H时%M分%S秒', $iMicsecond/1000);
+    }
 }
