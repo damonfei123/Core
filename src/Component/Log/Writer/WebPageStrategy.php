@@ -45,7 +45,7 @@ class WebPageStrategy implements IStrategy{
     public function acceptData($aRow)
     {
         if ($this->bEnable) {
-            $sLevelName = LogFactory::getLogNameByLevelID($aRow['iLevel']);
+            $sLevelName = ucfirst(LogFactory::getLogNameByLevelID($aRow['iLevel']));
             $sLogMsg = str_replace(
                 array('{sGUID}', '{iLevel}', '{sTime}', '{sContent}'),
                 array($this->sGUID, $sLevelName, $aRow['sTime'], $aRow['sMessage']),

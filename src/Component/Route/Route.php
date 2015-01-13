@@ -15,6 +15,10 @@
 namespace Hummer\Component\Route;
 
 class Route{
+
+    /**
+     *  @var $Context
+     **/
     protected $Context;
 
     function __construct($Context=null) {
@@ -90,5 +94,4 @@ class Route{
         }
         return $aCallBack;
     }
-
 }

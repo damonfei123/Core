@@ -19,7 +19,7 @@ use Hummer\Component\Helper\Time;
 use Hummer\Component\Helper\Suger;
 use Hummer\Component\Helper\Helper;
 
-class LogFactory{
+class LogFactory implements ILogger{
 
     const DESC_DEBUG   = 'debug';
     const DESC_INFO    = 'info';

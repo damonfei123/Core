@@ -51,7 +51,8 @@ class Bootstrap{
 
     public function __construct(
         $Configure,
-        $sEnv = null
+        $sEnv = null,
+        $Template = 'Template'
     ) {
         Context::makeInst();
         $this->Context = Context::getInst();
@@ -75,6 +76,7 @@ class Bootstrap{
         }
         #Register
         $this->Context->registerMulti($aRegisterMap);
+        $this->Context->register('Template', $this->Context->$Template);
     }
 
     /**
@@ -83,8 +85,8 @@ class Bootstrap{
     public function run($sRouteKey=null)
     {
         try{
-            $this->Context->Arr[self::F_B_RUN_START] = microtime(true);
             $this->Context->Log->info('RUN START');
+            $this->Context->Arr[self::F_B_RUN_START] = microtime(true);
             $this->Context->sRunMode === self::S_RUN_HTTP ?
                 $this->runHttp($sRouteKey) :
                 $this->runCli($sRouteKey);

@@ -19,13 +19,11 @@ use Hummer\Component\Configure\Configure;
 /**
  *  上下文
  **/
-class Context{
+class Context {
 
-    public static function getInst()
-    {
-        return end($GLOBALS['__SELF__CONTEXT']);
-    }
-
+    /**
+     *  Generate Context
+     **/
     public static function makeInst()
     {
         if (!isset($GLOBALS['__SELF__CONTEXT'])) {
@@ -34,7 +32,22 @@ class Context{
         return $GLOBALS['__SELF__CONTEXT'][] = new static();
     }
 
+    public static function getInst()
+    {
+        return end($GLOBALS['__SELF__CONTEXT']);
+    }
+
+    /**
+     *  @var $__aVarRegister__ Cache All Registed Model|Var
+     **/
     private $__aVarRegister__;
+
+    public function register($sK, $mV)
+    {
+        $this->$sK                   = $mV;
+        $this->__aVarRegister__[$sK] = true;
+    }
+
     public function registerMulti($aRegisterMap)
     {
         foreach ($aRegisterMap as $sK => $mV) {
@@ -42,46 +55,56 @@ class Context{
         }
     }
 
-    public function register($sK, $mV)
-    {
-        $this->__aVarRegister__[$sK] = true;
-        $this->$sK = $mV;
-    }
-
     public function isRegister($sRegName)
     {
         return isset($this->__aVarRegister__[$sRegName]) && $this->__aVarRegister__[$sRegName];
     }
 
-    private static $_aAllCFG = null;
-
     private $__aModuleConf__;
 
-    public function __get($sVarName)
+    public function __get($sModelName)
     {
         if (!$this->isRegister('Config')) {
             throw new \DomainException('[CTX] : ERROR : NONE CTX CONFIG');
         }
-        $CFG = $this->Config;
-        if (self::$_aAllCFG === null) self::$_aAllCFG = $CFG->get('module');
+        $Obj = $this->createObj(
+            Configure::parseRecursion($this->loadModule($sModelName), $this->Config)
+        );
+        #save for cache
+        $this->$sModelName= $Obj;
+        $this->__aVarRegister__[$sModelName] = $Obj;
+        return $Obj;
+    }
 
-        foreach (self::$_aAllCFG as $aModule) {
-            if (!isset($aModule['module']) || !isset($aModule['class'])) {
-                throw new \DomainException('[CTX] : Error');
-            }
-            if ($aModule['module'] != $sVarName ||
-                (isset($aModule['run_mode']) && $aModule['run_mode'] != $this->sRunMode)
-            ) {
-                continue;
-            }
-            $this->__aModuleConf__[$sVarName] = $aModule;
-        }
+    /**
+     *  @var $aAllModelConfig
+     **/
+    protected static $aAllModelConfig = null;
 
-        if (!isset($this->__aModuleConf__[$sVarName])) {
-            throw new \DomainException('[CTX] : Error : no module');
+    protected function loadModule($sModelName)
+    {
+        if (self::$aAllModelConfig === null) {
+            self::$aAllModelConfig = $this->Config->get('module');
         }
-        $aModuleConfig = $this->__aModuleConf__[$sVarName];
-        $aModuleConfig = Configure::parseRecursion($aModuleConfig, $CFG);
+        foreach (self::$aAllModelConfig as $aModule) {
+            if (isset($aModule['module']) && isset($aModule['class'])) {
+                if ($aModule['module'] == $sModelName &&
+                   (!isset($aModule['run_mode']) || $aModule['run_mode'] == $this->sRunMode)
+                ){
+                    $this->__aModuleConf__[$sModelName] = $aModule;
+                }
+            }else{
+                throw new \DomainException('[CTX] : Module Config Error, No module Or class set');
+            }
+        }
+        if (!isset($this->__aModuleConf__[$sModelName])) {
+            throw new \DomainException('[CTX] : Error : no module found');
+        }
+        return $this->__aModuleConf__[$sModelName];
+    }
+
+    protected function createObj(array $aModuleConfig)
+    {
         if (!isset($aModuleConfig['params'])) {
             $aModuleConfig['params'] = array();
         }
@@ -91,12 +114,9 @@ class Context{
             $Ref = new \ReflectionClass($aModuleConfig['class']);
             $Obj = $Ref->newInstanceArgs($aModuleConfig['params']);
         }
-
         if (isset($aModuleConfig['packer'])) {
             $Obj = new Packer($Obj, $aModuleConfig['packer']);
         }
-        $this->$sVarName = $Obj; #SAVE FOR NEXT
-        $this->__aVarRegister__[$sVarName] = $Obj;
         return $Obj;
     }
 }

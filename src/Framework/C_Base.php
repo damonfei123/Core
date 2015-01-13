@@ -35,13 +35,12 @@ class C_Base{
      **/
     protected $bCalledDisplay = false;
 
-    public function __construct($sTpl=null, $sTemplate=null)
+    public function __construct($sTpl=null)
     {
         $this->Context  = Context::getInst();
         $this->Log      = $this->Context->Log;
         $this->Config   = $this->Context->Config;
-        $sTemplate      = Helper::TOOP($sTemplate, $sTemplate, 'Template');
-        $this->template = $this->Context->$sTemplate;
+        $this->template = $this->Context->Template;
         $this->sTpl     = Helper::TOOP($sTpl, $sTpl, 'html');
     }
 
