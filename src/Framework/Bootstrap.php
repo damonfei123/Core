@@ -37,6 +37,11 @@ class Bootstrap{
     const S_RUN_HTTP = 'http';
 
     /**
+     *  @var F_B_RUN_START Run Start MicTime Saver
+     **/
+    const F_B_RUN_START = 'F_B_RUN_START';
+
+    /**
      *  UnCaught Error
      **/
     private static $mCBUncaughtException = array(
@@ -62,7 +67,7 @@ class Bootstrap{
             )
         );
 
-        if ($aRegisterMap['sRunMode'] == self::S_RUN_HTTP) {
+        if (self::S_RUN_HTTP == $aRegisterMap['sRunMode']) {
             $aRegisterMap['HttpRequest']  = new HttpRequest();
             $aRegisterMap['HttpResponse'] = new HttpResponse();
         }elseif(self::S_RUN_CLI == $aRegisterMap['sRunMode']){
@@ -72,11 +77,14 @@ class Bootstrap{
         $this->Context->registerMulti($aRegisterMap);
     }
 
+    /**
+     *  Core Run
+     **/
     public function run($sRouteKey=null)
     {
-        $sTS = microtime(true);
-        $this->Context->Log->info('RUN START');
         try{
+            $this->Context->Arr[self::F_B_RUN_START] = microtime(true);
+            $this->Context->Log->info('RUN START');
             $this->Context->sRunMode === self::S_RUN_HTTP ?
                 $this->runHttp($sRouteKey) :
                 $this->runCli($sRouteKey);
@@ -101,11 +109,6 @@ class Bootstrap{
             call_user_func(self::$mCBUncaughtException, $E);
             exit(1);
         }
-        #End Log
-        $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s',
-            Time::humanTime(round(microtime(true) - $sTS, 6) * 1000),
-            Helper::Mem()
-        ));
     }
 
     /**
@@ -150,5 +153,14 @@ class Bootstrap{
     public static function setDefaultErrorPage()
     {
         Handle::setDefaultErrorPage();
+    }
+
+    public function __destruct()
+    {
+        #End Log
+        $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s',
+            Time::humanTime(round(microtime(true)-$this->Context->Arr[self::F_B_RUN_START], 6)*1000),
+            Helper::Mem()
+        ));
     }
 }

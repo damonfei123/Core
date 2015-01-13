@@ -14,8 +14,9 @@
 **************************************************************************************/
 namespace Hummer\Framework;
 
-use Hummer\Component\Context\Context;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\Context\Context;
+use Hummer\Component\Configure\Configure;
 
 class C_Base{
 
@@ -34,12 +35,13 @@ class C_Base{
      **/
     protected $bCalledDisplay = false;
 
-    public function __construct($sTpl=null)
+    public function __construct($sTpl=null, $sTemplate=null)
     {
         $this->Context  = Context::getInst();
         $this->Log      = $this->Context->Log;
         $this->Config   = $this->Context->Config;
-        $this->template = $this->Context->Template;
+        $sTemplate      = Helper::TOOP($sTemplate, $sTemplate, 'Template');
+        $this->template = $this->Context->$sTemplate;
         $this->sTpl     = Helper::TOOP($sTpl, $sTpl, 'html');
     }
 

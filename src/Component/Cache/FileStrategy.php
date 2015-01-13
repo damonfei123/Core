@@ -26,15 +26,25 @@ class FileStrategy implements IStrategy{
     protected $sCacheDir;
 
     /**
+     *  @var $iExpire
+     **/
+    protected $iExpire;
+
+    /**
      *  @var Private key
      **/
     const __CACHE__KEY__ = '#(*@#&*@@)!_)#+';
 
-    public function __construct($sCacheDir)
+    /**
+     *  @var $sCacheDir Cache Dir
+     *  @var $iCacheTime Default Expire Time
+     **/
+    public function __construct($sCacheDir, $iExpire = 86400)
     {
         if (!file_exists($sCacheDir) || !is_writable($sCacheDir)) {
             throw new \InvalidArgumentException('[cache] : File Error(not exists or unwritable)');
         }
+        $this->iExpire   = $iExpire;
         $this->sCacheDir = Helper::TrimEnd($sCacheDir, '/', 'r');
     }
 
@@ -47,7 +57,7 @@ class FileStrategy implements IStrategy{
             throw new \InvalidArgumentException('[Cache] : ERROR serialize can a resource');
         }
         return !!file_put_contents($this->getStoreFile($sKey), sprintf('%s:%s:%s',
-            Helper::TOOP($iExpire, time() + $iExpire, time() + 86400),
+            Helper::TOOP($iExpire, time() + $iExpire, time() + $this->iExpire),
             Helper::TOOP(is_object($mVal), 1, 2),
             Helper::TOOP(is_object($mVal), serialize($mVal), json_encode($mVal))
         ));
@@ -62,16 +72,12 @@ class FileStrategy implements IStrategy{
         if (!file_exists($sStoreFile)) {
             return null;
         }
-        $sContent = file_get_contents($sStoreFile);
-        $iExpire  = substr($sContent, 0, strpos($sContent, ':'));
-        $sContent = substr($sContent, strpos($sContent, ':') + 1);
-        $iType    = substr($sContent, 0, strpos($sContent, ':'));
-        $sContent = substr($sContent, strpos($sContent, ':') + 1);
-        if (1 == $iType) {
-            $mStoreData = unserialize($sContent);
-        }else{
-            $mStoreData = json_decode($sContent,true);
-        }
+        $sContent   = file_get_contents($sStoreFile);
+        $iExpire    = substr($sContent, 0, strpos($sContent, ':'));
+        $sContent   = substr($sContent, strpos($sContent, ':') + 1);
+        $iType      = substr($sContent, 0, strpos($sContent, ':'));
+        $sContent   = substr($sContent, strpos($sContent, ':') + 1);
+        $mStoreData = Helper::TOOP(1 == $iType, unserialize($sContent), json_decode($sContent, true));
         //expire
         if ($iExpire < time()) {
             if ($bGC) $this->delete($sKey);

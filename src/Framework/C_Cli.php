@@ -19,11 +19,6 @@ use Hummer\Component\Helper\Helper;
 
 class C_Cli extends C_Base{
 
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
     public function fetch($sTemplate='')
     {
         $sContent = '';
