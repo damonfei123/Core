@@ -14,9 +14,9 @@
 **************************************************************************************/
 namespace Hummer\Component\Cache;
 
-use Hummer\Component\Helper\Dir;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\Filesystem\Dir;
 
 class FileStrategy implements IStrategy{
 

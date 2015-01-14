@@ -14,8 +14,8 @@
 **************************************************************************************/
 namespace Hummer\Component\Log\Writer;
 
-use Hummer\Component\Helper\Dir;
 use Hummer\Component\Helper\Time;
+use Hummer\Component\Filesystem\Dir;
 use Hummer\Component\Log\LogFactory;
 
 class FileStrategy implements IStrategy{

@@ -14,7 +14,7 @@
 **************************************************************************************/
 namespace Hummer\Component\Util\File;
 
-use Hummer\Component\Helper\File;
+use Hummer\Component\Filesystem\File;
 use Hummer\Component\Helper\Helper;
 
 class Download{
