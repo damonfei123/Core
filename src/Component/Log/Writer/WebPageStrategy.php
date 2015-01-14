@@ -23,7 +23,22 @@ class WebPageStrategy implements IStrategy{
     protected $aLog;
     protected $bEnable = true;
 
-    public function __construct($sContentFormat=null)
+    /**
+     *  @var $Instance Single
+     **/
+    protected static $Instance = null;
+
+    /**
+     *  Single Model
+     **/
+    public static function getInstance($sContentFormat=null) {
+        if (null === self::$Instance) {
+            self::$Instance = new self($sContentFormat);
+        }
+        return self::$Instance;
+    }
+
+    private function __construct($sContentFormat=null)
     {
         $this->sContentFormat = Helper::TOOP(
             $sContentFormat === null,

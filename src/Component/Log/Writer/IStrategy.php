@@ -2,7 +2,6 @@
 namespace Hummer\Component\Log\Writer;
 
 interface IStrategy{
-
     /**
      *  AcceptData
      **/

@@ -27,6 +27,27 @@ class STDIOStrategy implements IStrategy{
     protected $sContentFormat;
     protected $bEnable = true;
 
+    /**
+     *  @var $Instance Single
+     **/
+    protected static $Instance = null;
+
+    /**
+     *  Single Mode
+     **/
+    public static function getInstance($sContentFormat=null) {
+        if (null === self::$Instance) {
+            self::$Instance = new self($sContentFormat);
+        }
+        return self::$Instance;
+    }
+
+    private function __construct($sContentFormat=null) {
+        $this->sContentFormat = is_null($sContentFormat) ?
+            '[{iLevel}] : {sTime} : {sContent}' :
+            $sContentFormat;
+    }
+
     public function setDisable()
     {
         $this->bEnable = false;
@@ -34,14 +55,6 @@ class STDIOStrategy implements IStrategy{
     public function setEnable()
     {
         $this->bEnable = true;
-    }
-
-    public function __construct(
-        $sContentFormat=null
-    ) {
-        $this->sContentFormat = is_null($sContentFormat) ?
-            '[{iLevel}] : {sTime} : {sContent}' :
-            $sContentFormat;
     }
 
     public function acceptData($aRow)

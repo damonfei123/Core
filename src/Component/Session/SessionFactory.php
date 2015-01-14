@@ -22,7 +22,7 @@ class SessionFactory{
 
     public function __construct()
     {
-        $this->Instance = Suger::createObjAdaptor(__NAMESPACE__, func_get_args(), '', 'Strategy');
+        $this->Instance = Suger::createObjSingle(__NAMESPACE__, func_get_args(), '', 'Strategy');
 
         session_set_save_handler(
             array($this->Instance, 'open'),

@@ -27,20 +27,36 @@ class FileStrategy implements IStrategy{
     protected $sContentFormat;
     protected $bEnable = true;
 
-    public function setDisable()
-    {
-        $this->bEnable = false;
-    }
-    public function setEnable()
-    {
-        $this->bEnable = true;
-    }
+    /**
+     *  @var $Instance Single
+     **/
+    protected static $Instance = null;
 
-    public function __construct(
+    /**
+     *  Single Mode
+     **/
+    public static function getInstance(
         $sFileFormat,
         $sContentFormat=null,
         $sMonthFormat='Ym',
         $sDateFormat='Ymd'
+    ) {
+        if (null === self::$Instance) {
+            self::$Instance = new self(
+                $sFileFormat,
+                $sContentFormat,
+                $sMonthFormat,
+                $sDateFormat
+            );
+        }
+        return self::$Instance;
+    }
+
+    private function __construct(
+        $sFileFormat,
+        $sContentFormat=null,
+        $sMonthFormat=null,
+        $sDateFormat=null
     ) {
         $this->sMonthFormat = $sMonthFormat;
         $this->sDateFormat  = $sDateFormat;
@@ -48,6 +64,15 @@ class FileStrategy implements IStrategy{
         $this->sContentFormat = is_null($sContentFormat) ?
             '[{iLevel}] : {sTime} : {sContent}' :
             $sContentFormat;
+    }
+
+    public function setDisable()
+    {
+        $this->bEnable = false;
+    }
+    public function setEnable()
+    {
+        $this->bEnable = true;
     }
 
     public function acceptData($aRow)

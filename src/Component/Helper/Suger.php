@@ -26,9 +26,26 @@ class Suger{
         }
     }
 
+    /**
+     *  Create Obj By Single
+     **/
+    public static function createSingle(
+        $sClassName,
+        array $aArgv = array(),
+        $sMethodInstance = null
+    ){
+        return call_user_func_array(array(
+            $sClassName,
+            Helper::TOOP($sMethodInstance, $sMethodInstance, 'getInstance')
+        ), $aArgv);
+    }
+
+    /**
+     *  Create Obj By New
+     **/
     public static function createObjAdaptor(
         $sNS,
-        array $aClassAndArgs,
+        array $aClassAndArgs = array(),
         $sAdaptorClassPre  = 'Adaptor_',
         $sAdaptorClassTail = ''
     ) {
@@ -41,6 +58,28 @@ class Suger{
                 $sNS, '\\', $sAdaptorClassPre, substr($sClassName, 1), $sAdaptorClassTail
             );
         }
-        return self::createObj($sClassName, $aClassAndArgs);
+        return self::createObj($sClassName, $aClassAndArgs) ;
+    }
+
+    /**
+     *  Create Obj By Single
+     **/
+    public static function createObjSingle(
+        $sNS,
+        array $aClassAndArgs = array(),
+        $sAdaptorClassPre  = 'Adaptor_',
+        $sAdaptorClassTail = '',
+        $sMethodInstance   = null
+    ) {
+        if (empty($aClassAndArgs)) {
+            throw new \InvalidArgumentException('[Suger] : Error');
+        }
+        $sClassName = array_shift($aClassAndArgs);
+        if ($sClassName[0] === '@') {
+            $sClassName = sprintf('%s%s%s%s%s',
+                $sNS, '\\', $sAdaptorClassPre, substr($sClassName, 1), $sAdaptorClassTail
+            );
+        }
+        return self::createSingle($sClassName, $aClassAndArgs);
     }
 }

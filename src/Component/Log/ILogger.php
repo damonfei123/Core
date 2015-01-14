@@ -42,7 +42,7 @@ interface ILogger {
      *  @param $sMessage Log Message
      *  @param $aContext Replace Context
      **/
-    public function Notice($sMessage, array $aContext);
+    public function notice($sMessage, array $aContext);
 
     /**
      *  Error

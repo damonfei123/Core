@@ -41,6 +41,7 @@ class Arr{
 
     /**
      *  Get Array Data By Smarty Way
+     *  getBySmarty(array('name' => array('first' => 'zhang')), 'name.first');
      **/
     public static function getBySmarty($mArr, $sKey = '', $sSepetator='.')
     {

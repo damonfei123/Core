@@ -56,10 +56,10 @@ class LogFactory implements ILogger{
         $sRequestID = null
     ) {
         foreach ($aWriterConf as $sK => $aConf) {
-            $this->aWriter[$sK] = Suger::createObjAdaptor(
+            $this->aWriter[$sK] = Suger::createObjSingle(
                 sprintf('%s\\%s', __NAMESPACE__, 'Writer'),
                 $aConf,
-                '',
+                null,
                 'Strategy'
             );
         }

@@ -34,7 +34,26 @@ class DBStrategy implements IStrategy{
      **/
     protected $DB;
 
-    public function __construct(
+    /**
+     *  @var $Instance
+     **/
+    private static $Instance;
+
+    /**
+     *  Single Mode
+     **/
+    public static function getInstance(
+        $Module,
+        $sDBConfig,
+        array $aDBConfig = array()
+    ){
+        if (null === self::$Instance) {
+            self::$Instance = new self($Module, $sDBConfig, $aDBConfig);
+        }
+        return self::$Instance;
+    }
+
+    private function __construct(
         $Module,
         $sDBConfig,
         array $aDBConfig = array()
