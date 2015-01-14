@@ -20,11 +20,29 @@ use Hummer\Component\Log\LogFactory;
 
 class FileStrategy implements IStrategy{
 
+    /**
+     *  @var $aData Log Container
+     **/
     protected $aData = array();
+
+    /**
+     *  @var $sGUID
+     **/
     protected $sGUID = null;
 
+    /**
+     *  @var $sFileFormat Log FileName Format
+     **/
     protected $sFileFormat;
+
+    /**
+     *  @var $sContentFormat Log Content Format
+     **/
     protected $sContentFormat;
+
+    /**
+     *  @var $bEnable Need Log Or Not
+     **/
     protected $bEnable = true;
 
     /**

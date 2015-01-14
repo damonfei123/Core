@@ -16,15 +16,39 @@ namespace Hummer\Component\Log\Writer;
 
 use Hummer\Component\Helper\Dir;
 use Hummer\Component\Helper\Time;
+use Hummer\Component\Helper\Helper;
 use Hummer\Component\Log\LogFactory;
 
 class STDIOStrategy implements IStrategy{
 
+    /**
+     *  @var $aData Log Container
+     **/
     protected $aData = array();
+
+    /**
+     *  @var $sGUID
+     **/
     protected $sGUID = null;
 
+    /**
+     *  @var $sFileFormat Log FileName Format
+     **/
     protected $sFileFormat;
+
+    /**
+     *  @var $sContentFormat Log Content Format
+     **/
     protected $sContentFormat;
+
+    /**
+     *  @var $sStyle Log Style
+     **/
+    protected static $sStyle;
+
+    /**
+     *  @var $bEnable Need Log Or Not
+     **/
     protected $bEnable = true;
 
     /**
@@ -35,14 +59,21 @@ class STDIOStrategy implements IStrategy{
     /**
      *  Single Mode
      **/
-    public static function getInstance($sContentFormat=null) {
+    public static function getInstance(
+        $sContentFormat=null,
+        $sStyle=null
+    ) {
         if (null === self::$Instance) {
-            self::$Instance = new self($sContentFormat);
+            self::$Instance = new self(
+                $sContentFormat,
+                Helper::TOOP($sStyle, $sStyle, "\033[41;90m %s \033[0m")
+            );
         }
         return self::$Instance;
     }
 
-    private function __construct($sContentFormat=null) {
+    private function __construct($sContentFormat=null, $sStyle = null) {
+        self::$sStyle         = $sStyle;
         $this->sContentFormat = is_null($sContentFormat) ?
             '[{iLevel}] : {sTime} : {sContent}' :
             $sContentFormat;
@@ -85,7 +116,6 @@ class STDIOStrategy implements IStrategy{
         ) {
             return $sMsg;
         }
-        return sprintf("\033[41;90m %s \033[0m", $sMsg);
-        //return sprintf("\033[37;31;5m %s \033[39;49;0m", $sMsg);//Flicker
+        return sprintf(self::$sStyle, $sMsg);
     }
 }

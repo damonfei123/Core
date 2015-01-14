@@ -20,7 +20,14 @@ use Hummer\Component\Context\Context;
 
 class WebPageStrategy implements IStrategy{
 
+    /**
+     *  @var $aData Log Container
+     **/
     protected $aLog;
+
+    /**
+     *  @var $bEnable Need Log Or Not
+     **/
     protected $bEnable = true;
 
     /**
