@@ -68,7 +68,7 @@ class STDIOStrategy implements IStrategy{
             ) . PHP_EOL;
 
             #flush to STDIO
-            fprintf(STDOUT, sprintf('%s', $sLogMsg), null);
+            fprintf(STDOUT, sprintf('%s', self::handle($aRow['iLevel'], $sLogMsg)), null);
         }
     }
 
@@ -76,5 +76,15 @@ class STDIOStrategy implements IStrategy{
     {
         #GUID should be same for one request
         $this->sGUID  = $sGUID;
+    }
+
+    public static function handle($iLevel , $sMsg)
+    {
+        if (($iLevel & LogFactory::LEVEL_DEBUG) ||
+            ($iLevel & LogFactory::LEVEL_INFO)
+        ) {
+            return $sMsg;
+        }
+        return sprintf("\033[41;90m %s \033[0m", $sMsg);
     }
 }
