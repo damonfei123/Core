@@ -94,17 +94,19 @@ class Bootstrap{
             $this->Context->Log->fatal($E->getMessage());
             call_user_func(self::$mCBUncaughtException, $E);
             exit(1);
+        }catch(RouteErrorException $E){
+            #Route Error
+            if ($this->Context->sRunMode == self::S_RUN_HTTP) {
+                $this->Context->HttpResponse->setStatus(404);
+                $this->Context->HttpResponse->setContent(
+                    $this->Context->Template->fetch($this->Context->Config->get('syspage.404'))
+                );
+                $this->Context->HttpResponse->send();
+            }
+            $this->Context->Log->fatal($E->getMessage());
         }catch(\SmartyException $E){
             #Smarty Exception
             $this->Context->Log->warn($E->getMessage());
-        }catch(RouteErrorException $E){
-            #Route Error
-            $this->Context->HttpResponse->setStatus(404);
-            $this->Context->HttpResponse->setContent(
-                $this->Context->Template->fetch($this->Context->Config->get('syspage.404'))
-            );
-            $this->Context->HttpResponse->send();
-            $this->Context->Log->fatal($E->getMessage());
         }catch(\Exception $E){
             #Uncatch Error
             $this->Context->Log->warn($E->getMessage());
@@ -160,9 +162,10 @@ class Bootstrap{
     public function __destruct()
     {
         #End Log
-        $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s',
+        $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s, Peak Mem: %s',
             Time::humanTime(round(microtime(true)-$this->Context->Arr[self::F_B_RUN_START], 6)*1000),
-            Helper::Mem()
+            Helper::Mem(true),
+            Helper::Mem(false)
         ));
     }
 }

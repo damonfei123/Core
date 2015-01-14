@@ -15,11 +15,18 @@
 namespace Hummer\Component\Helper;
 
 class Time {
+
+    /**
+     *  Change Time To Readable
+     **/
     public static function time($iSec=null, $sFormat='Y-m-d H:i:s')
     {
         return date($sFormat, $iSec === null ? time() : $iSec);
     }
 
+    /**
+     *  Change To humman Readable Time by timestamp
+     **/
     public static function humanTime($iMicsecond)
     {
         if ((int)$iMicsecond < 1000) {

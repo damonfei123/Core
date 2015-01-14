@@ -99,13 +99,11 @@ class WebPageStrategy implements IStrategy{
         krsort($this->aLog, SORT_NUMERIC);;
 
         foreach ($this->aLog as $sLevelName => $aLog) {
-            $sLevelName = substr($sLevelName, strpos($sLevelName,'_') + 1 );
+            $sLevelName = strtolower(substr($sLevelName, strpos($sLevelName,'_') + 1 ));
             $sItemErr   = 'TPT_Info';
             if (in_array($sLevelName, array(
-                LogFactory::DESC_WARN,
-                LogFactory::DESC_NOTICE,
-                LogFactory::DESC_ERROR,
-                LogFactory::DESC_FATEAL
+                LogFactory::DESC_WARN, LogFactory::DESC_NOTICE,
+                LogFactory::DESC_ERROR, LogFactory::DESC_FATEAL
             ))) {
                 $sLight   = 'TPT_Err';
                 $sItemErr = 'TPT_Err';

@@ -52,9 +52,9 @@ class Helper{
         return implode('',$aVar);
     }
 
-    public static function Mem()
+    public static function Mem($Peak=true)
     {
-        $size = memory_get_peak_usage(true);
+        $size = $Peak ? memory_get_peak_usage(true) : memory_get_usage(true);
         $unit = array('B','KB','MB','GB','TB','PB');
         return @round($size/pow(1024,($i=floor(log($size,1024)))),2).' '.$unit[$i];
     }

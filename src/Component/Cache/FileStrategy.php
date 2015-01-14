@@ -42,7 +42,8 @@ class FileStrategy implements IStrategy{
     public function __construct($sCacheDir, $iExpire = 86400)
     {
         if (!file_exists($sCacheDir) || !is_writable($sCacheDir)) {
-            throw new \InvalidArgumentException('[cache] : File Error(not exists or unwritable)');
+            throw new \InvalidArgumentException(
+                sprintf('[cache] : Cache Dir [%s] Error(not exists or unwritable)', $sCacheDir));
         }
         $this->iExpire   = $iExpire;
         $this->sCacheDir = Helper::TrimEnd($sCacheDir, '/', 'r');
@@ -77,7 +78,9 @@ class FileStrategy implements IStrategy{
         $sContent   = substr($sContent, strpos($sContent, ':') + 1);
         $iType      = substr($sContent, 0, strpos($sContent, ':'));
         $sContent   = substr($sContent, strpos($sContent, ':') + 1);
-        $mStoreData = Helper::TOOP(1 == $iType, unserialize($sContent), json_decode($sContent, true));
+        $mStoreData = 1 == $iType ?
+            unserialize($sContent) :
+            json_decode($sContent, true);
         //expire
         if ($iExpire < time()) {
             if ($bGC) $this->delete($sKey);
