@@ -86,5 +86,6 @@ class STDIOStrategy implements IStrategy{
             return $sMsg;
         }
         return sprintf("\033[41;90m %s \033[0m", $sMsg);
+        //return sprintf("\033[37;31;5m %s \033[39;49;0m", $sMsg);//Flicker
     }
 }
