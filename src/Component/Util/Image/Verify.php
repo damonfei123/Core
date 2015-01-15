@@ -68,6 +68,21 @@ class Verify{
      **/
     private $sCodeType;
 
+    /**
+     *  @var $iLineCount
+     **/
+    private $iLineCount = 6;
+
+    /**
+     *  @var $iStringNum
+     **/
+    private $iStringNum = 60;
+
+    /**
+     *  @var $sStringPad
+     **/
+    private $sStringPad = '*';
+
 
     public function __construct(
         $iCodeLen  = null,
@@ -94,9 +109,11 @@ class Verify{
         $this->outPut();
     }
 
-
+    /**
+     *  Public Get Created Code
+     **/
     public function getCode() {
-        return strtolower($this->sCode);
+        return $this->sCode;
     }
 
     public function setCodeLen($iCodeLen)
@@ -130,6 +147,21 @@ class Verify{
         $this->initCharset($this->iCodeType);
     }
 
+    public function setLineCount($iLineCount)
+    {
+        $this->iLineCount = $iLineCount;
+    }
+
+    public function setStringNum($iStringNum)
+    {
+        $this->iStringNum = $iStringNum;
+    }
+
+    public function setStringPad($sStringPad)
+    {
+        $this->sStringPad = $sStringPad;
+    }
+
     public function initCharset($iCodeType)
     {
         $sChar = 'abcdefghkmnprstuvwxyzABCDEFGHKMNPRSTUVWXYZ';
@@ -154,7 +186,7 @@ class Verify{
      **/
     private function createCode() {
         $_len = strlen($this->sCharset)-1;
-        for ($i=0; $i<$this->iCodeLen; $i++) {
+        for ($i=0; $i < $this->iCodeLen; $i++) {
             $this->sCode .= $this->sCharset[mt_rand(0,$_len)];
         }
     }
@@ -170,10 +202,9 @@ class Verify{
         imagefilledrectangle($this->Img, 0, $this->iHeight, $this->iWidth , 0, $color);
     }
 
-
     private function createFont() {
         $_x = $this->iWidth / $this->iCodeLen;
-        for ($i=0; $i<$this->iCodeLen; $i++) {
+        for ($i = 0; $i < $this->iCodeLen; $i++) {
             $this->sFontColor = imagecolorallocate(
                 $this->Img,
                 mt_rand(0,156),
@@ -194,7 +225,7 @@ class Verify{
     }
 
     private function createLine() {
-        for ($i=0; $i<6; $i++) {
+        for ($i = 0; $i < $this->iLineCount; $i++) {
             $color = imagecolorallocate(
                 $this->Img,
                 mt_rand(0,156),
@@ -210,28 +241,27 @@ class Verify{
                 $color
             );
         }
-        for ($i=0; $i<100; $i++) {
+        for ($i = 0; $i < $this->iStringNum; $i++) {
             $color = imagecolorallocate(
                 $this->Img,
-                mt_rand(200,255),
-                mt_rand(200,255),
-                mt_rand(200,255)
+                mt_rand(100,255),
+                mt_rand(100,255),
+                mt_rand(100,255)
             );
             imagestring(
                 $this->Img,
                 mt_rand(1,5),
                 mt_rand(0,$this->iWidth),
                 mt_rand(0,$this->iHeight),
-                '*',
+                $this->sStringPad,
                 $color
             );
         }
     }
 
     private function outPut() {
-        header('Content-type:image/png');
+        header('Content-type: image/png');
         imagepng($this->Img);
         imagedestroy($this->Img);
     }
 }
-
