@@ -137,7 +137,7 @@ class CURD {
     {
         if (!is_null($mWhere) && $mWhere) {
             $this->aWhere = Helper::TOOP(
-                is_int($mWhere) || isset($mWhere[0]),
+                $this->checkWhereIsPK($mWhere),
                 $this->getPKWhere($mWhere),
                 $mWhere
             );
@@ -560,6 +560,28 @@ class CURD {
             $this->resetCondition();
         }
         return $bOnlyOne ? $STMT->fetch() : $STMT->fetchAll();
+    }
+
+    /**
+     *  Check Set Where is PrimaryKey
+     *  @param $mWhere Where
+     *  @return Boolean
+     **/
+    public function checkWhereIsPK($mWhere)
+    {
+        $aPK = $this->getPrimaryKey(true);
+        if (is_int($mWhere)) {
+            return true;
+        }
+        if (count($mWhere) != count($aPK)) {
+            return false;
+        }
+        foreach ($aPK as $i => $sPK) {
+            if (!isset($mWhere[$i])) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public function resetCondition()
