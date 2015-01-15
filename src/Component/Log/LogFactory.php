@@ -110,7 +110,7 @@ class LogFactory implements ILogger{
         #display to every writer
         foreach ($this->aWriter as $Writer) {
             $Writer->setGUID($this->sGUID);
-            $Writer->acceptData($aRow);
+            $Writer->writeIn($aRow);
         }
 
         END:

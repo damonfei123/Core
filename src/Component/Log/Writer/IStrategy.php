@@ -5,7 +5,7 @@ interface IStrategy{
     /**
      *  AcceptData
      **/
-    public function acceptData($aRow);
+    public function writeIn($aRow);
 
     /**
      * Everty Query GUID

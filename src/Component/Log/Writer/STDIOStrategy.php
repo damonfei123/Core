@@ -88,7 +88,7 @@ class STDIOStrategy implements IStrategy{
         $this->bEnable = true;
     }
 
-    public function acceptData($aRow)
+    public function writeIn($aRow)
     {
         if ($this->bEnable) {
             $sLevelName = LogFactory::getLogNameByLevelID($aRow['iLevel']);

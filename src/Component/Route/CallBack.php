@@ -60,8 +60,8 @@ class CallBack{
 
         #before and after
         $sBefore = $sAfter = null;
-        $sMethodBefore = sprintf('__before__%s__', $sMethod);
-        $sMethodAfter  = sprintf('__after__%s__', $sMethod);
+        $sMethodBefore = sprintf('__before_%s__', $sMethod);
+        $sMethodAfter  = sprintf('__after_%s__', $sMethod);
         $sBefore = Arr::get($aCallableMethod, $sMethodBefore, '__before__');
         $sAfter  = Arr::get($aCallableMethod, $sMethodAfter, '__after__');
         $sBefore = Arr::get($aCallableMethod, $sBefore);
