@@ -54,32 +54,47 @@ class CURD {
     public $sOrder;
     public $aAopCallBack;
 
-    public function __construct(
+    /**
+     *  @var $aInstance
+     **/
+    protected static $aInstance = array();
+
+    /**
+     *  Use Single Mode
+     **/
+    public static function getInstance(
         $sDSN,
         $sUsername,
         $sPassword,
         $aOption,
         $aAopCallBack=array()
     ) {
-        $this->sDSN         = $sDSN;
-        $this->sUsername    = $sUsername;
-        $this->sPassword    = $sPassword;
-        $this->aOption      = $aOption;
-        $this->aAopCallBack = $aAopCallBack;
-        $this->Instance     = $this->getInstance();
+        if (!isset(self::$aInstance[$sDSN])) {
+            $CURD               = new self();
+            $CURD->sDSN         = $sDSN;
+            $CURD->sUsername    = $sUsername;
+            $CURD->sPassword    = $sPassword;
+            $CURD->aOption      = $aOption;
+            $CURD->aAopCallBack = $aAopCallBack;
+            $CURD->Instance     = $CURD->getRealInstance();
+            self::$aInstance[$sDSN] = $CURD;
+        }
+        return self::$aInstance[$sDSN];
     }
 
-    public function getInstance()
+    private function __construct() {}
+
+    /**
+     *  Init Packer PDO
+     **/
+    public function getRealInstance()
     {
-        if (is_null($this->Instance) || !($this->Instance instanceof \PDO)) {
-            $this->Instance = new Packer(new \PDO(
-                $this->sDSN,
-                $this->sUsername,
-                $this->sPassword,
-                $this->aOption
-            ),$this->aAopCallBack);
-        }
-        return $this->Instance;
+        return new Packer(new \PDO(
+            $this->sDSN,
+            $this->sUsername,
+            $this->sPassword,
+            $this->aOption
+        ),$this->aAopCallBack);
     }
 
     /**
@@ -310,7 +325,7 @@ class CURD {
         );
 
         return array(
-            'SQL'   => $sEndSQL,
+            'SQL'         => $sEndSQL,
             'TABLE INDEX' => $aIndexes,
             'EXPLAIN'     => $aResult
         );

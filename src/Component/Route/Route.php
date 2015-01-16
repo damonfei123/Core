@@ -45,7 +45,7 @@ class Route{
             $sControllerPath = array_shift($aV);
             $sControllerPre  = array_shift($aV);
             $sActionPre      = array_shift($aV);
-            if (!is_null($this->Context)) {
+            if ($this->Context !== null) {
                 $this->Context->registerMulti(array(
                     'sControllerPath' => $sControllerPath,
                     'sControllerPre'  => $sControllerPre,
@@ -80,7 +80,7 @@ class Route{
             $sControllerPath = array_shift($aV);
             $sControllerPre  = array_shift($aV);
             $sActionPre      = array_shift($aV);
-            if (!is_null($this->Context)) {
+            if ($this->Context !== null) {
                 $this->Context->registerMulti(array(
                     'sControllerPath' => $sControllerPath,
                     'sControllerPre'  => $sControllerPre,

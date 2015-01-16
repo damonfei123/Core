@@ -16,6 +16,7 @@ namespace Hummer\Component\RDB\ORM;
 
 use Hummer\Component\RDB\ORM\CURD;
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Helper\Suger;
 use Hummer\Component\Helper\Helper;
 use Hummer\Component\Context\InvalidArgumentException;
 
@@ -71,8 +72,9 @@ class Factory {
             $aArgs   = (array)$aArgs;
             $sModel  = sprintf('%s %s', $sModel, array_shift($aArgs));
             return $this->get($sModel, array_shift($aArgs));
+        }else{
+            throw new \BadMethodCallException('[ Factory ] : Err : call undefined method');
         }
-        throw new \BadMethodCallException('[ Factory ] : Err : call undefined method');
     }
 
     /**
@@ -99,18 +101,20 @@ class Factory {
         $sModelName = str_replace(' ', '|', Helper::TrimInValidURI(trim($sModelName), '  ', ' '));
         $sRealModel = self::getRealModel($sModelName);
         #config
-        $aConf = Arr::get(self::$_aModelConf, $sRealModel,array());
+        $aConf = Arr::get( self::$_aModelConf, $sRealModel, array() );
         $sDB   = Helper::TOOP($sDB, $sDB, Arr::get($aConf, 'db', $this->_sDefaultDB));
-        $CURD = Helper::TOOP(
+        $CURD  = Helper::TOOP(
             isset(self::$_aDB[$sDB]),
             self::$_aDB[$sDB],
             $this->initCURD($sModelName, $sDB)
         );
         $_sTmpModel = sprintf('%s_%s', $sDB, $sRealModel);
         if (!isset(self::$_aModel[$_sTmpModel])) {
-            $sModelClassName = isset($aConf['model_class']) ?
-                self::$_sAppModelNS . '\\' . $aConf['model_class'] :
-                self::$_sDefaultModelClass;
+            $sModelClassName = Helper::TOOP(
+                isset($aConf['model_class']),
+                sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']),
+                self::$_sDefaultModelClass
+            );
 
             self::$_aModel[$_sTmpModel] = new $sModelClassName(
                 $sModelName,
@@ -121,6 +125,7 @@ class Factory {
         }
         #init Model
         self::$_aModel[$_sTmpModel]->initModel($sModelName);
+        #Return
         return self::$_aModel[$_sTmpModel];
     }
 
@@ -141,31 +146,32 @@ class Factory {
      **/
     public function initCURD($sModelName, $sModelDB=null)
     {
-        $sRealModel = self::getRealModel($sModelName);
-
         if (!isset(self::$_aCURD[$sModelDB])) {
-            if (!array_key_exists($this->_sDefaultDB, self::$_aDBConfig)) {
+            if (array_key_exists($sModelDB, self::$_aDBConfig)) {
+                self::$_aCURD[$sModelDB] = Suger::createObjSingle(
+                    __NAMESPACE__,
+                    array(
+                        '@CURD',
+                        self::$_aDBConfig[$sModelDB]['dsn'],
+                        self::$_aDBConfig[$sModelDB]['username'],
+                        self::$_aDBConfig[$sModelDB]['password'],
+                        self::$_aDBConfig[$sModelDB]['option'],
+                        self::$_aAopCallBack
+                    ),
+                    ''
+                );
+            }else{
                 throw new \InvalidArgumentException('[ FACTORY ] : NONE DB CONFIG');
             }
-            $PDO = new CURD(
-                self::$_aDBConfig[$sModelDB]['dsn'],
-                self::$_aDBConfig[$sModelDB]['username'],
-                self::$_aDBConfig[$sModelDB]['password'],
-                self::$_aDBConfig[$sModelDB]['option'],
-                self::$_aAopCallBack
-            );
-            self::$_aCURD[$sModelDB] = $PDO;
         }
         return self::$_aCURD[$sModelDB];
     }
 
+    /**
+     *  Check Model Is Empty
+     **/
     public function isModelDataEmpty($Model)
     {
-        if ($Model === null ||
-            (is_array($Model) && count($Model) == 0)
-        ) {
-            return true;
-        }
-        return false;
+        return $Model === null || (is_array($Model) && count($Model) == 0);
     }
 }
