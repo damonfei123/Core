@@ -186,7 +186,7 @@ class Image{
         return imagesy($this->image);
     }
     private function proimagesize(){ //计算等比缩放的图片的宽和高
-        if($this->value1 && ($this->width < $this->height)) { //等比缩放算法
+        if($this->value1 AND ($this->width < $this->height)) { //等比缩放算法
             $this->value1=round(($this->value2 / $this->height) * $this->width);
         }else{
             $this->value2=round(($this->value1/ $this->width) * $this->height);
@@ -195,7 +195,7 @@ class Image{
     private function imagescaling(){//图像缩放功能，返回处理后的图像资源
         $newimg = imagecreatetruecolor($this->value1, $this->value2);
         $tran   = imagecolortransparent($this->image);//处理透明算法
-        if($tran >= 0 && $tran < imagecolorstotal($this->image)){
+        if($tran >= 0 AND $tran < imagecolorstotal($this->image)){
             $tranarr  = imagecolorsforindex($this->image, $tran);
             $newcolor = imagecolorallocate(
                 $newimg,

@@ -14,7 +14,6 @@
 **************************************************************************************/
 namespace Hummer\Component\RDB\ORM\Model;
 
-use Hummer\Component\RDB\ORM\CURD;
 use Hummer\Component\Helper\Arr;
 
 class Item implements \ArrayAccess {
@@ -56,7 +55,10 @@ class Item implements \ArrayAccess {
             return true;
         }
         $M       = $this->Model;
-        $bUpdate = $M->CURD->where($this->getPrimaryKeyWhere())->data($aUpdateData)->update();
+        $bUpdate = $M->PDODecorator
+            ->where($this->getPrimaryKeyWhere())
+            ->data($aUpdateData)
+            ->update();
         if ($bUpdate) {
             $this->aNewData = array();
         }
@@ -65,7 +67,7 @@ class Item implements \ArrayAccess {
 
     public function delete()
     {
-        return $this->Model->CURD->where($this->getPrimaryKeyWhere())->delete();
+        return $this->Model->PDODecorator->where($this->getPrimaryKeyWhere())->delete();
     }
 
     /**
@@ -75,12 +77,12 @@ class Item implements \ArrayAccess {
     public function getPrimaryKeyWhere()
     {
         $M     = $this->Model;
-        $aPK   = $M->CURD->getPrimaryKey(true);
+        $aPK   = $M->PDODecorator->getPrimaryKey(true);
         $aData = array_intersect_key($this->aData, array_flip($aPK));
         if (count($aData) != count($aPK)) {
             throw new \InvalidArgumentException(sprintf(
                 '[Item] : Primary column[%s] Must Be Selected!!!',
-                $M->CURD->getPrimaryKey())
+                $M->PDODecorator->getPrimaryKey())
             );
         }
         return $aData;

@@ -82,7 +82,8 @@ class HttpCall{
             }
         }
         #timeout
-        if (!isset($aHeaderAndData[CURLOPT_TIMEOUT]) && !isset($aHeaderAndData[CURLOPT_TIMEOUT_MS])) {
+        if (!isset($aHeaderAndData[CURLOPT_TIMEOUT]) AND
+            !isset($aHeaderAndData[CURLOPT_TIMEOUT_MS])) {
             $aHeaderAndData[CURLOPT_TIMEOUT] = 10;
         }
         #return

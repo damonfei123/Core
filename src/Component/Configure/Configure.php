@@ -26,7 +26,7 @@ class Configure{
 
     public static function parseRecursion($mResult, $CFG)
     {
-        if (is_string($mResult) && $mResult) {
+        if (is_string($mResult) AND $mResult) {
             switch ($mResult[0]) {
                 case '@':
                     $mResult = $CFG->get(substr($mResult, 1));

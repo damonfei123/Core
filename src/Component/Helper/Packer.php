@@ -24,8 +24,10 @@ class Packer{
     public function __construct($obj, $aAopCallBack=array())
     {
         $this->obj = $obj;
-        if($aAopCallBack && is_array($aAopCallBack)) foreach ($aAopCallBack as $sExplain => $aCB) {
-            $this->addCallBack($sExplain, $aCB);
+        if($aAopCallBack AND is_array($aAopCallBack)) {
+            foreach ($aAopCallBack as $sExplain => $aCB) {
+                $this->addCallBack($sExplain, $aCB);
+            }
         }
     }
 

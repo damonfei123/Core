@@ -122,7 +122,7 @@ class Page {
         $aParam     = explode('&',$REQ->getQueryString());
         if ($aParam) foreach ($aParam as $sParam) {
             $aItemParam = explode('=', $sParam);
-            if ($aItemParam && count($aItemParam) == 2 && $aItemParam[0] != 'page'){
+            if ($aItemParam AND count($aItemParam) == 2 AND $aItemParam[0] != 'page'){
                 $aBindParam[$aItemParam[0]] = $aItemParam[1];
             }
         }
@@ -166,7 +166,7 @@ class Page {
         $sPagination  = '';
         $aDisplayItem = explode('.',$sDisplayItem);
         foreach ($aDisplayItem as $item) {
-            if ($item && array_key_exists($item,$aDisplay)) {
+            if ($item AND array_key_exists($item,$aDisplay)) {
                 $sPagination .= $aDisplay[$item];
             }
         }

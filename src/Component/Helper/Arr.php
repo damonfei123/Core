@@ -45,8 +45,8 @@ class Arr{
      **/
     public static function getBySmarty($mArr, $sKey = '', $sSepetator='.')
     {
-        while ($sKey &&
-               is_array($mArr) &&
+        while ($sKey AND
+               is_array($mArr) AND
                false !== ($iPos=strpos($sKey, $sSepetator))
         ){
             $sTK  = substr($sKey, 0, $iPos);

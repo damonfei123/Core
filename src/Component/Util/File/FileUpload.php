@@ -163,7 +163,7 @@ class FileUpload{
 
     public function isBigFile()
     {
-        return isset($this->aConfig['max']) && $this->_aFileInfo['size'] > $this->aConfig['max'];
+        return isset($this->aConfig['max']) AND $this->_aFileInfo['size'] > $this->aConfig['max'];
     }
 
     public function checkHttpUpload()

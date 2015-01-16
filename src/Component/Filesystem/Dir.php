@@ -40,7 +40,7 @@ class Dir{
             $Dir = opendir($sDirName);
             while ($sFileName=readdir($Dir)) {
                 if (self::IsValidFileName($sFileName)) {
-                    if (is_dir($sDirName . '/' . $sFileName) && $bRecursion) {
+                    if (is_dir($sDirName . '/' . $sFileName) AND $bRecursion) {
                         self::showList($sDirName . '/'. $sFileName, $bRecursion, $aFile);
                     }else{
                         array_push($aFile, $sFileName);
@@ -57,7 +57,7 @@ class Dir{
      **/
 
     protected static function Check($sDirName){
-        return is_dir($sDirName) && is_readable($sDirName);
+        return is_dir($sDirName) AND is_readable($sDirName);
     }
 
     /**
@@ -65,6 +65,6 @@ class Dir{
      **/
     protected static function IsValidFileName($sFileName)
     {
-        return $sFileName != '.' && $sFileName != '..';
+        return $sFileName != '.' AND $sFileName != '..';
     }
 }

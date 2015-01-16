@@ -14,10 +14,10 @@
 **************************************************************************************/
 namespace Hummer\Component\RDB\ORM;
 
-use Hummer\Component\RDB\ORM\CURD;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Suger;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\RDB\ORM\PDODecorator;
 use Hummer\Component\Context\InvalidArgumentException;
 
 class Factory {
@@ -78,14 +78,9 @@ class Factory {
     }
 
     /**
-     *  @var $_aCURD All CURD Object Cache
+     *  @var $_aPDODecorator All PDODecorator Object Cache
      **/
-    private static $_aCURD;
-
-    /**
-     * @var $_aDB All DB Cache
-     **/
-    private static $_aDB;
+    private static $_aPDODecorator;
 
     /**
      *  @var $_aModel Model Cache
@@ -103,22 +98,15 @@ class Factory {
         #config
         $aConf = Arr::get( self::$_aModelConf, $sRealModel, array() );
         $sDB   = Helper::TOOP($sDB, $sDB, Arr::get($aConf, 'db', $this->_sDefaultDB));
-        $CURD  = Helper::TOOP(
-            isset(self::$_aDB[$sDB]),
-            self::$_aDB[$sDB],
-            $this->initCURD($sModelName, $sDB)
-        );
         $_sTmpModel = sprintf('%s_%s', $sDB, $sRealModel);
         if (!isset(self::$_aModel[$_sTmpModel])) {
-            $sModelClassName = Helper::TOOP(
-                isset($aConf['model_class']),
-                sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']),
-                self::$_sDefaultModelClass
-            );
+            $sModelClassName = isset($aConf['model_class']) ?
+                sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']) :
+                self::$_sDefaultModelClass;
 
             self::$_aModel[$_sTmpModel] = new $sModelClassName(
                 $sModelName,
-                $CURD,
+                $this->initPDODecorator($sModelName, $sDB),
                 $aConf,
                 $this
             );
@@ -142,29 +130,28 @@ class Factory {
     }
 
     /**
-     *  Init CURD By Deferent Database
+     *  Init PDODecorator By Deferent Database
      **/
-    public function initCURD($sModelName, $sModelDB=null)
+    public function initPDODecorator($sModelName, $sModelDB=null)
     {
-        if (!isset(self::$_aCURD[$sModelDB])) {
+        if (!isset(self::$_aPDODecorator[$sModelDB])) {
             if (array_key_exists($sModelDB, self::$_aDBConfig)) {
-                self::$_aCURD[$sModelDB] = Suger::createObjSingle(
+                self::$_aPDODecorator[$sModelDB] = Suger::createObjSingle(
                     __NAMESPACE__,
                     array(
-                        '@CURD',
+                        '@PDODecorator',
                         self::$_aDBConfig[$sModelDB]['dsn'],
                         self::$_aDBConfig[$sModelDB]['username'],
                         self::$_aDBConfig[$sModelDB]['password'],
                         self::$_aDBConfig[$sModelDB]['option'],
                         self::$_aAopCallBack
-                    ),
-                    ''
+                    ), ''
                 );
             }else{
                 throw new \InvalidArgumentException('[ FACTORY ] : NONE DB CONFIG');
             }
         }
-        return self::$_aCURD[$sModelDB];
+        return self::$_aPDODecorator[$sModelDB];
     }
 
     /**

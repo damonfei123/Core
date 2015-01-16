@@ -34,32 +34,26 @@ class Route{
     public function generateFromHttp($REQ, $RES, $aRule=array())
     {
         $aCallBack = array();
-        if (!$aRule || !is_array($aRule)) {
+        if ($aRule AND is_array($aRule)) {
+            foreach ($aRule as $aV) {
+                if (is_array($aV) AND count($aV) >= 4) {
+                    $mV              = array_shift($aV);
+                    $sControllerPath = array_shift($aV);
+                    $sControllerPre  = array_shift($aV);
+                    $sActionPre      = array_shift($aV);
+                    $aCallBack[] = call_user_func_array(
+                        $mV,
+                        array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre)
+                    );
+                }else{
+                    throw new \DomainException('[Route] : ERROR CONFIG');
+                }
+            }
+        }else{
             throw new \InvalidArgumentException('[Route] : ERROR ROUTE PARAM');
-        }
-        foreach ($aRule as $aV) {
-            if (!is_array($aV) || count($aV) < 4) {
-                throw new \DomainException('[Route] : ERROR CONFIG');
-            }
-            $mV              = array_shift($aV);
-            $sControllerPath = array_shift($aV);
-            $sControllerPre  = array_shift($aV);
-            $sActionPre      = array_shift($aV);
-            if ($this->Context !== null) {
-                $this->Context->registerMulti(array(
-                    'sControllerPath' => $sControllerPath,
-                    'sControllerPre'  => $sControllerPre,
-                    'sActionPre'      => $sActionPre
-                ));
-            }
-            $aCallBack[] = call_user_func_array(
-                $mV,
-                array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre)
-            );
         }
         return $aCallBack;
     }
-
 
     /**
      *  RUN FOR CLI
@@ -69,28 +63,23 @@ class Route{
     public function generateFromCli($aArgv, $aRule=array())
     {
         $aCallBack = array();
-        if (!$aRule || !is_array($aRule)) {
+        if ($aRule AND is_array($aRule)) {
+            foreach ($aRule as $aV) {
+                if (is_array($aV) AND count($aV) >= 4) {
+                    $mV              = array_shift($aV);
+                    $sControllerPath = array_shift($aV);
+                    $sControllerPre  = array_shift($aV);
+                    $sActionPre      = array_shift($aV);
+                    $aCallBack[] = call_user_func_array(
+                        $mV,
+                        array($aArgv, $sControllerPath, $sControllerPre, $sActionPre)
+                    );
+                }else{
+                    throw new \DomainException('[Route] : ERROR CONFIG');
+                }
+            }
+        }else{
             throw new \InvalidArgumentException('[Route] : ERROR ROUTE PARAM');
-        }
-        foreach ($aRule as $aV) {
-            if (!is_array($aV) || count($aV) < 4) {
-                throw new \DomainException('[Route] : ERROR CONFIG');
-            }
-            $mV              = array_shift($aV);
-            $sControllerPath = array_shift($aV);
-            $sControllerPre  = array_shift($aV);
-            $sActionPre      = array_shift($aV);
-            if ($this->Context !== null) {
-                $this->Context->registerMulti(array(
-                    'sControllerPath' => $sControllerPath,
-                    'sControllerPre'  => $sControllerPre,
-                    'sActionPre'      => $sActionPre
-                ));
-            }
-            $aCallBack[] = call_user_func_array(
-                $mV,
-                array($aArgv, $sControllerPath, $sControllerPre, $sActionPre)
-            );
         }
         return $aCallBack;
     }

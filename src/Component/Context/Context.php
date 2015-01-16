@@ -57,7 +57,7 @@ class Context {
 
     public function isRegister($sRegName)
     {
-        return isset($this->__aVarRegister__[$sRegName]) && $this->__aVarRegister__[$sRegName];
+        return isset($this->__aVarRegister__[$sRegName]) AND $this->__aVarRegister__[$sRegName];
     }
 
     private $__aModuleConf__;
@@ -87,8 +87,8 @@ class Context {
             self::$aAllModelConfig = $this->Config->get('module');
         }
         foreach (self::$aAllModelConfig as $aModule) {
-            if (isset($aModule['module']) && isset($aModule['class'])) {
-                if ($aModule['module'] == $sModelName &&
+            if (isset($aModule['module']) AND isset($aModule['class'])) {
+                if ($aModule['module'] == $sModelName AND
                    (!isset($aModule['run_mode']) || $aModule['run_mode'] == $this->sRunMode)
                 ){
                     $this->__aModuleConf__[$sModelName] = $aModule;

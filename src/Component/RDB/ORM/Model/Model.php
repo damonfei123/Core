@@ -14,16 +14,16 @@
 **************************************************************************************/
 namespace Hummer\Component\RDB\ORM\Model;
 
-use Hummer\Component\RDB\ORM\CURD;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\RDB\ORM\PDODecorator;
 
 class Model{
 
     /**
-     *  @var $CURD  Hummer\Component\RDB\ORM\CURD
+     *  @var $PDODecorator  Hummer\Component\RDB\ORM\PDODecorator
      **/
-    public $CURD;
+    public $PDODecorator;
 
     /**
      *  @var $sTable Table
@@ -37,11 +37,11 @@ class Model{
 
     public function __construct(
         $sModelName,
-        $CURD,
+        $PDODecorator,
         $aConfig,
         $Factory
     ) {
-        $this->CURD = $CURD;
+        $this->PDODecorator = $PDODecorator;
         $sCalledClassName = get_called_class();
 
         $sCalledNS = '';
@@ -54,7 +54,7 @@ class Model{
         }else{
             $sItemModelName = $sModelName;
         }
-        $bAppItem = isset($aConfig['item_class']) && $aConfig['item_class'];
+        $bAppItem = isset($aConfig['item_class']) AND $aConfig['item_class'];
         $this->sItemClassName = sprintf('%s%s%s',
             Helper::TOOP($bAppItem, $sCalledNS, __NAMESPACE__),
             '\\',
@@ -66,36 +66,36 @@ class Model{
 
         #primary key
         if (isset($aConfig['pk'])) {
-            $this->CURD->sPrimaryKey = $aConfig['pk'];
+            $this->PDODecorator->sPrimaryKey = $aConfig['pk'];
         }
     }
 
     public function setTable($sModelName)
     {
         $sTable = Arr::get($this->aConfig, 'table', strtolower($sModelName));
-        $this->CURD->table($sTable);
+        $this->PDODecorator->table($sTable);
     }
 
     public function initModel($sModelName)
     {
-        $this->CURD->resetCondition();
+        $this->PDODecorator->resetCondition();
         $this->setTable($sModelName);
     }
 
     public function find($mWhere=null)
     {
-        $aItem = $this->CURD->limit(1)->querySmarty($mWhere);
+        $aItem = $this->PDODecorator->limit(1)->querySmarty($mWhere);
         return empty($aItem) ? null : new $this->sItemClassName(array_shift($aItem), $this);
     }
 
     public function findCustom($mWhere=null)
     {
-        return $this->CURD->querySmarty($mWhere);
+        return $this->PDODecorator->querySmarty($mWhere);
     }
 
     public function findMulti($mWhere=null)
     {
-        $aItems   = $this->CURD->querySmarty($mWhere);
+        $aItems   = $this->PDODecorator->querySmarty($mWhere);
         $aGroup   = array();
         foreach ($aItems as $aItem) {
             $aGroup[] = new $this->sItemClassName($aItem, $this);
@@ -112,18 +112,21 @@ class Model{
         if (count($aSaveData) == 0) {
             return true;
         }
-        $aColumnInfo = array_map(array($this->CURD, '_addQuote'), array_keys($aSaveData[0]));
+        $aColumnInfo = array_map(array(
+            $this->PDODecorator, '_addQuote'),
+            array_keys($aSaveData[0])
+        );
         //Column
         $sBaseSQL = sprintf('INSERT INTO %s(%s) VALUES',
-            $this->CURD->getRealMapTable(),
-            join(',', $aColumnInfo)
+            $this->PDODecorator->getRealMapTable(),
+            implode(',', $aColumnInfo)
         );
         $iChunkNum    = 0;
         $bChunkSave   = true;
         $sChunkColumn = sprintf('(%s)',
             implode(',', array_pad(array(), count($aColumnInfo), '?'))
         );
-        $this->CURD->begin();
+        $this->PDODecorator->begin();
         while ($aChunkData=array_slice($aSaveData, $iChunkNum * $iChunk, $iChunk))
         {
             $aChunkBind   = array();
@@ -132,14 +135,14 @@ class Model{
                 $aChunkBind = array_merge($aChunkBind, array_values($aCData));
             }
             $sChunkSQL = sprintf('%s%s',$sBaseSQL, implode(',', $aChunkColumn));
-            if(!($bChunkSave=$this->CURD->exec($sChunkSQL, $aChunkBind))){
+            if(!($bChunkSave=$this->PDODecorator->exec($sChunkSQL, $aChunkBind))){
                 goto END;
             }
             $iChunkNum++;
         }
 
         END:
-        $bChunkSave ? $this->CURD->commit() : $this->CURD->rollback();
+        $bChunkSave ? $this->PDODecorator->commit() : $this->PDODecorator->rollback();
         return $bChunkSave;
     }
     public function batchAdd(array $aSaveData=array(), $iChunk = 1000)
@@ -149,21 +152,23 @@ class Model{
 
     public function __get($sVarName)
     {
-        return property_exists($this->CURD, $sVarName) ?  $this->CURD->$sVarName : null;
+        return property_exists($this->PDODecorator, $sVarName) ?
+            $this->PDODecorator->$sVarName :
+            null;
     }
 
     public function __set($sK, $mV)
     {
-        $this->CURD->$sK = $mV;
+        $this->PDODecorator->$sK = $mV;
     }
 
     public function __call($sMethod, $aArgv)
     {
-        if (!method_exists($this->CURD, $sMethod)) {
+        if (!method_exists($this->PDODecorator, $sMethod)) {
             throw new \BadMethodCallException('[Model] : method{'.$sMethod.'} error !!! ');
         }
-        $mResult = call_user_func_array(array($this->CURD, $sMethod), $aArgv);
-        if (is_object($mResult) && $mResult instanceof CURD) {
+        $mResult = call_user_func_array(array($this->PDODecorator, $sMethod), $aArgv);
+        if (is_object($mResult) AND $mResult instanceof PDODecorator) {
             return $this;
         }
         return $mResult;
@@ -174,6 +179,6 @@ class Model{
      **/
     public function __clone()
     {
-        $this->CURD = clone $this->CURD;
+        $this->PDODecorator = clone $this->PDODecorator;
     }
 }

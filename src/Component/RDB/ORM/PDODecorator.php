@@ -18,7 +18,7 @@ use Hummer\Component\Helper\Packer;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class CURD {
+class PDODecorator {
 
     /**
      *  @var PDO Config
@@ -70,14 +70,14 @@ class CURD {
         $aAopCallBack=array()
     ) {
         if (!isset(self::$aInstance[$sDSN])) {
-            $CURD               = new self();
-            $CURD->sDSN         = $sDSN;
-            $CURD->sUsername    = $sUsername;
-            $CURD->sPassword    = $sPassword;
-            $CURD->aOption      = $aOption;
-            $CURD->aAopCallBack = $aAopCallBack;
-            $CURD->Instance     = $CURD->getRealInstance();
-            self::$aInstance[$sDSN] = $CURD;
+            $PDODecorator               = new self();
+            $PDODecorator->sDSN         = $sDSN;
+            $PDODecorator->sUsername    = $sUsername;
+            $PDODecorator->sPassword    = $sPassword;
+            $PDODecorator->aOption      = $aOption;
+            $PDODecorator->aAopCallBack = $aAopCallBack;
+            $PDODecorator->Instance     = $PDODecorator->getRealInstance();
+            self::$aInstance[$sDSN] = $PDODecorator;
         }
         return self::$aInstance[$sDSN];
     }
@@ -94,7 +94,7 @@ class CURD {
             $this->sUsername,
             $this->sPassword,
             $this->aOption
-        ),$this->aAopCallBack);
+        ), $this->aAopCallBack);
     }
 
     /**
@@ -121,7 +121,7 @@ class CURD {
             $aPK = $this->getPrimaryKey(true);
             if (!is_array($mWhere) || count($aPK) != count($mWhere)) {
                 throw new \InvalidArgumentException(sprintf(
-                    '[CURD] : Primary column[%s] Must Be Need !!!',
+                    '[PDODecorator] : Primary column[%s] Must Be Need !!!',
                     $this->getPrimaryKey())
                 );
             }
@@ -150,7 +150,7 @@ class CURD {
 
     public function where($mWhere=null)
     {
-        if (!is_null($mWhere) && $mWhere) {
+        if (!is_null($mWhere) AND $mWhere) {
             $this->aWhere = Helper::TOOP(
                 $this->checkWhereIsPK($mWhere),
                 $this->getPKWhere($mWhere),
@@ -200,8 +200,8 @@ class CURD {
     {
         $sPK     = $this->getPrimaryKey();
         $aSelect = explode(',', $this->sSelect);
-        if (!$this->isPKMulti() && !in_array($sPK, $aSelect) && $this->sSelect !== '*' &&
-            false === strpos($this->sSelect, sprintf('%s.*', $this->getTableAsMap())) &&
+        if (!$this->isPKMulti() AND !in_array($sPK, $aSelect) AND $this->sSelect !== '*' AND
+            false === strpos($this->sSelect, sprintf('%s.*', $this->getTableAsMap())) AND
             false === strpos($this->sSelect, sprintf('%s.%s', $this->getTableAsMap(), $sPK))
         ) {
             foreach ($this->getPrimaryKey(true) as $iK => $sPK) {
@@ -272,13 +272,13 @@ class CURD {
         return $this;
     }
 
-    public function exists($CURD)
+    public function exists($PDODecorator)
     {
-        if (!($CURD instanceof \Hummer\Component\RDB\ORM\Model\Model)) {
-            throw new \InvalidArgumentException('[CURD] : ERROR, Param Must Be CURD OBJ');
+        if (!($PDODecorator instanceof \Hummer\Component\RDB\ORM\Model\Model)) {
+            throw new \InvalidArgumentException('[PDODecorator] : ERROR, Param Must Be PDODecorator OBJ');
         }
         $aArgs = array();
-        $this->aWhere['__exists__'] = $CURD->getQuerySQL($aArgs);
+        $this->aWhere['__exists__'] = $PDODecorator->getQuerySQL($aArgs);
         return $this;
     }
 
@@ -510,7 +510,7 @@ class CURD {
                     }
                 } else if('BETWEEN' == $sOP){
                     if (!is_array($mV) || count($mV) != 2) {
-                        throw new \InvalidArgumentException('[CURD] : Error Params');
+                        throw new \InvalidArgumentException('[PDODecorator] : Error Params');
                     }
                     $aWhereBuild[] = "$sKey BETWEEN ? AND ?";
                     $aArgs[]       = array_shift($mV);
@@ -537,7 +537,9 @@ class CURD {
             $aK = explode('.', $mK);
             return count($aK) === 1 ?
                 self::_addQuote($aK[0]) :
-                implode('.', array_map(array('Hummer\\Component\\RDB\\ORM\\CURD', '_addQuote'), $aK));
+                implode('.', array_map(array(
+                    'Hummer\\Component\\RDB\\ORM\\PDODecorator',
+                    '_addQuote'), $aK));
         }
     }
 
