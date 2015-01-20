@@ -99,22 +99,21 @@ class Factory {
         $aConf = Arr::get( self::$_aModelConf, $sRealModel, array() );
         $sDB   = Helper::TOOP($sDB, $sDB, Arr::get($aConf, 'db', $this->_sDefaultDB));
         $_sTmpModel = sprintf('%s_%s', $sDB, $sRealModel);
-        if (!isset(self::$_aModel[$_sTmpModel])) {
-            $sModelClassName = isset($aConf['model_class']) ?
-                sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']) :
-                self::$_sDefaultModelClass;
 
-            self::$_aModel[$_sTmpModel] = new $sModelClassName(
-                $sModelName,
-                $this->initPDODecorator($sModelName, $sDB),
-                $aConf,
-                $this
-            );
-        }
+        $sModelClassName = isset($aConf['model_class']) ?
+            sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']) :
+            self::$_sDefaultModelClass;
+
+        $Model = new $sModelClassName(
+            $sModelName,
+            $this->initPDODecorator($sModelName, $sDB),
+            $aConf,
+            $this
+        );
         #init Model
-        self::$_aModel[$_sTmpModel]->initModel($sModelName);
+        $Model->initModel($sModelName);
         #Return
-        return self::$_aModel[$_sTmpModel];
+        return $Model;
     }
 
     /**

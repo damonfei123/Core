@@ -43,6 +43,11 @@ class Item implements \ArrayAccess {
         return var_export($this->aData, true);
     }
 
+    public function getData()
+    {
+        return $this->aData;
+    }
+
     public function __set($sK, $mV)
     {
         $this->aNewData[$sK] = $mV;

@@ -99,7 +99,8 @@ class Bootstrap{
             Handle::handle404($E->getMessage());
         }catch(\SmartyException $E){
             #Smarty Exception
-            Handle::handle404($E->getMessage());
+            $this->Context->Log->fatal($E->getMessage());
+            exit(1);
         }catch(\Exception $E){
             #Uncatch Error
             $this->Context->Log->warn($E->getMessage());

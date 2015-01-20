@@ -82,10 +82,18 @@ class Model{
         $this->setTable($sModelName);
     }
 
-    public function find($mWhere=null)
+    /**
+     *  Find One
+     *  @param $mWhere mix(string|array) Where Condition
+     *  @param $bAssoc boolean           Return Obj Or Assoc
+     **/
+    public function find($mWhere=null, $bAssoc=false)
     {
         $aItem = $this->PDODecorator->limit(1)->querySmarty($mWhere);
-        return empty($aItem) ? null : new $this->sItemClassName(array_shift($aItem), $this);
+        return empty($aItem) ? null : (
+            $bAssoc ? array_shift($aItem) :
+            new $this->sItemClassName(array_shift($aItem), $this)
+        );
     }
 
     public function findCustom($mWhere=null)
