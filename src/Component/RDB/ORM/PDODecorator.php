@@ -263,19 +263,27 @@ class PDODecorator {
 
     public function group($sColumn)
     {
-        $this->sGroupBy = sprintf(' GROUP BY %s ' , $sColumn);
+        $this->sGroupBy = sprintf('GROUP BY %s' , $sColumn);
         return $this;
     }
     public function having($sHaving)
     {
-        $this->sHaving = sprintf(' HAVING %s ', $sHaving);
+        $this->sHaving = sprintf('HAVING %s', $sHaving);
+        return $this;
+    }
+
+    public function order($sOrder)
+    {
+        $this->sOrder = sprintf('ORDER BY %s', $sOrder);
         return $this;
     }
 
     public function exists($PDODecorator)
     {
         if (!($PDODecorator instanceof \Hummer\Component\RDB\ORM\Model\Model)) {
-            throw new \InvalidArgumentException('[PDODecorator] : ERROR, Param Must Be PDODecorator OBJ');
+            throw new \InvalidArgumentException(
+                '[PDODecorator] : ERROR, Param Must Be PDODecorator OBJ'
+            );
         }
         $aArgs = array();
         $this->aWhere['__exists__'] = $PDODecorator->getQuerySQL($aArgs);
@@ -399,7 +407,7 @@ class PDODecorator {
 
     public function buildQuerySQL(&$aArgs)
     {
-        return sprintf('SELECT %s FROM %s %s %s WHERE %s %s %s %s',
+        return sprintf('SELECT %s FROM %s %s %s WHERE %s %s %s %s %s',
             $this->sSelect ? $this->sSelect : '*',
             $this->getRealMapTable(),
             $this->sForceIndex,
@@ -407,6 +415,7 @@ class PDODecorator {
             self::buildCondition($this->aWhere, $aArgs),
             $this->sGroupBy,
             $this->sHaving,
+            $this->sOrder,
             $this->sLimit
         );
     }

@@ -33,15 +33,19 @@ class HttpCall{
     public static function callGET(
         $sUrl,
         array $aParam  = array(),
-        array $aHeader = array(),
+        $mHeader       = null,
         array $aOptKV  = array()
     ) {
         $aUrlBlock = parse_url($sUrl);
         $sQuery    = Arr::get($aUrlBlock,'query','');
         parse_str($sQuery, $aQuery);
         $sUrl = self::rebuildUrl($aUrlBlock, $aParam + $aQuery);
-        if ($aHeader) {
-            $aOptKV[CURLOPT_HTTPHEADER] = $aHeader;
+        if ($mHeader) {
+            if (is_array($mHeader)) {
+                $aOptKV[CURLOPT_HTTPHEADER] = http_build_query($mHeader, '&');
+            }else{
+                $aOptKV[CURLOPT_HTTPHEADER] = $mHeader;
+            }
         }
         return self::call($sUrl, $aOptKV);
     }
@@ -52,12 +56,16 @@ class HttpCall{
     public static function callPOST(
         $sUrl,
         array $aParam  = array(),
-        array $aHeader = array(),
+        $mHeader       = null,
         array $aOptKV  = array()
     ) {
         $aOptKV[CURLOPT_POSTFIELDS] = Helper::TOOP($aParam,http_build_query($aParam),'');
         if ($aHeader) {
-            $aOptKV[CURLOPT_HTTPHEADER] = $aHeader;
+            if (is_array($aHeader)) {
+                $aOptKV[CURLOPT_HTTPHEADER] = http_build_query($mHeader, '&');
+            }else{
+                $aOptKV[CURLOPT_HTTPHEADER] = $mHeader;
+            }
         }
         $aOptKV[CURLOPT_POST] = 1;
         return self::call($sUrl, $aOptKV);
