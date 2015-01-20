@@ -58,6 +58,8 @@ class CallBack{
                 is_object($mClassOrObject) ? get_class($mClassOrObject) : $mClassOrObject
             ));
         }
+        #Enable Smarty Tpl
+        C_Web::enableTpl();
 
         #aArgs
         $aArgs = (array)$this->mCallable[2];
@@ -84,7 +86,5 @@ class CallBack{
         if ($bContinue !== false && $sAfter !== null) {
             call_user_func(array($mClassOrObject, $sAfter), $aArgs);
         }
-        #Enable Smarty Tpl
-        C_Web::enableTpl();
     }
 }
