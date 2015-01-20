@@ -121,4 +121,20 @@ class Handle{
             }
         );
     }
+
+    /**
+     *  Handle 404 Page
+     **/
+    public static function handle404($sMessage='')
+    {
+        $CTX = self::CTX();
+        if ($CTX->sRunMode == Bootstrap::S_RUN_HTTP) {
+            $CTX->HttpResponse->setStatus(404);
+            $CTX->HttpResponse->setContent(
+                $CTX->Template->fetch($CTX->Config->get('syspage.404'))
+            );
+            $CTX->HttpResponse->send();
+        }
+        $CTX->Log->fatal($sMessage);
+    }
 }

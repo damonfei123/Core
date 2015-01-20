@@ -96,17 +96,10 @@ class Bootstrap{
             exit(1);
         }catch(RouteErrorException $E){
             #Route Error
-            if ($this->Context->sRunMode == self::S_RUN_HTTP) {
-                $this->Context->HttpResponse->setStatus(404);
-                $this->Context->HttpResponse->setContent(
-                    $this->Context->Template->fetch($this->Context->Config->get('syspage.404'))
-                );
-                $this->Context->HttpResponse->send();
-            }
-            $this->Context->Log->fatal($E->getMessage());
+            Handle::handle404($E->getMessage());
         }catch(\SmartyException $E){
             #Smarty Exception
-            $this->Context->Log->warn($E->getMessage());
+            Handle::handle404($E->getMessage());
         }catch(\Exception $E){
             #Uncatch Error
             $this->Context->Log->warn($E->getMessage());

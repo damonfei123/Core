@@ -15,6 +15,7 @@
 namespace Hummer\Component\Route;
 
 use Hummer\Component\Helper\Arr;
+use Hummer\Bundle\Framework\Controller\C_Web;
 use Hummer\Component\Route\RouteErrorException;
 
 class CallBack{
@@ -29,6 +30,9 @@ class CallBack{
 
     public function call()
     {
+        #Disable Smarty Tpl
+        C_Web::disableTpl();
+
         $mClassOrObject = $this->mCallable[0];
         if (is_string($mClassOrObject)) {
             if (!class_exists($mClassOrObject)) {
@@ -80,5 +84,7 @@ class CallBack{
         if ($bContinue !== false && $sAfter !== null) {
             call_user_func(array($mClassOrObject, $sAfter), $aArgs);
         }
+        #Enable Smarty Tpl
+        C_Web::enableTpl();
     }
 }
