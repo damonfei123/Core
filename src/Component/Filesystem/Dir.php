@@ -14,17 +14,14 @@
 **************************************************************************************/
 namespace Hummer\Component\Filesystem;
 
-class Dir{
+class Dir extends Filesystem{
 
-    public static function makeDir($sDirName, $sPerm=0777)
+    public static function makeDir($sDirName, $sPerm=0777, $bRecursion=true)
     {
-        if (File::Exists($sDirName)) {
-            return true;
+        if (!self::Exists($sDirName)) {
+            return self::createDir($sDirName, $sPerm, $bRecursion);
         }
-        if (@mkdir($sDirName, $sPerm, true)) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     /**
@@ -40,10 +37,11 @@ class Dir{
             $Dir = opendir($sDirName);
             while ($sFileName=readdir($Dir)) {
                 if (self::IsValidFileName($sFileName)) {
-                    if (is_dir($sDirName . '/' . $sFileName) AND $bRecursion) {
-                        self::showList($sDirName . '/'. $sFileName, $bRecursion, $aFile);
+                    $sFilePath = sprintf('%s%s%s', $sDirName, DIRECTORY_SEPARATOR, $sFileName);
+                    if (self::isDir($sFilePath) AND $bRecursion) {
+                        self::showList($sFilePath, $bRecursion, $aFile);
                     }else{
-                        array_push($aFile, $sFileName);
+                        array_push($aFile, $sFilePath);
                     }
                 }
             }
@@ -55,16 +53,7 @@ class Dir{
     /**
      *  Check Dir
      **/
-
     protected static function Check($sDirName){
-        return is_dir($sDirName) AND is_readable($sDirName);
-    }
-
-    /**
-     *  Check Valid FileName
-     **/
-    protected static function IsValidFileName($sFileName)
-    {
-        return $sFileName != '.' AND $sFileName != '..';
+        return self::isDir($sDirName) AND is_readable($sDirName);
     }
 }

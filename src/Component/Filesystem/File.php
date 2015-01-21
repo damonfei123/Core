@@ -14,7 +14,7 @@
 **************************************************************************************/
 namespace Hummer\Component\Filesystem;
 
-class File{
+class File extends Filesystem{
 
     /**
      *  Read File Data
@@ -63,14 +63,6 @@ class File{
             return $aRet;
         }
         return null;
-    }
-
-    /**
-     *  Check If File Exists
-     **/
-    public static function Exists($sFilePath)
-    {
-        return file_exists($sFilePath);
     }
 
     public static function Handle($mValue)
