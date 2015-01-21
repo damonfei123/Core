@@ -45,6 +45,11 @@ class Page {
      **/
     protected $aPageConfig;
 
+    /**
+     *  @var $bAssoc
+     **/
+    protected $bAssoc = false;
+
     public function __construct(
         $iNumPerPage=10,
         $aPageConfig=array(),
@@ -58,12 +63,17 @@ class Page {
         $this->mDefaultRender = $mDefaultRender;
     }
 
+    public function setAssoc($bAssoc=true)
+    {
+        $this->bAssoc = $bAssoc;
+    }
+
     public function getPage($M, &$aList)
     {
         $MM = clone $M;
         return $this->getPageFromCB(
             array($M, 'findCount'),
-            array($MM, 'findMulti'),
+            array($MM, Helper::TOOP($this->bAssoc, 'findCustom', 'findMulti')),
             $aList
         );
     }
