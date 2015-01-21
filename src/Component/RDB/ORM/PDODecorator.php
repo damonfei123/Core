@@ -14,8 +14,8 @@
 **************************************************************************************/
 namespace Hummer\Component\RDB\ORM;
 
-use Hummer\Component\Helper\Packer;
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Helper\Packer;
 use Hummer\Component\Helper\Helper;
 
 class PDODecorator {
@@ -214,6 +214,21 @@ class PDODecorator {
         return $this;
     }
 
+    /**
+     *  Check A Field Is auto_increment
+     **/
+    public function getAutoIncrementField()
+    {
+        $aPK        = $this->getPrimaryKey(true);
+        $aFieldInfo = $this->query(sprintf('DESC %s', $this->sTable));
+        if ($aFieldInfo) foreach($aFieldInfo as $aInfo){
+            if (isset($aInfo['Extra']) AND strtolower($aInfo['Extra']) == 'auto_increment') {
+                return Arr::get($aInfo, 'Field', false);
+            }
+        }
+        return false;
+    }
+
     public function limit($iStart, $iOffset=null)
     {
         $this->sLimit = ($iOffset === null) ?
@@ -296,7 +311,7 @@ class PDODecorator {
         return $STMT->execute($aArgs);
     }
 
-    public function query($sSQL, $aArgs, $iFetchMode=\PDO::FETCH_ASSOC)
+    public function query($sSQL, $aArgs=array(), $iFetchMode=\PDO::FETCH_ASSOC)
     {
         $STMT = $this->Instance->prepare($sSQL);
         $STMT->execute($aArgs);
@@ -339,21 +354,21 @@ class PDODecorator {
         );
     }
 
-    public function save($aSaveData=array())
+    public function save($aSaveData=array(), $bLastInsertId=true)
     {
         if ($aSaveData) {
             $this->data($aSaveData);
         }
-        $aArgs       = array();
-        $sSQLPrepare = $this->buildSaveSQL($aArgs);
-        $STMT        = $this->Instance->prepare($sSQLPrepare);
-        $STMT->execute($aArgs);
-        return $this->Instance->lastInsertId();
+        $aArgs        = array();
+        $sSQLPrepare  = $this->buildSaveSQL($aArgs);
+        $STMT         = $this->Instance->prepare($sSQLPrepare);
+        $bExecute     = $STMT->execute($aArgs);
+        return Helper::TOOP($bLastInsertId, $this->Instance->lastInsertId(), $bExecute);
     }
 
-    public function add($aSaveData=array())
+    public function add($aSaveData=array(), $bLastInsertId=true)
     {
-        return $this->save($aSaveData);
+        return $this->save($aSaveData, $bLastInsertId);
     }
 
     public function findCount($mWhere=null)
