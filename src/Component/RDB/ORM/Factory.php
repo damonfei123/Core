@@ -96,7 +96,7 @@ class Factory {
         $sModelName = str_replace(' ', '|', Helper::TrimInValidURI(trim($sModelName), '  ', ' '));
         $sRealModel = self::getRealModel($sModelName);
         #config
-        $aConf = Arr::get( self::$_aModelConf, $sRealModel, array() );
+        $aConf = Arr::get(self::$_aModelConf, $sRealModel, array());
         $sDB   = Helper::TOOP($sDB, $sDB, Arr::get($aConf, 'db', $this->_sDefaultDB));
         $_sTmpModel = sprintf('%s_%s', $sDB, $sRealModel);
 
@@ -104,16 +104,12 @@ class Factory {
             sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']) :
             self::$_sDefaultModelClass;
 
-        $Model = new $sModelClassName(
+        return new $sModelClassName(
             $sModelName,
             $this->initPDODecorator($sModelName, $sDB),
             $aConf,
             $this
         );
-        #init Model
-        $Model->initModel($sModelName);
-        #Return
-        return $Model;
     }
 
     /**

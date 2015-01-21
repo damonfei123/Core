@@ -60,9 +60,11 @@ class Model{
             '\\',
             Arr::get($aConfig, 'item_class', 'Item')
         );
+
+        #Config
+        $this->aConfig = $aConfig;
         #table
         $this->setTable($sModelName);
-        $this->aConfig = $aConfig;
 
         #primary key
         if (isset($aConfig['pk'])) {
@@ -70,16 +72,16 @@ class Model{
         }
     }
 
-    public function setTable($sModelName)
-    {
-        $sTable = Arr::get($this->aConfig, 'table', strtolower($sModelName));
-        $this->PDODecorator->table($sTable);
-    }
-
     public function initModel($sModelName)
     {
         $this->PDODecorator->resetCondition();
         $this->setTable($sModelName);
+    }
+
+    public function setTable($sModelName)
+    {
+        $sTable = Arr::get($this->aConfig, 'table', strtolower($sModelName));
+        $this->PDODecorator->table($sTable);
     }
 
     /**
