@@ -57,7 +57,7 @@ class SessionFactory{
      **/
     public static function get($sKey)
     {
-        return $_SESSION[$sKey];
+        return Arr::get($_SESSION, $sKey);
     }
 
     public function __destruct()

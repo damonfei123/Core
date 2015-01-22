@@ -65,33 +65,33 @@ class HttpRequest{
         $this->BagREQUEST = new Bag_Param($aREQUEST === null ? $_REQUEST : $aREQUEST);
     }
 
-    public function getF($sFile)
+    public function getF($sFile=null)
     {
-        return Arr::get($this->aFILE, $sFile, null);
+        return $sFile ===  null ? $this->aFILE : Arr::get($this->aFILE, $sFile, null);
     }
 
-    public function getG($mKeyOrKeys)
+    public function getG($mKeyOrKeys=null)
     {
-        return $this->BagGET->get($mKeyOrKeys);
+        return $mKeyOrKeys === null ? $this->BagGET->All() : $this->BagGET->get($mKeyOrKeys);
     }
 
-    public function getSRV($mKey)
+    public function getSRV($mKey=null)
     {
-        return Arr::get($this->aSERVER, $mKey, null);
+        return $mKey === null ? $this->aSERVER : Arr::get($this->aSERVER, $mKey, null);
     }
 
-    public function getP($mKeyOrKeys)
+    public function getP($mKeyOrKeys=null)
     {
-        return $this->BagPOST->get($mKeyOrKeys);
+        return $mKeyOrKeys === null ? $this->BagPOST->All() : $this->BagPOST->get($mKeyOrKeys);
     }
 
-    public function getC($mKeyOrKeys)
+    public function getC($mKeyOrKeys=null)
     {
-        return $this->BagCOOKIE->get($mKeyOrKeys);
+        return $mKeyOrKeys === null ? $this->BagCOOKIE->All() : $this->BagCOOKIE->get($mKeyOrKeys);
     }
-    public function getGP($mKeyOrKeys)
+    public function getGP($mKeyOrKeys=null)
     {
-        return $this->BagREQUEST->get($mKeyOrKeys);
+        return $mKeyOrKeys === null ? $this->BagREQUEST->All() : $this->BagREQUEST->get($mKeyOrKeys);
     }
 
     public function getRequestMethod()

@@ -31,4 +31,9 @@ class Bag_Param extends Bag_Base{
             return Arr::get($this->aData, $mKeyOrKeys, null);
         }
     }
+
+    public function All()
+    {
+        return $this->aData;
+    }
 }
