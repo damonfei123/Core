@@ -114,6 +114,11 @@ class HttpRequest{
         return $this->aSERVER['SERVER_PROTOCOL'];
     }
 
+    public function getScriptName()
+    {
+        return $this->aSERVER['SCRIPT_NAME'];
+    }
+
     public function getHeader($sVar)
     {
         $sKeyName = 'HTTP_'.strtoupper($sVar);

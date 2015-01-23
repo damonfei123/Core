@@ -17,16 +17,5 @@ namespace Hummer\Bundle\Framework\Controller;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class C_Web extends C_Web_TBase{
-
-    public function __destruct()
-    {
-        if (self::$bEnableTpl &&
-            !$this->bCalledDisplay &&
-            !$this->HttpRequest->isAjax() &&
-            $this->HttpRequest->getRequestMethod() === 'GET'
-        ) {
-            $this->display();
-        }
-    }
+class C_Api extends C_Web_TBase{
 }

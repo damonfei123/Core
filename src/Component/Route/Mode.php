@@ -32,7 +32,10 @@ class Mode{
         #Action
         $sURIAction = array_pop($aURLPATH);
         $sURIAction = Helper::TOOP($sURIAction === '', $aDefaultCA[1], $sURIAction);
-        $sAction    = $sActionPre . ucfirst(Helper::ReplaceLineToUpper($sURIAction));
+        $sAction    = $sActionPre !== '' ?
+            sprintf('%s%s', $sActionPre, ucfirst(Helper::ReplaceLineToUpper($sURIAction))) :
+            strtolower(Helper::ReplaceLineToUpper($sURIAction));
+
         if (count($aURLPATH) === 0) {
             array_unshift($aURLPATH, $aDefaultCA[0]);
         }

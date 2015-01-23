@@ -14,6 +14,8 @@
 **************************************************************************************/
 namespace Hummer\Component\Route;
 
+use Hummer\Component\Helper\Helper;
+
 class Route{
 
     /**
@@ -35,18 +37,20 @@ class Route{
     {
         $aCallBack = array();
         if ($aRule AND is_array($aRule)) {
-            foreach ($aRule as $aV) {
-                if (is_array($aV) AND count($aV) >= 4) {
-                    $mV              = array_shift($aV);
-                    $sControllerPath = array_shift($aV);
-                    $sControllerPre  = array_shift($aV);
-                    $sActionPre      = array_shift($aV);
-                    $aCallBack[] = call_user_func_array(
-                        $mV,
-                        array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre)
-                    );
-                }else{
-                    throw new \DomainException('[Route] : ERROR CONFIG');
+            foreach ($aRule as $mK => $aV) {
+                if (preg_match($mK, Helper::TrimEnd($REQ->getScriptName())) OR is_int($mK)) {
+                    if (is_array($aV) AND count($aV) >= 4) {
+                        $mV              = array_shift($aV);
+                        $sControllerPath = array_shift($aV);
+                        $sControllerPre  = array_shift($aV);
+                        $sActionPre      = array_shift($aV);
+                        $aCallBack[] = call_user_func_array(
+                            $mV,
+                            array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre)
+                        );
+                    }else{
+                        throw new \DomainException('[Route] : ERROR CONFIG');
+                    }
                 }
             }
         }else{
