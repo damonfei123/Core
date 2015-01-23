@@ -83,15 +83,4 @@ class C_Web_TBase extends C_Base{
     {
         self::$bEnableTpl = true;
     }
-
-    public function __destruct()
-    {
-        if (self::$bEnableTpl &&
-            !$this->bCalledDisplay &&
-            !$this->HttpRequest->isAjax() &&
-            $this->HttpRequest->getRequestMethod() === 'GET'
-        ) {
-            $this->display();
-        }
-    }
 }
