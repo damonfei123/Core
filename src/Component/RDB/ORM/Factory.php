@@ -104,12 +104,14 @@ class Factory {
             sprintf('%s%s%s', self::$_sAppModelNS, '\\', $aConf['model_class']) :
             self::$_sDefaultModelClass;
 
-        return new $sModelClassName(
+        $Model = new $sModelClassName(
             $sModelName,
             $this->initPDODecorator($sModelName, $sDB),
             $aConf,
             $this
         );
+        $Model->initModel($sModelName);
+        return $Model;
     }
 
     /**
