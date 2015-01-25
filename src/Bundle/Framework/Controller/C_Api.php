@@ -19,10 +19,31 @@ use Hummer\Component\Helper\Helper;
 use Hummer\Component\Context\Context;
 
 class C_Api extends C_Web_TBase{
+
     /**
      *  @var $sRetType
      **/
     protected $sRetType = 'json';
+
+    /**
+     *  @var Key Status
+     **/
+    protected $sKeyStatus = 'status';
+
+    /**
+     *  @var Key sMsg
+     **/
+    protected $sKeySMsg = 'sMsg';
+
+    /**
+     *  @var Key aData
+     **/
+    protected $sKeyAData = 'aData';
+
+    public function __set($sKey, $mV)
+    {
+        $this->$sKey = $mV;
+    }
 
     /**
      *  @var $aData
@@ -37,18 +58,18 @@ class C_Api extends C_Web_TBase{
     public function success($iStatus=0, $sMsg='', $aData=array())
     {
         $this->aData = array(
-            'status' => $iStatus,
-            'sMsg'   => $sMsg,
-            'aData'  => $aData,
+            $this->sKeyStatus => $iStatus,
+            $this->sKeySMsg   => $sMsg,
+            $this->sKeyAData  => $aData,
         );
     }
 
     public function error($iStatus=-1, $sMsg='', $aData=array())
     {
         $this->aData = array(
-            'status' => $iStatus,
-            'sMsg'   => $sMsg,
-            'aData'  => $aData,
+            $this->sKeyStatus => $iStatus,
+            $this->sKeySMsg   => $sMsg,
+            $this->sKeyAData  => $aData,
         );
     }
 
