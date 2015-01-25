@@ -81,6 +81,9 @@ class Model{
     public function setTable($sModelName)
     {
         $sTable = Arr::get($this->aConfig, 'table', strtolower($sModelName));
+        if (false !== ($iPOS = strpos($sModelName, '|'))) {
+            $sTable = sprintf('%s|%s', $sTable, substr($sModelName, $iPOS + 1));
+        }
         $this->PDODecorator->table($sTable);
     }
 
