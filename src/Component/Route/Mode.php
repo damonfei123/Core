@@ -19,6 +19,10 @@ use Hummer\Component\Helper\Helper;
 
 class Mode{
 
+    /**
+     *  Run For Http Page
+     *  Usage module..../controller/action
+     **/
     public static function Http_Page(
         $REQ,
         $RES,
