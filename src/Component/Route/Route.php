@@ -28,7 +28,7 @@ class Route{
     }
 
     /**
-     *  RUN FOR HTTP
+     *  Run For HTTP
      *  @param $REQ     HttpRequest
      *  @param $RES     HttpResponse
      *  @param $aRule   array
@@ -36,21 +36,40 @@ class Route{
     public function generateFromHttp($REQ, $RES, $aRule=array())
     {
         $aCallBack = array();
+        $HitMode   = new HitMode();
         if ($aRule AND is_array($aRule)) {
             foreach ($aRule as $mK => $aV) {
-                if (preg_match($mK, Helper::TrimEnd($REQ->getScriptName())) OR is_int($mK)) {
-                    if (is_array($aV) AND count($aV) >= 4) {
-                        $mV              = array_shift($aV);
-                        $sControllerPath = array_shift($aV);
-                        $sControllerPre  = array_shift($aV);
-                        $sActionPre      = array_shift($aV);
-                        $aCallBack[] = call_user_func_array(
+                $mResult = null;
+                if (!is_array($aV) || count($aV) < 4) {
+                    throw new \DomainException('[Route] : ERROR CONFIG:'.var_export($aV, true));
+                }
+                $mV              = array_shift($aV);
+                $sControllerPath = array_shift($aV);
+                $sControllerPre  = array_shift($aV);
+                $sActionPre      = array_shift($aV);
+
+                $HitMode->setModeStop();
+                if (is_string($mK)) {
+                    if (preg_match($mK, Helper::TrimEnd($REQ->getScriptName()))) {
+                        $mResult = call_user_func_array(
                             $mV,
-                            array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre)
+                            array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre, $HitMode)
                         );
                     }else{
-                        throw new \DomainException('[Route] : ERROR CONFIG');
+                        #No Hit AND Go On
+                        $HitMode->setModeGOON();
                     }
+                }else{
+                    $mResult = call_user_func_array(
+                        $mV,
+                        array($REQ, $RES, $sControllerPath, $sControllerPre, $sActionPre, $HitMode)
+                    );
+                }
+                if ($mResult instanceof CallBack) {
+                    $aCallBack[] = $mResult;
+                }
+                if (!$HitMode->ifNeedGOON()) {
+                    break;
                 }
             }
         }else{

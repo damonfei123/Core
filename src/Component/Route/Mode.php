@@ -25,6 +25,7 @@ class Mode{
         $sControllerPath,
         $sControllerPre,
         $sActionPre,
+        $HitMode,
         array $aDefaultCA = array('main', 'default')
     ) {
         $sURL = Helper::TrimInValidURI(Arr::get(parse_url($REQ->getRequestURI()),'path',''));
@@ -55,8 +56,6 @@ class Mode{
 
         return $CallBack;
     }
-
-
 
     /**
      *  Route mode

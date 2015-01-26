@@ -15,6 +15,7 @@
 namespace Hummer\Component\Http;
 
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Helper\Helper;
 
 class HttpRequest{
 
@@ -47,6 +48,10 @@ class HttpRequest{
      *  @var $BagREQUEST $_REQUEST
      **/
     protected $BagREQUEST;
+     /**
+      *  @var $FORGE_REQUEST_URI
+      **/
+    public static $FORGE_REQUEST_URI = null;
 
 
     function __construct(
@@ -102,6 +107,10 @@ class HttpRequest{
     public function getRequestURI()
     {
         return $this->aSERVER['REQUEST_URI'];
+    }
+    public function getSmartyRequestURI()
+    {
+        return Helper::TOOP(self::$FORGE_REQUEST_URI, self::$FORGE_REQUEST_URI, $this->getRequestURI());
     }
 
     public function getQueryString()

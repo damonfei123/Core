@@ -59,7 +59,7 @@ class C_Web_TBase extends C_Base{
             $sTemplate = sprintf('%s.%s', substr($sTemplate, 1), $sTpl);
         }else{
             $sURL      = Helper::TrimInValidURI(
-                Arr::get(parse_url($REQ->getRequestURI()),'path','')
+                Arr::get(parse_url($REQ->getSmartyRequestURI()),'path','')
             );
             $aURLPATH  = explode('/', strtolower(substr($sURL,1)));
             $sTplFile  = array_pop($aURLPATH);
