@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2015-01-28 添加Validator{regex, mobile, email,express}组件功能, 添加Str Helper类
+2015-01-28 添加Validator{number, regex, mobile, email,express}组件功能, 添加Str Helper类
 
 2015-01-27 添加Validator{boolean, int, string}组件功能
 

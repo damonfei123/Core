@@ -61,6 +61,8 @@ abstract class AValidator {
             'int.int' => '{key} must be int',
             'int.max' => '{key} max is {rule}, send value is {value}',
             'int.min' => '{key} min is {rule}, send value is {value}',
+            //number
+            'number'   => '{key} is not a number',
             //regex
             'regex'   => '{key} is error pattern',
             //mobile

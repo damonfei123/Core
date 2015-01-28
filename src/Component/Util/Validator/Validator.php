@@ -27,6 +27,7 @@ class Validator {
         'boolean' => 'BooleanValidator',
         'qq'      => 'QQValidator',
         'int'     => 'IntValidator',
+        'number'  => 'NumberValidator',
         'require' => 'RequireValidator',
         'string'  => 'StringValidator',
         'enum'    => 'EnumValidator',
