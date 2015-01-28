@@ -13,6 +13,10 @@ Core
 
 更新版本
 
+version: 1.1.5     2015-01-28   修复BUG + Validator功能
+
+version: 1.1.4     2015-01-25
+
 version: 1.1.3     2015-01-23
 
 加入api功能
