@@ -15,9 +15,26 @@
 namespace Hummer\Component\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Helper\Str;
 use Hummer\Component\Helper\Helper;
 
 class StringValidator extends AValidator{
+
+    public function validator()
+    {
+        //判断类型
+        if (!$this->isString()) {
+            return $this->fail('string', array(self::len($this->mValue)));
+        }
+        //判断大小
+        if ($this->max()) {
+            return $this->fail('string.max', array(self::len($this->mValue)));
+        }
+        if ($this->min()) {
+            return $this->fail('string.min', array(self::len($this->mValue)));
+        }
+        return true;
+    }
 
     protected function isString()
     {
@@ -26,27 +43,16 @@ class StringValidator extends AValidator{
     protected function max()
     {
         $this->setMSet(Arr::get($this->aRule, 'max'));
-        return isset($this->aRule['max']) AND $this->aRule['max'] < strlen($this->mValue);
+        return isset($this->aRule['max']) AND $this->aRule['max'] < self::len($this->mValue);
     }
     protected function min()
     {
         $this->setMSet(Arr::get($this->aRule, 'min'));
-        return isset($this->aRule['min']) AND $this->aRule['min'] > strlen($this->mValue);
+        return isset($this->aRule['min']) AND $this->aRule['min'] > self::len($this->mValue);
     }
 
-    public function validator()
+    protected function len($mValue='', $sCharset='utf8')
     {
-        //判断类型
-        if (!$this->isString()) {
-            return $this->fail('string', array(strlen($this->mValue)));
-        }
-        //判断大小
-        if ($this->max()) {
-            return $this->fail('string.max', array(strlen($this->mValue)));
-        }
-        if ($this->min()) {
-            return $this->fail('string.min', array(strlen($this->mValue)));
-        }
-        return true;
+        return Str::mblen($mValue, Arr::get($this->aRule, 'charset', $sCharset));
     }
 }
