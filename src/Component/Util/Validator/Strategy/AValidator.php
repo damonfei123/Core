@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Validator\Strategy;
+namespace Hummer\Component\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
@@ -45,16 +45,24 @@ abstract class AValidator {
     {
         $aMessage = array(
             'require' => '{key} is required',
+            //enum
+            'enum'    => '{key} value is not range',
             //boolean
             'boolean' => '{key} must be boolean',
             //string
             'string'  => '{key} must be string',
-            'string.max'  => '{key} max len is {set}, now is {value}',
-            'string.min'  => '{key} min len is {set}, now is {value}',
+            'string.max'  => '{key} max len is {rule}, now is {value}',
+            'string.min'  => '{key} min len is {rule}, now is {value}',
             //int
             'int.int' => '{key} must be int',
-            'int.max' => '{key} max is {set}, send value is {value}',
-            'int.min' => '{key} min is {set}, send value is {value}',
+            'int.max' => '{key} max is {rule}, send value is {value}',
+            'int.min' => '{key} min is {rule}, send value is {value}',
+            //regex
+            'regex'   => '{key} is error pattern',
+            //mobile
+            'mobile'  => '{key} is not a mobile',
+            //email
+            'email'   => '{key} : {value} is not a email',
         );
         $iPosKeyRuleName = false !== ($iPos = strpos($sKey, '.')) ? $iPos+1 : 0;
         $sMessage = Arr::get(
@@ -64,7 +72,7 @@ abstract class AValidator {
         );
         $mValue = $aParam ? array_shift($aParam) : $this->mValue;
         return str_replace(
-            array('{key}','{set}', '{value}'),
+            array('{key}','{rule}', '{value}'),
             array($this->sKey, $this->mSet, $mValue),
             $sMessage
         );
@@ -86,14 +94,19 @@ abstract class AValidator {
         $this->aMsg   = $aMsg;
     }
 
-    public static function getInstance($sKey, $mValue, array $aRule = array(), array $aMsg = array())
-    {
-        $Instance = Arr::get(self::$Instance, $sKey, null);
+    public static function getInstance(
+        $sValidator,
+        $sKey,
+        $mValue,
+        array $aRule = array(),
+        array $aMsg = array()
+    ) {
+        $Instance = Arr::get(self::$Instance, $sValidator, null);
         if (null === $Instance) {
-            self::$Instance[$sKey] = new static();
+            self::$Instance[$sValidator] = new static();
         }
-        self::$Instance[$sKey]->init($sKey, $mValue, $aRule, $aMsg);
-        return self::$Instance[$sKey];
+        self::$Instance[$sValidator]->init($sKey, $mValue, $aRule, $aMsg);
+        return self::$Instance[$sValidator];
     }
 
     public function fail($sKey, $aParam=array())

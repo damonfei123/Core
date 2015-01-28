@@ -12,41 +12,16 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Validator\Strategy;
+namespace Hummer\Component\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class StringValidator extends AValidator{
-
-    protected function isString()
-    {
-        return is_string($this->mValue);
-    }
-    protected function max()
-    {
-        $this->setMSet(Arr::get($this->aRule, 'max'));
-        return isset($this->aRule['max']) AND $this->aRule['max'] >= strlen($this->mValue);
-    }
-    protected function min()
-    {
-        $this->setMSet(Arr::get($this->aRule, 'min'));
-        return isset($this->aRule['min']) AND $this->aRule['min'] <= strlen($this->mValue);
-    }
+class RegexValidator extends AValidator{
 
     public function validator()
     {
-        //判断类型
-        if (!$this->isString()) {
-            return $this->fail('string', array(strlen($this->mValue)));
-        }
-        //判断大小
-        if (!$this->max()) {
-            return $this->fail('string.max', array(strlen($this->mValue)));
-        }
-        if (!$this->min()) {
-            return $this->fail('string.min', array(strlen($this->mValue)));
-        }
-        return true;
+        $sPattern = array_shift($this->aRule);
+        return preg_match($sPattern, $this->mValue) ? true : $this->fail('regex');
     }
 }

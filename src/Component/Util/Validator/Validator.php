@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Validator;
+namespace Hummer\Component\Util\Validator;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Suger;
@@ -28,6 +28,10 @@ class Validator {
         'int'     => 'IntValidator',
         'require' => 'RequireValidator',
         'string'  => 'StringValidator',
+        'enum'    => 'EnumValidator',
+        'regex'   => 'RegexValidator',
+        'mobile'  => 'MobileValidator',
+        'email'   => 'EmailValidator',
     ];
 
     /**
@@ -124,7 +128,7 @@ class Validator {
         }
         return Suger::createObjSingle(
             __NAMESPACE__ . '\Strategy',
-            array('@'.ucfirst($sBuiltInValidators), $sKey, $mValue, $aRule, $aMsg), ''
+            array('@'.ucfirst($sBuiltInValidators), $sValidator, $sKey, $mValue, $aRule, $aMsg), ''
         );
     }
 }
