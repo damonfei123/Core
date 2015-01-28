@@ -22,7 +22,7 @@ class EmailValidator extends AValidator{
     public function validator()
     {
         array_push($this->aRule, '/^[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+(?:\.[a-zA-Z0-9!#$%&\'*+\\/=?^_`{|}~-]+)*@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9-]*[a-zA-Z0-9])?$/');
-        $Regex = EnumValidator::getInstance(
+        $Regex = RegexValidator::getInstance(
             'regex',
             $this->sKey,
             $this->mValue,

@@ -49,6 +49,8 @@ abstract class AValidator {
             'enum'    => '{key} value is not range',
             //boolean
             'boolean' => '{key} must be boolean',
+            //qq
+            'qq'      => '{key} is not a qq',
             //express
             'express' => '{key} is not valid',
             //string

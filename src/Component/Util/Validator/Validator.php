@@ -25,6 +25,7 @@ class Validator {
      */
     public static $builtInValidators = [
         'boolean' => 'BooleanValidator',
+        'qq'      => 'QQValidator',
         'int'     => 'IntValidator',
         'require' => 'RequireValidator',
         'string'  => 'StringValidator',

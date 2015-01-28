@@ -17,11 +17,11 @@ namespace Hummer\Component\Util\Validator\Strategy;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class MobileValidator extends AValidator{
+class QQValidator extends AValidator{
 
     public function validator()
     {
-        array_push($this->aRule, '#^1\d{10}$#');
+        array_push($this->aRule, '#^\d{4,12}$#');
         $Regex = RegexValidator::getInstance(
             'regex',
             $this->sKey,
@@ -29,6 +29,6 @@ class MobileValidator extends AValidator{
             $this->aRule,
             $this->aMsg
         );
-        return true === $Regex->validator() ? true : $this->fail('mobile');
+        return true === $Regex->validator() ? true : $this->fail('qq');
     }
 }
