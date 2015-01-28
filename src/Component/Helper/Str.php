@@ -20,4 +20,34 @@ class Str{
     {
         return mb_strlen($sStr, $sCharset);
     }
+
+    /**
+     *  Substr
+     **/
+    public static function sub($str, $length = 0, $sAppend = '...', $sCharset='utf8')
+    {
+        $str = trim($str);
+        $strlength = strlen($str);
+        if ($length == 0 || $length >= $strlength) {
+            return $str;
+        } elseif ($length < 0) {
+            $length = $strlength + $length;
+            if ($length < 0) {
+                $length = $strlength;
+            }
+        }
+
+        if (function_exists('mb_substr')) {
+            $newstr = mb_substr($str, 0, $length, $sCharset);
+        } elseif (function_exists('iconv_substr')) {
+            $newstr = iconv_substr($str, 0, $length, $sCharset);
+        } else {
+            $newstr = substr($str, 0, $length);
+        }
+
+        if ($sAppend && $str != $newstr) {
+            $newstr .= $sAppend;
+        }
+        return $newstr;
+    }
 }
