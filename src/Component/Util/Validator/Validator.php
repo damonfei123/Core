@@ -32,6 +32,7 @@ class Validator {
         'regex'   => 'RegexValidator',
         'mobile'  => 'MobileValidator',
         'email'   => 'EmailValidator',
+        'express' => 'ExpressValidator',
     ];
 
     /**
