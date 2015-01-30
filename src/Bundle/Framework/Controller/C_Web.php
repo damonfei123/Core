@@ -14,9 +14,6 @@
 **************************************************************************************/
 namespace Hummer\Bundle\Framework\Controller;
 
-use Hummer\Component\Helper\Arr;
-use Hummer\Component\Helper\Helper;
-
 class C_Web extends C_Web_TBase{
 
     public function __destruct()

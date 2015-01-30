@@ -14,8 +14,6 @@
 **************************************************************************************/
 namespace Hummer\Bundle\Framework\Controller;
 
-use Hummer\Component\Helper\Arr;
-use Hummer\Component\Helper\Helper;
 use Hummer\Component\Context\Context;
 
 class C_Api extends C_Web_TBase{

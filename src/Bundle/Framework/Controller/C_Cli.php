@@ -14,7 +14,6 @@
 **************************************************************************************/
 namespace Hummer\Bundle\Framework\Controller;
 
-use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
 class C_Cli extends C_Base{
