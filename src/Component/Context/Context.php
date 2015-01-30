@@ -17,7 +17,18 @@ namespace Hummer\Component\Context;
 use Hummer\Component\Configure\Configure;
 
 /**
- *  上下文
+ *  Context For Framework
+ *  @property sEnv          String
+ *  @property sRunMode      Run Mode
+ *  @property Arr           Framework Arr Container
+ *  @property aArgv         Params When Run With Cli
+ *  @property sControllerName Called Controller
+ *  @property sActionName   Called Action
+ *  @property Config        \Hummer\Component\Configure\Configure
+ *  @property Route         \Hummer\Component\Route\Route
+ *  @property Template      \Hummer\Component\Template\TemplateAdaptor
+ *  @property HttpRequest   \Hummer\Component\Http\HttpRequest
+ *  @property HttpResponse  \Hummer\Component\Http\HttpResponse
  **/
 class Context {
 

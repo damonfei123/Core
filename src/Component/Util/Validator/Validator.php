@@ -57,7 +57,7 @@ class Validator {
         array $aRule = array(),
         array $aMsg  = array()
     ) {
-        $this->rule($aRule);
+        $this->setRule($aRule);
         $this->setData($aData);
         $this->setMsg($aMsg);
     }

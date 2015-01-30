@@ -15,12 +15,26 @@
 namespace Hummer\Component\Route;
 
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Context\Context;
 use Hummer\Bundle\Framework\Controller\C_Web;
 use Hummer\Component\Route\RouteErrorException;
 
 class CallBack{
 
+    /**
+     *  @var Context \Hummer\Component\Context\Context
+     **/
+    protected $Context;
+
+    /**
+     *  @var mCallable
+     **/
     protected $mCallable;
+
+    public function __construct()
+    {
+        $this->Context = Context::getInst();
+    }
 
     public function setCBObject($sControllerPath, $sAction, $aArgs=array())
     {
@@ -36,10 +50,15 @@ class CallBack{
         $mClassOrObject = $this->mCallable[0];
         if (is_string($mClassOrObject)) {
             if (!class_exists($mClassOrObject)) {
-                throw new RouteErrorException("[class] : $mClassOrObject does not exsits");
+                throw new RouteErrorException(
+                    sprintf('[class] : %s does not exsits', $mClassOrObject)
+                );
             }
             $Ref = new \ReflectionClass($mClassOrObject);
             $this->mCallable[0] = $mClassOrObject = $Ref->newInstanceArgs();
+            $sClassOrObjectName = is_object($mClassOrObject) ?
+                get_class($mClassOrObject) :
+                $mClassOrObject;
         }else{
             throw new \DomainException('[CallBack] : ERROR');
         }
@@ -55,11 +74,17 @@ class CallBack{
         if (!isset($aCallableMethod[$sMethod])) {
             throw new RouteErrorException(sprintf('[ROUTE] : There is no method %s in class %s',
                 $sMethod,
-                is_object($mClassOrObject) ? get_class($mClassOrObject) : $mClassOrObject
+                $sClassOrObjectName
             ));
         }
         #Enable Smarty Tpl
         C_Web::enableTpl();
+
+        #register
+        $this->Context->registerMulti(array(
+            'sControllerName' => $sClassOrObjectName,
+            'sActionName'     => $this->mCallable[1],
+        ));
 
         #aArgs
         $aArgs = (array)$this->mCallable[2];
