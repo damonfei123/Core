@@ -65,7 +65,7 @@ class Validator {
     /**
      *  Register Rule Data
      **/
-    public function rule($aRule=array())
+    public function setRule($aRule=array())
     {
         $this->aRule = $aRule;
     }
