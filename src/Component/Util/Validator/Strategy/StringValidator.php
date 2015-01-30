@@ -18,7 +18,7 @@ use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Str;
 use Hummer\Component\Helper\Helper;
 
-class StringValidator extends AValidator{
+class StringValidator extends AbstractValidator{
 
     public function validator()
     {

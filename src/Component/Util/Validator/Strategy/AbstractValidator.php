@@ -17,7 +17,7 @@ namespace Hummer\Component\Util\Validator\Strategy;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-abstract class AValidator {
+abstract class AbstractValidator {
 
     /**
      *  @var $Instance

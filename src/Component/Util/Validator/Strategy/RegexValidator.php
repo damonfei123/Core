@@ -17,7 +17,7 @@ namespace Hummer\Component\Util\Validator\Strategy;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class RegexValidator extends AValidator{
+class RegexValidator extends AbstractValidator{
 
     public function validator()
     {

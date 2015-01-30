@@ -17,7 +17,7 @@ namespace Hummer\Component\Util\Validator\Strategy;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class ExpressValidator extends AValidator{
+class ExpressValidator extends AbstractValidator{
 
     public function validator()
     {
