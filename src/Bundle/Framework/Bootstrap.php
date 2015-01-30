@@ -157,7 +157,9 @@ class Bootstrap{
     {
         #End Log
         $this->Context->Log->info(sprintf('RUN END: Time: %s, Mem: %s, Peak Mem: %s',
-            Time::humanTime(round(microtime(true)-$this->Context->Arr[self::F_B_RUN_START], 6)*1000),
+            Time::humanTime(
+                round(microtime(true) - $this->Context->Arr[self::F_B_RUN_START], 6)*1000
+            ),
             Helper::Mem(true),
             Helper::Mem(false)
         ));

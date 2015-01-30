@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-01-30 Context Register 控制器(Controller)和方法(Action)
+
 2015-01-28 添加Validator{number, regex, mobile, email,express}组件功能, 添加Str Helper类,日志形式添加null无动作形式
 
 2015-01-27 添加Validator{boolean, int, string}组件功能
