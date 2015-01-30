@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Page;
+namespace Hummer\Util\Page;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
@@ -54,7 +54,7 @@ class Page {
         $iNumPerPage=10,
         $aPageConfig=array(),
         $sPageStyle=null,
-        $mDefaultRender = array('Hummer\\Component\\Util\\Page\\Page', 'defaultRender')
+        $mDefaultRender = array('Hummer\\Util\\Page\\Page', 'defaultRender')
     ) {
         $this->HttpRequest    = Context::getInst()->HttpRequest;
         $this->sPageStyle     = $sPageStyle;

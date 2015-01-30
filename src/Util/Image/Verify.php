@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Image;
+namespace Hummer\Util\Image;
 
 use Hummer\Component\Helper\Helper;
 

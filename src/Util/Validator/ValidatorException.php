@@ -1,5 +1,5 @@
 <?php
-namespace Hummer\Component\Util\Context;
+namespace Hummer\Util\Context;
 
 class ValidatorException extends \Exception{
 

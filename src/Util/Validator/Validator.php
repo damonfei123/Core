@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Validator;
+namespace Hummer\Util\Validator;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Suger;

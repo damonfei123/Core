@@ -12,16 +12,23 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Validator\Strategy;
+namespace Hummer\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class RequireValidator extends AbstractValidator{
+class QQValidator extends AbstractValidator{
 
     public function validator()
     {
-        return $this->mValue || $this->mValue === 0 || $this->mValue === '0' ?
-            true : $this->fail('require');
+        array_push($this->aRule, '#^\d{4,12}$#');
+        $Regex = RegexValidator::getInstance(
+            'regex',
+            $this->sKey,
+            $this->mValue,
+            $this->aRule,
+            $this->aMsg
+        );
+        return true === $Regex->validator() ? true : $this->fail('qq');
     }
 }

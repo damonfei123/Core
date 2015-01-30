@@ -12,15 +12,16 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Validator\Strategy;
+namespace Hummer\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class EnumValidator extends AbstractValidator{
+class RequireValidator extends AbstractValidator{
 
     public function validator()
     {
-        return in_array($this->mValue, array_shift($this->aRule)) ? true : $this->fail('enum');
+        return $this->mValue || $this->mValue === 0 || $this->mValue === '0' ?
+            true : $this->fail('require');
     }
 }

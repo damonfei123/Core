@@ -12,10 +12,10 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\File;
+namespace Hummer\Util\File;
 
-use Hummer\Component\Filesystem\File;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\Filesystem\File;
 
 class Download{
 

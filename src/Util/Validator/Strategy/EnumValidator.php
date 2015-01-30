@@ -12,15 +12,15 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\Validator\Strategy;
+namespace Hummer\Util\Validator\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class BooleanValidator extends AbstractValidator{
+class EnumValidator extends AbstractValidator{
 
     public function validator()
     {
-        return is_bool($this->mValue) ? true : $this->fail('boolean');
+        return in_array($this->mValue, array_shift($this->aRule)) ? true : $this->fail('enum');
     }
 }

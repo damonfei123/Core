@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Util\File;
+namespace Hummer\Util\File;
 
 use Hummer\Component\Context\Context;
 use Hummer\Component\Helper\Arr;
@@ -44,7 +44,7 @@ class FileUpload{
         $sFile,
         $sSavePath,
         $aConfig = array(),
-        $aSaveFileName = array('\\Hummer\\Component\\Util\\File\\FileUpload', 'getFileName')
+        $aSaveFileName = array('\\Hummer\\Util\\File\\FileUpload', 'getFileName')
     ) {
         $this->_REQ           = Context::getInst()->HttpRequest;
         $this->_sSavePath     = Helper::TrimEnd($sSavePath,'/', 'r');
