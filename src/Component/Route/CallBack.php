@@ -99,15 +99,18 @@ class CallBack{
         $sAfter  = Arr::get($aCallableMethod, $sAfter);
 
         $bContinue = true;
+        #Call Before
         if ($sBefore !== null) {
             $bContinue = call_user_func(array($mClassOrObject, $sBefore), $aArgs);
         }
+        #Call Action
         if ($bContinue !== false) {
             $bContinue = call_user_func(array(
                 $this->mCallable[0],
                 $this->mCallable[1]
             ), $aArgs);
         }
+        #Call After
         if ($bContinue !== false && $sAfter !== null) {
             call_user_func(array($mClassOrObject, $sAfter), $aArgs);
         }
