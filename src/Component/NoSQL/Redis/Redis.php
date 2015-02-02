@@ -35,11 +35,7 @@ class Redis{
     protected $aConfig;
 
 
-    function __construct(
-        array $aConfig = array(),
-        $bEvent = true
-    ) {
-        Event_Register::register_All($bEvent);
+    function __construct( array $aConfig = array()) {
         $this->aConfig  = $aConfig;
     }
 

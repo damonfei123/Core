@@ -30,7 +30,6 @@ class Memcached{
 
     public function __construct(array $aConfig = array())
     {
-        Event_Register::register_All($bEvent);
         $this->aConfig = $aConfig;
     }
 

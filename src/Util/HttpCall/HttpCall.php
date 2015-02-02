@@ -75,9 +75,8 @@ class HttpCall{
     /**
      *  CURL Call
      **/
-    public static function call($sUrl, array $aHeaderAndData=array(), $bEvent=true)
+    public static function call($sUrl, array $aHeaderAndData=array())
     {
-        Event_Register::register_All($bEvent);
         $CURL = self::initCURL();
         #URL
         $aHeaderAndData[CURLOPT_URL] = $sUrl;
