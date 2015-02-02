@@ -16,6 +16,7 @@ namespace Hummer\Util\HttpCall;
 
 use Hummer\Component\Event\Event;
 use Hummer\Component\Helper\Arr;
+use Hummer\Component\Helper\Helper;
 
 class HttpCall{
 
@@ -60,7 +61,7 @@ class HttpCall{
         array $aOptKV  = array()
     ) {
         $aOptKV[CURLOPT_POSTFIELDS] = Helper::TOOP($aParam,http_build_query($aParam),'');
-        if ($aHeader) {
+        if ($mHeader) {
             if (is_array($aHeader)) {
                 $aOptKV[CURLOPT_HTTPHEADER] = http_build_query($mHeader, '&');
             }else{
