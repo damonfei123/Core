@@ -20,9 +20,20 @@ class Event{
 
     protected static $aEventCBMap = array();
 
-    public static function register($sEventName, $mCB)
+    /**
+     *  @var $sEventName Register EventName
+     *  @var $mCB        Register Event Callable
+     *  @var $bReplace   If Replace
+     **/
+    public static function register($sEventName, $mCB, $bReplace=true)
     {
-        self::$aEventCBMap[$sEventName][] = $mCB;
+        if ($bReplace) {
+            if (!isset(self::$aEventCBMap[$sEventName])) {
+                self::$aEventCBMap[$sEventName][] = $mCB;
+            }
+        }else{
+            self::$aEventCBMap[$sEventName][] = $mCB;
+        }
     }
 
     public static function call($sEventName)
