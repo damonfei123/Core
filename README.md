@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-02-02 修复HttpCall回调函数的BUG(多次调用，前面的回调将影响后期http回调)
+
 2015-01-30 Context Register 控制器(Controller)和方法(Action),修改Component/Util目录位置
 
 2015-01-28 添加Validator{number, regex, mobile, email,express}组件功能, 添加Str Helper类,日志形式添加null无动作形式
