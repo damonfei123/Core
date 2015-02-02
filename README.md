@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2015-02-02 修复HttpCall回调函数的BUG(多次调用，前面的回调将影响后期http回调)
+2015-02-02 修复HttpCall回调函数的BUG(多次调用，前面的回调将影响后期http回调),将Event回调放到App里
 
 2015-01-30 Context Register 控制器(Controller)和方法(Action),修改Component/Util目录位置
 
