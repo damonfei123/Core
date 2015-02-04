@@ -82,8 +82,8 @@ class CallBack{
 
         #register
         $this->Context->registerMulti(array(
-            'sControllerName' => $sClassOrObjectName,
-            'sActionName'     => $this->mCallable[1],
+            '_sControllerName' => $sClassOrObjectName,
+            '_sActionName'     => $this->mCallable[1],
         ));
 
         #aArgs

@@ -33,7 +33,14 @@ class Item implements \ArrayAccess {
      **/
     protected $aNewData;
 
-    public function __construct($aData = array(), $Model) {
+    /**
+     *  @param $aData
+     *  @param $Model \\Hummer\\Component\\RDB\\Model\\Model
+     **/
+    public function __construct(
+        array $aData = array(),
+        $Model
+    ){
         $this->aData = $aData;
         $this->Model = $Model;
     }

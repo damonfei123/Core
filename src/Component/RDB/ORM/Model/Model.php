@@ -98,11 +98,17 @@ class Model{
         return empty($aItem) ? null :  new $this->sItemClassName(array_shift($aItem), $this);
     }
 
+    /**
+     *  Find Multi By Return Array
+     **/
     public function findCustom($mWhere=null)
     {
         return $this->PDODecorator->querySmarty($mWhere);
     }
 
+    /**
+     *  Find Multi By Return Items
+     **/
     public function findMulti($mWhere=null)
     {
         $aItems   = $this->PDODecorator->querySmarty($mWhere);

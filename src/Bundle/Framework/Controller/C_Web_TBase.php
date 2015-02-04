@@ -25,10 +25,10 @@ class C_Web_TBase extends C_Base{
         $this->HttpResponse = $this->Context->HttpResponse;
     }
 
-    public function display($sTemplate='')
+    public function display($sTemplate=true)
     {
         $this->bCalledDisplay = true;
-        if (!is_null($sTemplate)) {
+        if ($sTemplate) {
             $this->template->display(
                 $this->getTplPath($this->HttpRequest, $sTemplate,$this->sTpl)
             );
@@ -38,7 +38,7 @@ class C_Web_TBase extends C_Base{
     public function fetch($sTemplate='')
     {
         $sContent = '';
-        if ($sTemplate) {
+        if ($sTemplate OR $sTemplate === '') {
             $sContent = $this->template->fetch(
                 $this->getTplPath($this->HttpRequest, $sTemplate,  $this->sTpl)
             );
@@ -64,7 +64,7 @@ class C_Web_TBase extends C_Base{
             $aURLPATH  = explode('/', strtolower(substr($sURL,1)));
             $sTplFile  = array_pop($aURLPATH);
             $sTplFile  = Helper::TOOP(
-                $sTemplate,
+                $sTemplate AND is_string($sTemplate),
                 $sTemplate,
                 Helper::TOOP($sTplFile == '', 'default' , $sTplFile)
             );
