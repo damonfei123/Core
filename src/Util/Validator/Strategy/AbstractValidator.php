@@ -41,6 +41,9 @@ abstract class AbstractValidator {
 
     private function __construct() {}
 
+    /**
+     *  Return Default Message
+     **/
     public function retMessage($sKey, array $aParam = array())
     {
         $aMessage = array(
@@ -127,7 +130,7 @@ abstract class AbstractValidator {
     }
 
     /**
-     *  Validate Must Be !!!
+     *  Validator Must Be !!!
      **/
     abstract function validator();
 }

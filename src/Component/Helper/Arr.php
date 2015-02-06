@@ -39,6 +39,14 @@ class Arr{
         return $aRetArr;
     }
 
+    public static function changeValue(array $aArr, $sKey)
+    {
+        $aRetArr = array();
+        foreach ($aArr as $Arr) {
+            $aRetArr[] = $Arr[$sKey];
+        }
+        return $aRetArr;
+    }
     /**
      *  Get Array Data By Smarty Way
      *  getBySmarty(array('name' => array('first' => 'zhang')), 'name.first');
