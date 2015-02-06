@@ -51,6 +51,10 @@ abstract class AbstractValidator {
             'boolean' => '{key} must be boolean',
             //qq
             'qq'      => '{key} is not a qq',
+            //url
+            'url'     => '{key} is not a valid url',
+            //ip
+            'ip'      => '{key} is not a valid ip',
             //express
             'express' => '{key} is not valid',
             //string
@@ -62,7 +66,9 @@ abstract class AbstractValidator {
             'int.max' => '{key} max is {rule}, send value is {value}',
             'int.min' => '{key} min is {rule}, send value is {value}',
             //number
-            'number'   => '{key} is not a number',
+            'number'  => '{key} is not a number',
+            //float
+            'float'   => '{key} is not a float',
             //regex
             'regex'   => '{key} is error pattern',
             //mobile

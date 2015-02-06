@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-02-07 强化validator组件功能，加入ip,url等validator
+
 2015-02-04 display模板时控制，display()将自动智能加载模板, display(''|null)将不加载模板
 
 2015-02-02 修复HttpCall回调函数的BUG(多次调用，前面的回调将影响后期http回调),将Event回调放到App里
