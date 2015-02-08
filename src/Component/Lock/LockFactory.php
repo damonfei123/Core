@@ -25,7 +25,12 @@ class LockFactory {
 
     public function __construct()
     {
-        $this->Instance = Suger::createObjSingle(__NAMESPACE__, func_get_args(), '', 'Strategy');
+        $this->Instance = Suger::createObjSingle(
+            sprintf('%s\%s', __NAMESPACE__, 'Strategy'),
+            func_get_args(),
+            '',
+            'Lock'
+        );
     }
 
     public function __call($sMethod, $aArgs)

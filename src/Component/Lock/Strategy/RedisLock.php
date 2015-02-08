@@ -12,12 +12,12 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Lock;
+namespace Hummer\Component\Lock\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Context\Context;
 
-class CacheStrategy implements IStrategy{
+class RedisLock implements ILock {
 
     /**
      *  @var $Instance
@@ -27,7 +27,7 @@ class CacheStrategy implements IStrategy{
     /**
      *  @var $Cache
      **/
-    private $Cache;
+    private $Redis;
 
     /**
      *  @var $sKey
@@ -42,15 +42,15 @@ class CacheStrategy implements IStrategy{
     /**
      *  Single Mode
      **/
-    public static function getInstance($Cache){
+    public static function getInstance($Redis){
         if (null === self::$Instance) {
-            self::$Instance = new self($Cache);
+            self::$Instance = new self($Redis);
         }
         return self::$Instance;
     }
 
-    private function __construct($Cache){
-        $this->Cache = $Cache;
+    private function __construct($Redis){
+        $this->Redis = $Redis;
     }
 
     public function setKey($sKey=null)
@@ -65,17 +65,18 @@ class CacheStrategy implements IStrategy{
 
     public function lock($iExpire = 86400)
     {
-        return $this->Cache->store($this->getKey(), 1, $iExpire);
+        return $this->Redis->set($this->getKey(), 1) &&
+            $this->Redis->expire($this->getKey(), $iExpire);
     }
 
     public function locked()
     {
-        return (boolean)$this->Cache->fetch($this->getKey());
+        return (boolean)$this->Redis->get($this->getKey());
     }
 
     public function unlock()
     {
-        return $this->Cache->delete($this->getKey());
+        return $this->Redis->delete($this->getKey());
     }
 
     /**

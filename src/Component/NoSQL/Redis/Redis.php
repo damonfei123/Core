@@ -46,7 +46,7 @@ class Redis{
             call_user_func_array(
                 array(
                     $this->Redis,
-                    Helper::TOOP(isset($this->aConfig['pconnect']),'pconnect','pconnect')
+                    Helper::TOOP(isset($this->aConfig['pconnect']),'pconnect','connect')
                 ),
                 $this->aConfig['server']
             );
@@ -59,5 +59,6 @@ class Redis{
         Event::call(Event_Register::E_ALL_BEFORE, $sMethod, $aArgs);
         $mResult = call_user_func_array(array($this->getInstance(),$sMethod), $aArgs);
         Event::call(Event_Register::E_ALL_AFTER, $mResult, $sMethod, $aArgs);
+        return $mResult;
     }
 }

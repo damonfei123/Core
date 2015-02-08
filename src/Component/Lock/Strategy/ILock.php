@@ -12,9 +12,9 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Lock;
+namespace Hummer\Component\Lock\Strategy;
 
-interface IStrategy{
+interface ILock {
 
     public function setKey($sKey);
 
