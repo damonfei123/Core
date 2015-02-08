@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-02-08 加入Lock组件功能,默认使用Cache模式
+
 2015-02-07 强化validator组件功能，加入ip,url等validator
 
 2015-02-04 display模板时控制，display()将自动智能加载模板, display(''|null)将不加载模板
