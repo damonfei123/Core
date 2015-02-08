@@ -35,6 +35,11 @@ class CacheStrategy implements IStrategy{
     private $sKey;
 
     /**
+     *  @var $_sPrivatePreLockKey
+     **/
+    private $_sPrivatePreLockKey = '@(L*&O^(C*!!K*()))';
+
+    /**
      *  Single Mode
      **/
     public static function getInstance($Cache){
@@ -80,6 +85,10 @@ class CacheStrategy implements IStrategy{
     private function getDefaultLockKey()
     {
         $Context = Context::getInst();
-        return md5(sprintf('%s%s', $Context->_sControllerName, $Context->_sActionName));
+        return md5(sprintf('%s%s%s',
+            $this->_sPrivatePreLockKey,
+            $Context->_sControllerName,
+            $Context->_sActionName
+        ));
     }
 }
