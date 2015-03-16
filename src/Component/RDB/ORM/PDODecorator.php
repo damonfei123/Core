@@ -319,6 +319,33 @@ class PDODecorator {
         return $STMT->fetchAll();
     }
 
+    /**
+     *  set Field increase
+     *  @param $mField string|array
+     *  @param $iStep  int
+     *  @Usage
+            setInc('a');
+            setInc('a', 1);
+            setInc('a, b');
+            setInc('a, b', 4);
+            setInc(array('a' => 1, 'b' => 4));
+     *
+     **/
+    public function setInc($mField, $iStep=1)
+    {
+        $aArgs       = array();
+        $sSQLPrepare = $this->buildIncDecSQL($mField, $iStep, $aArgs);
+        $STMT        = $this->Instance->prepare($sSQLPrepare);
+        return $STMT->execute($aArgs);
+    }
+    public function setDec($mField, $iStep=1)
+    {
+        $aArgs       = array();
+        $sSQLPrepare = $this->buildIncDecSQL($mField, $iStep, $aArgs, false);
+        $STMT        = $this->Instance->prepare($sSQLPrepare);
+        return $STMT->execute($aArgs);
+    }
+
     public function querySmarty(
         $mWhere=null,
         $iFetchMode=\PDO::FETCH_ASSOC
@@ -440,6 +467,32 @@ class PDODecorator {
         $aArgs = array();
         return $this->buildQuerySQL($aArgs);
     }
+
+    public function buildIncDecSQL($mField, $iStep, &$aArgs, $bInc=true)
+    {
+        $aSetField = $aUpdatePre = array();
+        if (is_string($mField)) {
+            foreach(explode(',', $mField) as $sK){
+                if($sK = trim($sK)){
+                    $aSetField[$sK] = $iStep;
+                }
+            }
+        }elseif(is_array($mField)) {
+            $aSetField = $mField;
+        }
+        foreach ($aSetField as $sK => $iV) {
+            $aUpdatePre[] = sprintf(
+                '`%s` = `%s` %s %d',
+                $sK, $sK, Helper::TOOP($bInc, '+', '-'), $iV
+            );
+        }
+        return sprintf('UPDATE %s SET %s WHERE %s',
+            $this->sTable,
+            implode(',', $aUpdatePre),
+            self::buildCondition($this->aWhere, $aArgs)
+        );
+    }
+
 
     public function delete($mWhere=array())
     {
