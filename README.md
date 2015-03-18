@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-03-18 修复使用[]定义数组，PHP5.3不支持
+
 2015-03-16 强化RDB功能，添加setInc和setDec功能
 
 2015-02-08 加入Lock组件功能,默认使用Cache模式、Redis锁

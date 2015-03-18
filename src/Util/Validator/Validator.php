@@ -23,7 +23,7 @@ class Validator {
     /**
      * @var array list of built-in validators (name => class or configuration)
      */
-    public static $builtInValidators = [
+    public static $builtInValidators = array(
         'boolean' => 'BooleanValidator',
         'qq'      => 'QQValidator',
         'int'     => 'IntValidator',
@@ -38,7 +38,7 @@ class Validator {
         'mobile'  => 'MobileValidator',
         'email'   => 'EmailValidator',
         'express' => 'ExpressValidator',
-    ];
+    );
 
     /**
      *  @var $aRule
