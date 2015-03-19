@@ -16,6 +16,8 @@ namespace Hummer\Component\RDB\ORM\Model;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
+use Hummer\Util\Validator\Validator;
+use Hummer\Component\Context\Context;
 use Hummer\Component\RDB\ORM\PDODecorator;
 
 class Model{
@@ -29,6 +31,16 @@ class Model{
      *  @var $sTable Table
      **/
     public $sTable;
+
+    /**
+     *  @var $_aProperty
+     **/
+    public $_aProperty;
+
+    /**
+     *  $_sErrMsg
+     **/
+    private $_sErrMsg = null;
 
     /**
      *  @var $sItemClassName  Hummer\Component\RDB\ORM\Model\Item;
@@ -70,14 +82,28 @@ class Model{
         if (isset($aConfig['pk'])) {
             $this->PDODecorator->sPrimaryKey = $aConfig['pk'];
         }
-        #Auto Validator
-        $this->PDODecorator->_validator = $this->_validator;
+        #check Property
+        $this->getModelProperty(new \ReflectionClass($this));
+
+        $this->PDODecorator->_Model= $this;
     }
 
     public function initModel($sModelName)
     {
         $this->PDODecorator->resetCondition();
         $this->setTable($sModelName);
+    }
+
+    public function getModelProperty($Model)
+    {
+        foreach ($Model->getProperties(\ReflectionProperty::IS_PUBLIC) as $Prop) {
+            $this->_aProperty[$Prop->getName()] = true;
+        }
+    }
+
+    public function isPublicProp($sProperty)
+    {
+        return isset($this->_aProperty[$sProperty]);
     }
 
     public function setTable($sModelName)
@@ -199,4 +225,72 @@ class Model{
     {
         $this->PDODecorator = clone $this->PDODecorator;
     }
+
+    /**
+     *  @function create
+     **/
+    public function create($aData=null)
+    {
+        $aData = Helper::TOOP(null === $aData, Context::getInst()->HttpRequest->getP(), $aData);
+        foreach ($aData as $sField => $mValue) {
+            $sRealField = Arr::get($this->_map, $sField, $sField);
+            $this->PDODecorator->aData[$sRealField] = $mValue;
+        }
+        return true;
+    }
+
+    /**
+     *  Auto Validator
+     **/
+    public function _validator()
+    {
+        $aData = $aRule = $aMsg = array();
+        if ($this->_validator) foreach ($this->_validator as $aValidator) {
+            $sField  = array_shift($aValidator);
+            $aData[$sField] = Arr::get($this->PDODecorator->aData, $sField);
+            if(!is_array($mErrMsg = array_pop($aValidator))){
+                $aMsg[$sField][$aValidator[0]] = $mErrMsg;
+            }else{
+                $aMsg[$sField] = array_merge($aMsg[$sField], $mErrMsg);
+            }
+            array_unshift($aValidator, $sField);
+            $aRule[] = $aValidator;
+        }
+        $Validator = new Validator($aData, $aRule, $aMsg);
+        if(true !== ($mResult = $Validator->validate())){
+            $this->_sErrMsg = $mResult;
+        }
+        return $mResult;
+    }
+
+    /**
+     *  @function _auto
+     **/
+    public function _auto()
+    {
+        if ($this->_auto) foreach ($this->_auto as $aAuto) {
+            $sField     = $aAuto[0];
+            $sType      = strtolower($aAuto[2]);
+            $sFuncName  = $aAuto[1];
+            if ($sType == 'function') {
+                $this->PDODecorator->aData[$sField] = $sFuncName(
+                    Arr::get($this->PDODecorator->aData, $sField)
+                );
+            }elseif($sType == 'callback'){
+                $this->PDODecorator->aData[$sField] = call_user_func_array(
+                    array($this, $sFuncName),
+                    array(Arr::get($this->PDODecorator->aData, $sField))
+                );
+            }
+        }
+    }
+
+    /**
+     *  Get Validator ErrorMsg
+     **/
+    public function getError()
+    {
+        return $this->_sErrMsg;
+    }
+
 }

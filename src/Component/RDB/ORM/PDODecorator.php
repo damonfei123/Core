@@ -17,7 +17,6 @@ namespace Hummer\Component\RDB\ORM;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Packer;
 use Hummer\Component\Helper\Helper;
-use Hummer\Util\Validator\Validator;
 
 class PDODecorator {
 
@@ -56,14 +55,10 @@ class PDODecorator {
     public $aAopCallBack;
 
     /**
-     *  $_validator
+     *  @var $_Model
      **/
-    public $_validator;
+    public $_Model;
 
-    /**
-     *  $_sErrMsg
-     **/
-    private $_sErrMsg = null;
     /**
      *  @var $aInstance
      **/
@@ -391,13 +386,27 @@ class PDODecorator {
         );
     }
 
+    /**
+     *  @function _autoCheck
+     *      auto filling
+     *      validate
+     **/
+    public function _autoCheck()
+    {
+        #Auto Filling
+        $this->_Model->_auto();
+        #Auto Validate
+        if (true !== $this->_Model->_validator()) return false;
+    }
+
     public function save($aSaveData=array(), $bLastInsertId=true)
     {
         if ($aSaveData) {
             $this->data($aSaveData);
         }
-        #Auto Validate
-        if (true !== $this->_validator()) return false;
+        if (false === $this->_autoCheck()) {
+            return false;
+        }
         $aArgs        = array();
         $sSQLPrepare  = $this->buildSaveSQL($aArgs);
         $STMT         = $this->Instance->prepare($sSQLPrepare);
@@ -410,33 +419,6 @@ class PDODecorator {
         return $this->save($aSaveData, $bLastInsertId);
     }
 
-    /**
-     *  自动验证
-     **/
-    private function _validator()
-    {
-        $aData = $aRule = $aMsg = array();
-        if ($this->_validator) foreach ($this->_validator as $aValidator) {
-            $sField  = array_shift($aValidator);
-            $aData[$sField] = Arr::get($this->aData, $sField);
-            if(!is_array($mErrMsg = array_pop($aValidator))){
-                $aMsg[$sField][$aValidator[0]] = $mErrMsg;
-            }else{
-                $aMsg[$sField] = array_merge($aMsg[$sField], $mErrMsg);
-            }
-            array_unshift($aValidator, $sField);
-            $aRule[] = $aValidator;
-        }
-        $Validator = new Validator($aData, $aRule, $aMsg);
-        if(true !== ($mResult=$Validator->validate())){
-            $this->_sErrMsg = $mResult;
-        }
-        return $mResult;
-    }
-    public function getError()
-    {
-        return $this->_sErrMsg;
-    }
 
     public function findCount($mWhere=null)
     {
@@ -552,9 +534,9 @@ class PDODecorator {
     }
 
     public function update($mWhere=null) {
-        #Auto Validate
-        if (true !== $this->_validator()) return false;
-
+        if (false === $this->_autoCheck()) {
+            return false;
+        }
         if (!is_null($mWhere)) $this->where($mWhere);
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
