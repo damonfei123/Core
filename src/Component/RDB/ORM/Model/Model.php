@@ -70,6 +70,8 @@ class Model{
         if (isset($aConfig['pk'])) {
             $this->PDODecorator->sPrimaryKey = $aConfig['pk'];
         }
+        #Auto Validator
+        $this->PDODecorator->_validator = $this->_validator;
     }
 
     public function initModel($sModelName)

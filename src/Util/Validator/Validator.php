@@ -17,6 +17,7 @@ namespace Hummer\Util\Validator;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Suger;
 use Hummer\Component\Helper\Helper;
+use Hummer\Util\Validator\ValidatorException;
 
 class Validator {
 
@@ -96,7 +97,7 @@ class Validator {
     {
         foreach ($this->aRule as $aRule) {
             if (count($aRule) < 2) {
-                throw ValidatorException('[Validator] : Rule Error : '.var_export($aRule, true));
+                throw new ValidatorException('[Validator] : Rule Error : '.var_export($aRule, true));
             }
             $sKey       = array_shift($aRule);
             $sValidator = array_shift($aRule);
@@ -130,7 +131,7 @@ class Validator {
         array $aMsg=array()
     ) {
         if(!($sBuiltInValidators = Arr::get(self::$builtInValidators, $sValidator, ''))) {
-            throw ValidatorException('[Validator] : Validator Not Set: '.$sValidator);
+            throw new ValidatorException('[Validator] : Validator Not Set: '.$sValidator);
         }
         return Suger::createObjSingle(
             __NAMESPACE__ . '\Strategy',
