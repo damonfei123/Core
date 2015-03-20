@@ -60,6 +60,8 @@ abstract class AbstractValidator {
             'ip'      => '{key} is not a valid ip',
             //express
             'express' => '{key} is not valid',
+            //unique
+            'unique'  => '{key} is not unique',
             //string
             'string'  => '{key} must be string',
             'string.max'  => '{key} max len is {rule}, now is {value}',

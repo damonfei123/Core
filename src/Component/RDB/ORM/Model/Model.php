@@ -43,6 +43,19 @@ class Model{
     private $_sErrMsg = null;
 
     /**
+     *  @var MODEL_INSERT
+     **/
+    const MODEL_INSERT = 1;
+    /**
+     *  @var MODEL_INSERT
+     **/
+    const MODEL_UPDATE = 2;
+    /**
+     *  @var MODEL_INSERT
+     **/
+    const MODEL_BOTH  = 3;
+
+    /**
      *  @var $sItemClassName  Hummer\Component\RDB\ORM\Model\Item;
      **/
     public $sItemClassName;
@@ -242,16 +255,25 @@ class Model{
     /**
      *  Auto Validator
      **/
-    public function _validator()
+    public function validator($iModel = null)
     {
         $aData = $aRule = $aMsg = array();
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
-            $sField  = array_shift($aValidator);
+            if (!self::_checkRuleRun($aValidator, $iModel, $bEnvModel)) continue;
+            $sField  = strtolower(trim(array_shift($aValidator)));
             $aData[$sField] = Arr::get($this->PDODecorator->aData, $sField);
+            if ($bEnvModel) array_pop($aValidator);
             if(!is_array($mErrMsg = array_pop($aValidator))){
                 $aMsg[$sField][$aValidator[0]] = $mErrMsg;
             }else{
                 $aMsg[$sField] = array_merge($aMsg[$sField], $mErrMsg);
+            }
+            if ('unique' == $aValidator[0]) {
+                $cloneModel = clone $this;
+                array_push(
+                    $aValidator,
+                    !$cloneModel->where(array($sField => $aData[$sField]))->findCount()
+                );
             }
             array_unshift($aValidator, $sField);
             $aRule[] = $aValidator;
@@ -264,11 +286,12 @@ class Model{
     }
 
     /**
-     *  @function _auto
+     *  @function auto
      **/
-    public function _auto()
+    public function auto($iModel=null)
     {
         if ($this->_auto) foreach ($this->_auto as $aAuto) {
+            if (!self::_checkRuleRun($aAuto, $iModel)) continue;
             $sField     = $aAuto[0];
             $sType      = strtolower($aAuto[2]);
             $sFuncName  = $aAuto[1];
@@ -283,6 +306,26 @@ class Model{
                 );
             }
         }
+    }
+
+    /**
+     *  check $_validator | $_auo Run
+     **/
+    private function _checkRuleRun(
+        array $aRule = array(),
+        $iMode = null,
+        &$bEnvModel = false
+    ) {
+        $_aModel   = array(self::MODEL_INSERT, self::MODEL_UPDATE, self::MODEL_BOTH);
+        $_mRule    = array_pop($aRule);
+        $bEnvModel = in_array($_mRule, $_aModel);
+        if ($bEnvModel AND
+            $iMode !== $_mRule AND
+            $_mRule !== self::MODEL_BOTH
+        ){
+            return false;
+        }
+        return true;
     }
 
     /**

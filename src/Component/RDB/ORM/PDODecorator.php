@@ -17,6 +17,7 @@ namespace Hummer\Component\RDB\ORM;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Packer;
 use Hummer\Component\Helper\Helper;
+use Hummer\Component\RDB\ORM\Model\Model;
 
 class PDODecorator {
 
@@ -387,16 +388,16 @@ class PDODecorator {
     }
 
     /**
-     *  @function _autoCheck
+     *  @function autoCheck
      *      auto filling
      *      validate
      **/
-    public function _autoCheck()
+    public function autoCheck($iModel=null)
     {
         #Auto Filling
-        $this->_Model->_auto();
+        $this->_Model->auto($iModel);
         #Auto Validate
-        if (true !== $this->_Model->_validator()) return false;
+        if (true !== $this->_Model->validator($iModel)) return false;
     }
 
     public function save($aSaveData=array(), $bLastInsertId=true)
@@ -404,7 +405,7 @@ class PDODecorator {
         if ($aSaveData) {
             $this->data($aSaveData);
         }
-        if (false === $this->_autoCheck()) {
+        if (false === $this->autoCheck(Model::MODEL_INSERT)) {
             return false;
         }
         $aArgs        = array();
@@ -534,7 +535,7 @@ class PDODecorator {
     }
 
     public function update($mWhere=null) {
-        if (false === $this->_autoCheck()) {
+        if (false === $this->autoCheck(Model::MODEL_UPDATE)) {
             return false;
         }
         if (!is_null($mWhere)) $this->where($mWhere);

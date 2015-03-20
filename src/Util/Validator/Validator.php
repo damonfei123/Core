@@ -39,6 +39,7 @@ class Validator {
         'mobile'  => 'MobileValidator',
         'email'   => 'EmailValidator',
         'express' => 'ExpressValidator',
+        'unique'  => 'UniqueValidator',
     );
 
     /**
