@@ -55,6 +55,16 @@ class Model{
      **/
     const MODEL_BOTH  = 3;
 
+    /*
+     * @var $_validator;
+     */
+    public $_validator;
+
+    /*
+     * @var $_auto;
+     */
+    public $_auto;
+
     /**
      *  @var $sItemClassName  Hummer\Component\RDB\ORM\Model\Item;
      **/
@@ -98,7 +108,16 @@ class Model{
         #check Property
         $this->getModelProperty(new \ReflectionClass($this));
 
-        $this->PDODecorator->_Model= $this;
+        #Get Validator
+        if(method_exists($this, '__setValidator__')) {
+            $this->_validator = call_user_func_array(array($this, '__setValidator__'), array());
+        }
+        #Get Auto 
+        if(method_exists($this, '__setAuto__')) {
+            $this->_auto = call_user_func_array(array($this, '__setAuto__'), array());
+        }
+        $this->PDODecorator->_Model[$this->sTable] = $this;
+
     }
 
     public function initModel($sModelName)
@@ -125,7 +144,8 @@ class Model{
         if (false !== ($iPOS = strpos($sModelName, '|'))) {
             $sTable = sprintf('%s|%s', $sTable, substr($sModelName, $iPOS + 1));
         }
-        $this->PDODecorator->table($sTable);
+        $this->PDODecorator->table($sTable, $sRealTable);
+        $this->sTable = $sRealTable;
     }
 
     /**
@@ -244,6 +264,7 @@ class Model{
      **/
     public function create($aData=null)
     {
+        $this->setPDOData();
         $aData = Helper::TOOP(null === $aData, Context::getInst()->HttpRequest->getP(), $aData);
         foreach ($aData as $sField => $mValue) {
             $sRealField = Arr::get($this->_map, $sField, $sField);
@@ -252,11 +273,20 @@ class Model{
         return true;
     }
 
+    /*
+     * Set PDO Table
+     */
+    public function setPDOData()
+    {
+        $this->PDODecorator->sTable = $this->sTable;
+    }
+
     /**
      *  Auto Validator
      **/
     public function validator($iModel = null)
     {
+        $this->setPDOData();
         $aData = $aRule = $aMsg = array();
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
             if (!self::_checkRuleRun($aValidator, $iModel, $bEnvModel)) continue;
@@ -290,11 +320,13 @@ class Model{
      **/
     public function auto($iModel=null)
     {
+        $this->setPDOData();
         if ($this->_auto) foreach ($this->_auto as $aAuto) {
             if (!self::_checkRuleRun($aAuto, $iModel)) continue;
+            if(count($aAuto) < 3 ) $aAuto[] = '';
             $sField     = $aAuto[0];
-            $sType      = strtolower($aAuto[2]);
             $sFuncName  = $aAuto[1];
+            $sType      = strtolower($aAuto[2]);
             if ($sType == 'function') {
                 $this->PDODecorator->aData[$sField] = $sFuncName(
                     Arr::get($this->PDODecorator->aData, $sField)
@@ -304,6 +336,8 @@ class Model{
                     array($this, $sFuncName),
                     array(Arr::get($this->PDODecorator->aData, $sField))
                 );
+            }else{
+                $this->PDODecorator->aData[$sField] = $sFuncName;
             }
         }
     }

@@ -58,7 +58,7 @@ class PDODecorator {
     /**
      *  @var $_Model
      **/
-    public $_Model;
+    public $_Model = array();
 
     /**
      *  @var $aInstance
@@ -166,7 +166,7 @@ class PDODecorator {
         return $this;
     }
 
-    public function table($sTable)
+    public function table($sTable, &$sRealTable)
     {
         if (false !== strpos($sTable, '|')) {
             $aTable = explode('|', $sTable);
@@ -174,7 +174,12 @@ class PDODecorator {
             $this->aTableAsMap[$sTable] = array_pop($aTable);
         }
         $this->sTable = $sTable;
+        $sRealTable = $sTable;
         return $this;
+    }
+
+    public function getTableName()
+    {
     }
 
     public function getRealMapTable()
@@ -395,9 +400,9 @@ class PDODecorator {
     public function autoCheck($iModel=null)
     {
         #Auto Filling
-        $this->_Model->auto($iModel);
+        $this->_Model[$this->sTable]->auto($iModel);
         #Auto Validate
-        if (true !== $this->_Model->validator($iModel)) return false;
+        if (true !== $this->_Model[$this->sTable]->validator($iModel)) return false;
     }
 
     public function save($aSaveData=array(), $bLastInsertId=true)
