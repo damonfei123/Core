@@ -27,6 +27,8 @@ class PDODecorator {
     public $sDSN        = null;
     public $Instance    = null;
     public $aOption;
+    public $sUsername    = '';
+    public $sPassword    = '';
 
     /**
      *  @var Same Model For Multi Query
@@ -44,21 +46,21 @@ class PDODecorator {
      **/
     public $sTable;
     public $aTableAsMap = array();
-    public $aWhere      = array();
-    public $aData       = array();
-    public $sSelect     = '*';
-    public $sJoinTable  = '';
-    public $sForceIndex ='';
-    public $sLimit;
-    public $sGroupBy;
-    public $sHaving;
-    public $sOrder;
+    //public $aWhere      = array();
+    //public $aData       = array();
+    //public $sSelect     = '*';
+    //public $sJoinTable  = '';
+    //public $sForceIndex ='';
+    //public $sLimit;
+    //public $sGroupBy;
+    //public $sHaving;
+    //public $sOrder;
     public $aAopCallBack;
 
     /**
      *  @var $_Model
      **/
-    public $_Model = array();
+    public static $_Model = array();
 
     /**
      *  @var $aInstance
@@ -89,6 +91,22 @@ class PDODecorator {
     }
 
     private function __construct() {}
+
+    public function __get($sKey)
+    {
+        return self::$_Model[$this->sTable]->$sKey;
+    }
+
+    public function __set($sKey, $sVal)
+    {
+        Arr::get(self::$_Model, $this->sTable)->$sKey = $sVal;
+        return true;
+    }
+
+    public function setModel($sKey, $Model)
+    {
+        self::$_Model[$sKey] = $Model;
+    }
 
     /**
      *  Init Packer PDO
@@ -393,16 +411,19 @@ class PDODecorator {
     }
 
     /**
-     *  @function autoCheck
-     *      auto filling
-     *      validate
+     * @function autoCheck
+     * @warning Table Donn't change on AutoCheck
+     *     auto filling
+     *     validate
      **/
     public function autoCheck($iModel=null)
     {
         #Auto Filling
-        $this->_Model[$this->sTable]->auto($iModel);
+        $_sTmpTable   = $this->sTable;
+        self::$_Model[$this->sTable]->auto($iModel);
+        $this->sTable = $_sTmpTable;
         #Auto Validate
-        if (true !== $this->_Model[$this->sTable]->validator($iModel)) return false;
+        if (true !== self::$_Model[$this->sTable]->validator($iModel)) return false;
     }
 
     public function save($aSaveData=array(), $bLastInsertId=true)

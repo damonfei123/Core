@@ -32,6 +32,12 @@ class Model{
      **/
     public $sTable;
 
+
+    /*
+     *
+     */
+    public $aConfig;
+
     /**
      *  @var $_aProperty
      **/
@@ -64,6 +70,19 @@ class Model{
      * @var $_auto;
      */
     public $_auto;
+
+    /*
+     * PDO Attr
+     */
+    public $aWhere = array();
+    public $aData  = array();
+    public $sSelect     = '*';
+    public $sJoinTable  = '';
+    public $sForceIndex ='';
+    public $sLimit;
+    public $sGroupBy;
+    public $sHaving;
+    public $sOrder;
 
     /**
      *  @var $sItemClassName  Hummer\Component\RDB\ORM\Model\Item;
@@ -116,8 +135,8 @@ class Model{
         if(method_exists($this, '__setAuto__')) {
             $this->_auto = call_user_func_array(array($this, '__setAuto__'), array());
         }
-        $this->PDODecorator->_Model[$this->sTable] = $this;
-
+        //$this->PDODecorator->_Model[$this->sTable] = $this;
+        $this->PDODecorator->setModel($this->sTable, $this);
     }
 
     public function initModel($sModelName)
@@ -155,6 +174,7 @@ class Model{
      **/
     public function find($mWhere=null)
     {
+        $this->setPDOData();
         $aItem = $this->PDODecorator->limit(1)->querySmarty($mWhere);
         return empty($aItem) ? null :  new $this->sItemClassName(array_shift($aItem), $this);
     }
@@ -164,6 +184,7 @@ class Model{
      **/
     public function findCustom($mWhere=null)
     {
+        $this->setPDOData();
         return $this->PDODecorator->querySmarty($mWhere);
     }
 
@@ -172,6 +193,7 @@ class Model{
      **/
     public function findMulti($mWhere=null)
     {
+        $this->setPDOData();
         $aItems   = $this->PDODecorator->querySmarty($mWhere);
         $aGroup   = array();
         foreach ($aItems as $aItem) {
@@ -186,6 +208,7 @@ class Model{
      **/
     public function batchSave(array $aSaveData=array(), $iChunk = 1000)
     {
+        $this->setPDOData();
         if (count($aSaveData) == 0) {
             return true;
         }
@@ -222,6 +245,7 @@ class Model{
         $bChunkSave ? $this->PDODecorator->commit() : $this->PDODecorator->rollback();
         return $bChunkSave;
     }
+
     public function batchAdd(array $aSaveData=array(), $iChunk = 1000)
     {
         return $this->batchSave($aSaveData, $iChunk);
@@ -244,6 +268,7 @@ class Model{
         if (!method_exists($this->PDODecorator, $sMethod)) {
             throw new \BadMethodCallException('[Model] : method{'.$sMethod.'} error !!! ');
         }
+        $this->setPDOData();
         $mResult = call_user_func_array(array($this->PDODecorator, $sMethod), $aArgv);
         if (is_object($mResult) AND $mResult instanceof PDODecorator) {
             return $this;
@@ -266,9 +291,10 @@ class Model{
     {
         $this->setPDOData();
         $aData = Helper::TOOP(null === $aData, Context::getInst()->HttpRequest->getP(), $aData);
+        $this->aData = array();
         foreach ($aData as $sField => $mValue) {
             $sRealField = Arr::get($this->_map, $sField, $sField);
-            $this->PDODecorator->aData[$sRealField] = $mValue;
+            $this->aData[$sRealField] = $mValue;
         }
         return true;
     }
@@ -291,7 +317,7 @@ class Model{
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
             if (!self::_checkRuleRun($aValidator, $iModel, $bEnvModel)) continue;
             $sField  = strtolower(trim(array_shift($aValidator)));
-            $aData[$sField] = Arr::get($this->PDODecorator->aData, $sField);
+            $aData[$sField] = Arr::get($this->aData, $sField);
             if ($bEnvModel) array_pop($aValidator);
             if(!is_array($mErrMsg = array_pop($aValidator))){
                 $aMsg[$sField][$aValidator[0]] = $mErrMsg;
@@ -328,16 +354,16 @@ class Model{
             $sFuncName  = $aAuto[1];
             $sType      = strtolower($aAuto[2]);
             if ($sType == 'function') {
-                $this->PDODecorator->aData[$sField] = $sFuncName(
-                    Arr::get($this->PDODecorator->aData, $sField)
+                $this->aData[$sField] = $sFuncName(
+                    Arr::get($this->aData, $sField)
                 );
             }elseif($sType == 'callback'){
-                $this->PDODecorator->aData[$sField] = call_user_func_array(
+                $this->aData[$sField] = call_user_func_array(
                     array($this, $sFuncName),
-                    array(Arr::get($this->PDODecorator->aData, $sField))
+                    array(Arr::get($this->aData, $sField))
                 );
             }else{
-                $this->PDODecorator->aData[$sField] = $sFuncName;
+                $this->aData[$sField] = $sFuncName;
             }
         }
     }
@@ -350,6 +376,7 @@ class Model{
         $iMode = null,
         &$bEnvModel = false
     ) {
+        $this->setPDOData();
         $_aModel   = array(self::MODEL_INSERT, self::MODEL_UPDATE, self::MODEL_BOTH);
         $_mRule    = array_pop($aRule);
         $bEnvModel = in_array($_mRule, $_aModel);
@@ -369,5 +396,4 @@ class Model{
     {
         return $this->_sErrMsg;
     }
-
 }
