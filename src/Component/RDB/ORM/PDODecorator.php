@@ -599,8 +599,8 @@ class PDODecorator {
      */
     public static function buildCondition($mWhere, &$aArgs = array())
     {
-        # 为空直接返回1
-        if (empty($mWhere)) return 1;
+        # 为空直接返回0
+        if (empty($mWhere)) return 0;
 
         if (is_string($mWhere)) {
             return $mWhere;
