@@ -438,7 +438,11 @@ class PDODecorator {
         $sSQLPrepare  = $this->buildSaveSQL($aArgs);
         $STMT         = $this->Instance->prepare($sSQLPrepare);
         $bExecute     = $STMT->execute($aArgs);
-        return Helper::TOOP($bLastInsertId, $this->Instance->lastInsertId(), $bExecute);
+        return Helper::TOOP(
+            $bExecute AND $bLastInsertId,
+            $this->Instance->lastInsertId(),
+            $bExecute
+        );
     }
 
     public function add($aSaveData=array(), $bLastInsertId=true)

@@ -133,7 +133,7 @@ class Factory {
     {
         if (!isset(self::$_aPDODecorator[$sModelDB])) {
             if (array_key_exists($sModelDB, self::$_aDBConfig)) {
-                self::$_aPDODecorator[$sModelDB] = Suger::createObjSingle(
+                return self::$_aPDODecorator[$sModelDB] = Suger::createObjSingle(
                     __NAMESPACE__,
                     array(
                         '@PDODecorator',
@@ -156,6 +156,8 @@ class Factory {
      **/
     public function isModelDataEmpty($Model)
     {
-        return $Model === null || (is_array($Model) && count($Model) == 0);
+        return $Model === null ||
+            (is_array($Model) && count($Model) == 0) ||
+            ($Model instanceof \Hummer\Component\RDB\ORM\Model\Item && count($Model->getData()) === 0);
     }
 }

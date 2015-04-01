@@ -176,7 +176,9 @@ class Model{
     {
         $this->setPDOData();
         $aItem = $this->PDODecorator->limit(1)->querySmarty($mWhere);
-        return empty($aItem) ? null :  new $this->sItemClassName(array_shift($aItem), $this);
+        return empty($aItem) ?
+            new $this->sItemClassName(array(), $this) :
+            new $this->sItemClassName(array_shift($aItem), $this);
     }
 
     /**
@@ -392,8 +394,12 @@ class Model{
     /**
      *  Get Validator ErrorMsg
      **/
-    public function getError()
+    public function getError($sDefault=null)
     {
-        return $this->_sErrMsg;
+        return Helper::TOOP(
+            empty($this->_sErrMsg) AND null !== $sDefault,
+            $sDefault,
+            $this->_sErrMsg
+        );
     }
 }
