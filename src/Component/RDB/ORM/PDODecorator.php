@@ -572,7 +572,9 @@ class PDODecorator {
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
         $STMT        = $this->Instance->prepare($sSQLPrepare);
-        return $STMT->execute(array_merge($aUpdateData, $aArgs));
+        return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ? 
+            $STMT->rowCount() : 
+            false;
     }
 
     /**

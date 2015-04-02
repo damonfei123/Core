@@ -176,9 +176,8 @@ class Model{
     {
         $this->setPDOData();
         $aItem = $this->PDODecorator->limit(1)->querySmarty($mWhere);
-        return empty($aItem) ?
-            new $this->sItemClassName(array(), $this) :
-            new $this->sItemClassName(array_shift($aItem), $this);
+        $aItem = empty($aItem) ? array() : array_shift($aItem);
+        return new $this->sItemClassName($aItem, $this);
     }
 
     /**
