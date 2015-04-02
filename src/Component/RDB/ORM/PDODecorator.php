@@ -553,7 +553,7 @@ class PDODecorator {
         $aArgs = array();
         $sSQL  = self::buildDeleteSQL($this->aWhere, $aArgs);
         $STMT  = $this->Instance->prepare($sSQL);
-        return $STMT->execute($aArgs);
+        return false === $STMT->execute($aArgs) ? false : $STMT->rowCount();
     }
 
     public function buildDeleteSQL($aWhere, &$aArgs)
