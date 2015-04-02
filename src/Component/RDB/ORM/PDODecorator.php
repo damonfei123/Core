@@ -175,11 +175,12 @@ class PDODecorator {
     public function where($mWhere=null)
     {
         if (!is_null($mWhere) AND $mWhere) {
-            $this->aWhere = Helper::TOOP(
+            $aWhere = Helper::TOOP(
                 $this->checkWhereIsPK($mWhere),
                 $this->getPKWhere($mWhere),
                 $mWhere
             );
+            $this->aWhere = array_merge($aWhere, $this->aWhere);
         }
         return $this;
     }

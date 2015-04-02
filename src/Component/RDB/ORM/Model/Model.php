@@ -316,7 +316,8 @@ class Model{
         $this->setPDOData();
         $aData = $aRule = $aMsg = array();
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
-            if (!self::_checkRuleRun($aValidator, $iModel, $bEnvModel)) continue;
+            $iValidateModel = $aValidator[count($aValidator) - 1];
+            if (!self::_checkRuleRun($iValidateModel, $iModel, $bEnvModel)) continue;
             $sField  = strtolower(trim(array_shift($aValidator)));
             $aData[$sField] = Arr::get($this->aData, $sField);
             if ($bEnvModel) array_pop($aValidator);
@@ -349,11 +350,12 @@ class Model{
     {
         $this->setPDOData();
         if ($this->_auto) foreach ($this->_auto as $aAuto) {
-            if (!self::_checkRuleRun($aAuto, $iModel)) continue;
-            if(count($aAuto) < 3 ) $aAuto[] = '';
+            if(count($aAuto) < 4 ) $aAuto = array_pad($aAuto, 4, '');
             $sField     = $aAuto[0];
             $sFuncName  = $aAuto[1];
-            $sType      = strtolower($aAuto[2]);
+            $iModelEnv  = $aAuto[2];
+            $sType      = strtolower($aAuto[3]);
+            if (!self::_checkRuleRun($iModelEnv, $iModel)) continue;
             if ($sType == 'function') {
                 $this->aData[$sField] = $sFuncName(
                     Arr::get($this->aData, $sField)
@@ -373,13 +375,12 @@ class Model{
      *  check $_validator | $_auo Run
      **/
     private function _checkRuleRun(
-        array $aRule = array(),
+        $_mRule = null,
         $iMode = null,
         &$bEnvModel = false
     ) {
         $this->setPDOData();
         $_aModel   = array(self::MODEL_INSERT, self::MODEL_UPDATE, self::MODEL_BOTH);
-        $_mRule    = array_pop($aRule);
         $bEnvModel = in_array($_mRule, $_aModel);
         if ($bEnvModel AND
             $iMode !== $_mRule AND
