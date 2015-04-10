@@ -127,16 +127,10 @@ class Model{
         #check Property
         $this->getModelProperty(new \ReflectionClass($this));
 
-        #Get Validator
-        if(method_exists($this, '__setValidator__')) {
-            $this->_validator = call_user_func_array(array($this, '__setValidator__'), array());
-        }
-        #Get Auto 
-        if(method_exists($this, '__setAuto__')) {
-            $this->_auto = call_user_func_array(array($this, '__setAuto__'), array());
-        }
-        //$this->PDODecorator->_Model[$this->sTable] = $this;
+        #$this->PDODecorator->_Model[$this->sTable] = $this;
         $this->PDODecorator->setModel($this->sTable, $this);
+        #__init__
+        call_user_func_array(array($this, '__init__'), array());
     }
 
     public function initModel($sModelName)
@@ -315,6 +309,10 @@ class Model{
     {
         $this->setPDOData();
         $aData = $aRule = $aMsg = array();
+        #Get Validator
+        if(method_exists($this, '__setValidator__')) {
+            $this->_validator = call_user_func_array(array($this, '__setValidator__'), array());
+        }
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
             $iValidateModel = $aValidator[count($aValidator) - 1];
             if (!self::_checkRuleRun($iValidateModel, $iModel, $bEnvModel)) continue;
@@ -349,6 +347,10 @@ class Model{
     public function auto($iModel=null)
     {
         $this->setPDOData();
+        #Get Auto
+        if(method_exists($this, '__setAuto__')) {
+            $this->_auto = call_user_func_array(array($this, '__setAuto__'), array());
+        }
         if ($this->_auto) foreach ($this->_auto as $aAuto) {
             if(count($aAuto) < 4 ) $aAuto = array_pad($aAuto, 4, '');
             $sField     = $aAuto[0];

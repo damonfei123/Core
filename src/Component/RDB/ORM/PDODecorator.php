@@ -185,15 +185,21 @@ class PDODecorator {
         return $this;
     }
 
-    public function table($sTable, &$sRealTable)
+    public function table($sTable, &$sRealTable = '')
     {
+        $sTable = trim($sTable);
+        $bAsMap = true;
         if (false !== strpos($sTable, '|')) {
             $aTable = explode('|', $sTable);
-            $sTable = array_shift($aTable);
-            $this->aTableAsMap[$sTable] = array_pop($aTable);
+        }elseif(strpos($sTable, ' ')){
+            $aTable = preg_split('/[ ]+/', $sTable);
+        }else{
+            $bAsMap = false;
+            $aTable = array($sTable);
         }
-        $this->sTable = $sTable;
-        $sRealTable = $sTable;
+        $sTable                                 = array_shift($aTable);
+        if($bAsMap) $this->aTableAsMap[$sTable] = array_pop($aTable);
+        $this->sTable                           = $sRealTable = $sTable;
         return $this;
     }
 
@@ -573,8 +579,8 @@ class PDODecorator {
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
         $STMT        = $this->Instance->prepare($sSQLPrepare);
-        return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ? 
-            $STMT->rowCount() : 
+        return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ?
+            $STMT->rowCount() :
             false;
     }
 
