@@ -56,11 +56,14 @@ class HttpCall{
      **/
     public static function callPOST(
         $sUrl,
-        array $aParam  = array(),
+        $mParam  = array(),
         $mHeader       = null,
         array $aOptKV  = array()
     ) {
-        $aOptKV[CURLOPT_POSTFIELDS] = Helper::TOOP($aParam,http_build_query($aParam),'');
+        $aOptKV[CURLOPT_POSTFIELDS] = is_array($mParam) ?
+            Helper::TOOP($mParam,http_build_query($mParam),''):
+            $mParam;
+
         if ($mHeader) {
             if (is_array($aHeader)) {
                 $aOptKV[CURLOPT_HTTPHEADER] = http_build_query($mHeader, '&');
