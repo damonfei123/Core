@@ -310,9 +310,12 @@ class Model{
         $this->setPDOData();
         $aData = $aRule = $aMsg = array();
         #Get Validator
+        $aTmpData = $this->aData;
         if(method_exists($this, '__setValidator__')) {
             $this->_validator = call_user_func_array(array($this, '__setValidator__'), array());
         }
+        $this->aData = $aTmpData;
+
         if ($this->_validator) foreach ($this->_validator as $aValidator) {
             $iValidateModel = $aValidator[count($aValidator) - 1];
             if (!self::_checkRuleRun($iValidateModel, $iModel, $bEnvModel)) continue;
@@ -357,6 +360,9 @@ class Model{
             $sFuncName  = $aAuto[1];
             $iModelEnv  = $aAuto[2];
             $sType      = strtolower($aAuto[3]);
+            if (isset($this->aData[$sField]) AND $this->aData[$sField]) {
+                continue;
+            }
             if (!self::_checkRuleRun($iModelEnv, $iModel)) continue;
             if ($sType == 'function') {
                 $this->aData[$sField] = $sFuncName(

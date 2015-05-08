@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-05-08 修复setvalidator自动验证的bug
+
 2015-04-19 修复httpcall POST请求时参数，可以支持数组或者字符串
 
 2015-04-02 update方法里如果sql没有问题则返回影响行数，否则为false,自动填充也加入MODEL_INSERT和MODEL_UPDATE参数
