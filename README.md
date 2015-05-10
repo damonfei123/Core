@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-05-10 select默认没有条件为true
+
 2015-05-08 修复setvalidator自动验证的bug
 
 2015-04-19 修复httpcall POST请求时参数，可以支持数组或者字符串

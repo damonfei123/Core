@@ -130,7 +130,9 @@ class Model{
         #$this->PDODecorator->_Model[$this->sTable] = $this;
         $this->PDODecorator->setModel($this->sTable, $this);
         #__init__
-        call_user_func_array(array($this, '__init__'), array());
+        if (method_exists($this, '__init__')) {
+            call_user_func_array(array($this, '__init__'), array());
+        }
     }
 
     public function initModel($sModelName)
