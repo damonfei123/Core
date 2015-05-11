@@ -509,7 +509,6 @@ class PDODecorator {
 
     public function buildQuerySQL(&$aArgs)
     {
-        $this->aWhere = empty($this->aWhere) ? '1' : $this->aWhere;
         return sprintf('SELECT %s FROM %s %s %s WHERE %s %s %s %s %s',
             $this->sSelect ? $this->sSelect : '*',
             $this->getRealMapTable(),
