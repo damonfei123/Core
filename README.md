@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-05-11 api默认不采用全小写的模式
+
 2015-05-10 select默认没有条件为true
 
 2015-05-08 修复setvalidator自动验证的bug
