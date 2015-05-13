@@ -64,7 +64,8 @@ class Model{
     /*
      * @var $_validator;
      */
-    public $_validator;
+    public $_bSetValidator = false;
+    public $_validator     = null;
 
     /*
      * @var $_auto;
@@ -297,6 +298,16 @@ class Model{
     }
 
     /*
+     *  set Validator
+     */
+    public function setValidator($aData = array())
+    {
+        $this->_bSetValidator    = true;
+        $this->_validator = $aData;
+        return $this;
+    }
+
+    /*
      * Set PDO Table
      */
     public function setPDOData()
@@ -313,7 +324,7 @@ class Model{
         $aData = $aRule = $aMsg = array();
         #Get Validator
         $aTmpData = $this->aData;
-        if(method_exists($this, '__setValidator__')) {
+        if(!$this->_bSetValidator AND method_exists($this, '__setValidator__')) {
             $this->_validator = call_user_func_array(array($this, '__setValidator__'), array());
         }
         $this->aData = $aTmpData;
@@ -343,6 +354,8 @@ class Model{
         if(true !== ($mResult = $Validator->validate())){
             $this->_sErrMsg = $mResult;
         }
+        #init to false
+        $this->_bSetValidator = false;
         return $mResult;
     }
 

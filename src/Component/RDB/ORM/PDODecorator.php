@@ -175,12 +175,16 @@ class PDODecorator {
     public function where($mWhere=null)
     {
         if (!is_null($mWhere) AND $mWhere) {
-            $aWhere = Helper::TOOP(
-                $this->checkWhereIsPK($mWhere),
-                $this->getPKWhere($mWhere),
-                $mWhere
-            );
-            $this->aWhere = array_merge($aWhere, $this->aWhere);
+            if (true === $mWhere) {
+                $this->aWhere = $mWhere;
+            }else{
+                $aWhere = Helper::TOOP(
+                    $this->checkWhereIsPK($mWhere),
+                    $this->getPKWhere($mWhere),
+                    $mWhere
+                );
+                $this->aWhere = array_merge($aWhere, $this->aWhere);
+            }
         }
         return $this;
     }
@@ -614,6 +618,7 @@ class PDODecorator {
         if (is_string($mWhere)) {
             return $mWhere;
         }
+        if (true === $mWhere) { return 1; }
 
         # 提取出条件关系
         $aWhereBuild = array();
