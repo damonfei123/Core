@@ -202,9 +202,9 @@ class Model{
 
     /**
      *  Batch Save Data
-     *  Use Transaction
+     *  $param $bUseTransaction Use Transaction or not
      **/
-    public function batchSave(array $aSaveData=array(), $iChunk = 1000)
+    public function batchSave(array $aSaveData=array(), $bUseTransaction=true, $iChunk = 1000)
     {
         $this->setPDOData();
         if (count($aSaveData) == 0) {
@@ -224,7 +224,7 @@ class Model{
         $sChunkColumn = sprintf('(%s)',
             implode(',', array_pad(array(), count($aColumnInfo), '?'))
         );
-        $this->PDODecorator->begin();
+        if($bUseTransaction) $this->PDODecorator->begin();
         while ($aChunkData=array_slice($aSaveData, $iChunkNum * $iChunk, $iChunk))
         {
             $aChunkBind   = array();
@@ -240,9 +240,13 @@ class Model{
         }
 
         END:
-        $bChunkSave ? $this->PDODecorator->commit() : $this->PDODecorator->rollback();
+        if($bUseTransaction) {
+           $bChunkSave ? $this->PDODecorator->commit() : $this->PDODecorator->rollback();
+        }
+
         return $bChunkSave;
     }
+
 
     public function batchAdd(array $aSaveData=array(), $iChunk = 1000)
     {

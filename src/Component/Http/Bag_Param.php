@@ -32,6 +32,16 @@ class Bag_Param extends Bag_Base{
         }
     }
 
+    public function set($mKeyOrKeys, $mValue=null)
+    {
+        if (is_array($mKeyOrKeys)) {
+            $this->aData = array_merge($this->aData, $mKeyOrKeys);
+        }else{
+            $this->aData[$mKeyOrKeys] = $mValue;
+        }
+        return true;
+    }
+
     /*
      *  check if isset
      */
