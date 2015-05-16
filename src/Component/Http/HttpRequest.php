@@ -75,6 +75,11 @@ class HttpRequest{
         return $sFile ===  null ? $this->aFILE : Arr::get($this->aFILE, $sFile, null);
     }
 
+    public function issetG($mKey=null)
+    {
+        return $mKeyOrKeys === null ? false : $this->BagGET->checkIsSet($mKey);
+    }
+
     public function getG($mKeyOrKeys=null)
     {
         return $mKeyOrKeys === null ? $this->BagGET->All() : $this->BagGET->get($mKeyOrKeys);
@@ -85,14 +90,29 @@ class HttpRequest{
         return $mKey === null ? $this->aSERVER : Arr::get($this->aSERVER, $mKey, null);
     }
 
+    public function issetP($mKey=null)
+    {
+        return $mKey === null ? false : $this->BagPOST->checkIsSet($mKey);
+    }
+
     public function getP($mKeyOrKeys=null)
     {
         return $mKeyOrKeys === null ? $this->BagPOST->All() : $this->BagPOST->get($mKeyOrKeys);
     }
 
+    public function issetC($mKey = null)
+    {
+        return $mKey === null ? false : $this->BagCOOKIE->checkIsSet($mKey);
+    }
+
     public function getC($mKeyOrKeys=null)
     {
         return $mKeyOrKeys === null ? $this->BagCOOKIE->All() : $this->BagCOOKIE->get($mKeyOrKeys);
+    }
+
+    public function issetGP($mKey=null)
+    {
+        return $mKey === null ? false : $this->BagREQUEST->checkIsSet($mKey);
     }
     public function getGP($mKeyOrKeys=null)
     {

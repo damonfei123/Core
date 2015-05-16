@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-05-16 http加入isset方法
+
 2015-05-13 update不同场景设置不同的validator
 
 2015-05-11 api默认不采用全小写的模式

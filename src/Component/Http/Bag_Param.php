@@ -32,6 +32,14 @@ class Bag_Param extends Bag_Base{
         }
     }
 
+    /*
+     *  check if isset
+     */
+    public function checkIsSet($mKey)
+    {
+        return array_key_exists($mKey, $this->aData);
+    }
+
     public function All()
     {
         return $this->aData;
