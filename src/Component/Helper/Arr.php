@@ -63,4 +63,17 @@ class Arr{
         }
         return Helper::TOOP(is_array($mArr), Arr::get($mArr, $sKey, null), $mArr);
     }
+
+    /*
+     *  Change Array By Add a PreKey to Key
+     */
+    public static function keyAddPre(array $aArr = array(), $sPre = '')
+    {
+        $sPre = trim($sPre);
+        $aNewArr = array();
+        if ($sPre) foreach ($aArr as $sK => $mV) {
+            $aNewArr[sprintf('%s%s', $sPre, $sK)] = $mV;
+        }
+        return $aNewArr ? $aNewArr : $aArr;
+    }
 }

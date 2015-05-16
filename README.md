@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2015-05-16 http加入isset方法,batchSave加入是否使用事务
+2015-05-16 http加入isset方法,batchSave加入是否使用事务,Arr加入方法
 
 2015-05-13 update不同场景设置不同的validator
 
