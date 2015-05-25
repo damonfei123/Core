@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-05-25 修复Session存数据库的BUG
+
 2015-05-17 修复循环update和delete没有清空条件的bug
 
 2015-05-16 http加入isset方法,batchSave加入是否使用事务,Arr加入方法

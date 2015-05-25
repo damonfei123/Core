@@ -97,7 +97,7 @@ class DBStrategy implements IStrategy{
     public function write($id, $mV)
     {
         $aData = array($this->k => $id, $this->v => $mV, $this->t => time());
-        if ($this->DB->find(array($this->k => $id))) {
+        if ($this->DB->findCount(array($this->k => $id))) {
             return $this->DB->where(array($this->k => $id))->data($aData)->update();
         }else{
             return $this->DB->data($aData)->save();
