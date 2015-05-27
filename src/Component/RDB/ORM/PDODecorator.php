@@ -177,13 +177,15 @@ class PDODecorator {
         if (!is_null($mWhere) AND $mWhere) {
             if (true === $mWhere) {
                 $this->aWhere = $mWhere;
+            }elseif(is_string($mWhere)){
+                $this->aWhere = $mWhere;
             }else{
                 $aWhere = Helper::TOOP(
                     $this->checkWhereIsPK($mWhere),
                     $this->getPKWhere($mWhere),
                     $mWhere
                 );
-                $this->aWhere = array_merge($this->aWhere, $aWhere);
+                $this->aWhere = array_merge($aWhere, $this->aWhere);
             }
         }
         return $this;
@@ -564,7 +566,6 @@ class PDODecorator {
         $aArgs = array();
         $sSQL  = self::buildDeleteSQL($this->aWhere, $aArgs);
         $STMT  = $this->Instance->prepare($sSQL);
-        $this->resetCondition();
         return false === $STMT->execute($aArgs) ? false : $STMT->rowCount();
     }
 
@@ -584,7 +585,6 @@ class PDODecorator {
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
         $STMT        = $this->Instance->prepare($sSQLPrepare);
-        $this->resetCondition();
         return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ?
             $STMT->rowCount() :
             false;
