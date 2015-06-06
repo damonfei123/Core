@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-06-06 修复RDB里的BUG
+
 2015-05-28 修复RDB里where是字符串的BUG
 
 2015-05-25 修复Session存数据库的BUG

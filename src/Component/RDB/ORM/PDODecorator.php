@@ -177,7 +177,7 @@ class PDODecorator {
         if (!is_null($mWhere) AND $mWhere) {
             if (true === $mWhere) {
                 $this->aWhere = $mWhere;
-            }elseif(is_string($mWhere)){
+            }elseif(is_string($mWhere) AND !preg_match("/^\d*$/i", $mWhere)){
                 $this->aWhere = $mWhere;
             }else{
                 $aWhere = Helper::TOOP(
@@ -451,6 +451,9 @@ class PDODecorator {
         $sSQLPrepare  = $this->buildSaveSQL($aArgs);
         $STMT         = $this->Instance->prepare($sSQLPrepare);
         $bExecute     = $STMT->execute($aArgs);
+        if (!$this->bMulti) {
+            $this->resetCondition();
+        }
         return Helper::TOOP(
             $bExecute AND $bLastInsertId,
             $this->Instance->lastInsertId(),
@@ -585,6 +588,9 @@ class PDODecorator {
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
         $STMT        = $this->Instance->prepare($sSQLPrepare);
+        if (!$this->bMulti) {
+            $this->resetCondition();
+        }
         return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ?
             $STMT->rowCount() :
             false;
