@@ -32,6 +32,7 @@ class Bag_Param extends Bag_Base{
         }
     }
 
+    /*
     public function set($mKeyOrKeys, $mValue=null)
     {
         if (is_array($mKeyOrKeys)) {
@@ -41,6 +42,7 @@ class Bag_Param extends Bag_Base{
         }
         return true;
     }
+    */
 
     /*
      *  check if isset

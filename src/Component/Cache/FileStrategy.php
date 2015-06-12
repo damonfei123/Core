@@ -105,7 +105,7 @@ class FileStrategy implements IStrategy{
      **/
     protected function getStoreFile($sKey)
     {
-        $sSubDir       = substr(crc32($sKey), 0,2);
+        $sSubDir       = substr(abs(crc32($sKey)), 0,2);
         $sCacheFullDir = sprintf('%s%s%s',$this->sCacheDir, $sSubDir, '/');
         if (!file_exists($sCacheFullDir) && !Dir::makeDir($sCacheFullDir)) {
             throw new \RuntimeException('[Cache] : Store Dir not exists And Make Fail');
