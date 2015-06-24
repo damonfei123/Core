@@ -38,9 +38,9 @@ class Event_Register{
                     $Log   = Context::getInst()->Log;
                     $iCost = @round(microtime(true) - Context::getInst()->Arr[Event_Register::E_REDIS_MODE], 6);
                     $Log->info(
-                        '[Redis] : Time : {cost}; cmd : {cmd}; Args : {args}',
+                        '[Redis] : Time : {cost}ms; cmd : {cmd}; Args : {args}',
                         array(
-                            'cost' => $iCost,
+                            'cost' => $iCost * 1000,
                             'args' => json_encode($aArgs),
                             'cmd'  => $sMethodName
                         )

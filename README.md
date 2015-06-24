@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2015-06-24 NoSQL->Redis 修复register的bug
+2015-06-24 NoSQL->Redis 修复register的bug,将执行时间修改为ms
 
 2015-06-12 更新
 
