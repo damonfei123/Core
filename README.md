@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-06-24 NoSQL->Redis 修复register的bug
+
 2015-06-12 更新
 
 2015-06-06 修复RDB里的BUG

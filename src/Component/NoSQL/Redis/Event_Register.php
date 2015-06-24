@@ -29,14 +29,14 @@ class Event_Register{
             Event::register(
                 self::E_ALL_BEFORE,
                 function($sMethodName, $aArgs=array()){
-                    Context::getInst()->Arr[self::E_REDIS_MODE] = microtime(true);
+                    Context::getInst()->Arr[Event_Register::E_REDIS_MODE] = microtime(true);
                 }
             );
             Event::register(
                 self::E_ALL_AFTER,
                 function($mResult, $sMethodName, $aArgs=array()){
                     $Log   = Context::getInst()->Log;
-                    $iCost = @round(microtime(true) - Context::getInst()->Arr[self::E_REDIS_MODE], 6);
+                    $iCost = @round(microtime(true) - Context::getInst()->Arr[Event_Register::E_REDIS_MODE], 6);
                     $Log->info(
                         '[Redis] : Time : {cost}; cmd : {cmd}; Args : {args}',
                         array(
