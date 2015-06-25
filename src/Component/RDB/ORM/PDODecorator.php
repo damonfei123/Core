@@ -439,12 +439,12 @@ class PDODecorator {
         if (true !== self::$_Model[$this->sTable]->validator($iModel)) return false;
     }
 
-    public function save($aSaveData=array(), $bLastInsertId=true)
+    public function save($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
     {
         if ($aSaveData) {
             $this->data($aSaveData);
         }
-        if (false === $this->autoCheck(Model::MODEL_INSERT)) {
+        if ($bAuthCheck && false === $this->autoCheck(Model::MODEL_INSERT)) {
             return false;
         }
         $aArgs        = array();
@@ -461,9 +461,9 @@ class PDODecorator {
         );
     }
 
-    public function add($aSaveData=array(), $bLastInsertId=true)
+    public function add($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
     {
-        return $this->save($aSaveData, $bLastInsertId);
+        return $this->save($aSaveData, $bLastInsertId, $bAuthCheck);
     }
 
 
