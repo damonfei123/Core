@@ -60,6 +60,7 @@ class C_Api extends C_Web_TBase{
             $this->sKeySMsg   => $sMsg,
             $this->sKeyAData  => $aData,
         );
+        die($this->__after__());
     }
 
     public function error($iStatus=-1, $sMsg='', $aData=array())
@@ -69,6 +70,7 @@ class C_Api extends C_Web_TBase{
             $this->sKeySMsg   => $sMsg,
             $this->sKeyAData  => $aData,
         );
+        die($this->__after__());
     }
 
     /**
