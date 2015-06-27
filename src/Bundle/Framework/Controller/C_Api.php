@@ -92,5 +92,6 @@ class C_Api extends C_Web_TBase{
         $sMethod = sprintf('_render%s', strtoupper($this->sRetType));
         $this->HttpResponse->setHeader('Content-Type', 'text/javascript', false);
         $this->HttpResponse->setContent($this->$sMethod());
+        $this->HttpResponse->send();
     }
 }
