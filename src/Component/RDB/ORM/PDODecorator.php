@@ -185,7 +185,11 @@ class PDODecorator {
                     $this->getPKWhere($mWhere),
                     $mWhere
                 );
-                $this->aWhere = array_merge($aWhere, $this->aWhere);
+                if ($this->aWhere) {
+                    $this->aWhere = array_merge($aWhere, $this->aWhere);
+                }else{
+                    $this->aWhere = $aWhere;
+                }
             }
         }
         return $this;

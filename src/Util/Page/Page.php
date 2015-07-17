@@ -84,7 +84,7 @@ class Page {
         $mListCB,
         &$aList
     ) {
-        $iPage             = max(1, (int)$this->HttpRequest->getG('page'));
+        $iPage             = max(1, (int)$this->HttpRequest->getGP('page'));
         $this->iNumPerPage = max(1, $this->iNumPerPage);
         #get total
         $sSelect     = $mCountCB[0]->getSelect();

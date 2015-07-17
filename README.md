@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-07-17 RDB where 方法bug，array_merge会把-1给清空
+
 2015-06-27 Api返回的时候直接输出错误码
 
 2015-06-26 Api 接口success和error后程序直接die掉
