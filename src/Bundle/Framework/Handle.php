@@ -35,19 +35,60 @@ class Handle{
             $mCBErrorHandle,
             $iErrType === null ? (E_ALL | E_STRICT) : (int)$iErrType
         );
+        register_shutdown_function();
         if ($mCBUncaughtException !== null) {
             self::$mCBUncaughtException = $mCBUncaughtException;
         }
     }
 
+    public static function registerShutdown(
+        $mCBShutDownHandle = array('Hummer\\Framework\\Handle', 'registerShutdownHandle')
+    ) {
+        //$o = new $mCBShutDownHandle[0]();
+        register_shutdown_function(array(
+            new $mCBShutDownHandle[0](),
+            'registerShutdownHandle'
+        ));
+    }
+
+    /*
+     *  Handle Shutdown
+     */
+    public static function registerShutdownHandle()
+    {
+        if($aErr = error_get_last()){
+            if($aErr['file'] == __FILE__){ return; }
+            self::errorHandle(
+                $aErr['type'],
+                sprintf('Catch Error[%d] : %s In File [%s], line %d ',
+                $aErr['type'],
+                $aErr['message'],
+                $aErr['file'],
+                $aErr['line']
+            ));
+        }
+    }
+
+    /*
+     *  Handle Error
+     */
     public static function handleError($iErrNum, $sErrStr, $sErrFile, $iErrLine, $sErrContext)
     {
-        $sStr = sprintf('Catch Error[%d] : %s In File [%s], line %d ',
+        self::errorHandle(
+            $iErrNum,
+            sprintf('Catch Error[%d] : %s In File [%s], line %d ',
             $iErrNum,
             $sErrStr,
             $sErrFile,
             $iErrLine
-        );
+        ));
+    }
+
+    /*
+     *  Error Handle For Loging
+     */
+    public static function errorHandle($iErrNum, $sStr='')
+    {
         $CTX = self::CTX();
         if ($CTX === null || !$CTX->isRegister('Log')) {
             trigger_error($sStr, E_USER_WARNING);
@@ -58,11 +99,19 @@ class Handle{
                 case E_USER_NOTICE:
                     $CTX->Log->notice($sStr);
                     break;
+                case E_ERROR: //1
+                case E_CORE_ERROR: //16
                 case E_USER_ERROR:
+                case E_COMPILE_ERROR: //64
                     $CTX->Log->error($sStr);
                     throw new \ErrorException('[Bootstrap] : Error' . $sStr);
                     break;
-                case E_USER_WARNING:
+                case E_PARSE: //4
+                    $CTX->Log->fatal($sStr);
+                    break;
+                case E_CORE_WARNING: //32
+                case E_USER_WARNING: //512
+                case E_COMPILE_WARNING: //128
                 default:
                     $CTX->Log->warn($sStr);
                     break;

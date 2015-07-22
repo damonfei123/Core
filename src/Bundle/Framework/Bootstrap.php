@@ -141,11 +141,13 @@ class Bootstrap{
     }
 
     public static function setHandle(
-        $mCBErrorHandle = array('Hummer\\Bundle\\Framework\\Handle', 'handleError'),
+        $mCBErrorHandle    = array('Hummer\\Bundle\\Framework\\Handle', 'handleError'),
+        $mCBShutDownHandle = array('Hummer\\Bundle\\Framework\\Handle', 'registerShutdown'),
         $iErrType = null,
         $mCBUncaughtException = null
     ) {
         Handle::setHandle($mCBErrorHandle, $iErrType, $mCBUncaughtException);
+        Handle::registerShutdown($mCBShutDownHandle);
     }
 
     public static function setDefaultErrorPage()
