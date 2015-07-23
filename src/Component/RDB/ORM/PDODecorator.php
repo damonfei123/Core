@@ -365,6 +365,14 @@ class PDODecorator {
         return $STMT->fetchAll();
     }
 
+    public function getColumn($iFetchMode=\PDO::FETCH_ASSOC)
+    {
+        $STMT = $this->Instance->prepare(sprintf('%s%s', 'SHOW COLUMNS FROM ', $this->sTable));
+        $STMT->execute();
+        $STMT->setFetchMode($iFetchMode ? $iFetchMode : \PDO::FETCH_ASSOC);
+        return Arr::changeIndex((array)$STMT->fetchAll(), 'Field');
+    }
+
     /**
      *  set Field increase
      *  @param $mField string|array
@@ -398,6 +406,7 @@ class PDODecorator {
     ){
         if (!is_null($mWhere)) $this->where($mWhere);
         $sSQL = $this->buildQuerySQL($aArgs);
+            $this->resetCondition();
         return $this->queryAndFind($sSQL, $aArgs, $iFetchMode);
     }
 
@@ -573,6 +582,7 @@ class PDODecorator {
         $aArgs = array();
         $sSQL  = self::buildDeleteSQL($this->aWhere, $aArgs);
         $STMT  = $this->Instance->prepare($sSQL);
+        $this->resetCondition();
         return false === $STMT->execute($aArgs) ? false : $STMT->rowCount();
     }
 
@@ -592,9 +602,7 @@ class PDODecorator {
         $aArgs       = $aUpdateData = array();
         $sSQLPrepare = $this->buildUpdateSQL($aUpdateData, $aArgs);
         $STMT        = $this->Instance->prepare($sSQLPrepare);
-        if (!$this->bMulti) {
             $this->resetCondition();
-        }
         return false !== $STMT->execute(array_merge($aUpdateData, $aArgs)) ?
             $STMT->rowCount() :
             false;
