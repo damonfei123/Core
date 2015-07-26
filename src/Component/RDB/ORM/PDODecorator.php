@@ -168,7 +168,9 @@ class PDODecorator {
 
     public function forceIndex($sIndexName)
     {
-        $this->sForceIndex = sprintf('force index(`%s`)',$sIndexName);
+        if ($sIndexName) {
+            $this->sForceIndex = sprintf('force index(`%s`)',$sIndexName);
+        }
         return $this;
     }
 
@@ -230,7 +232,9 @@ class PDODecorator {
 
     public function select($sSelect)
     {
-        $this->sSelect = $sSelect;
+        if ($sSelect) {
+            $this->sSelect = $sSelect;
+        }
         return $this;
     }
 
@@ -285,7 +289,9 @@ class PDODecorator {
 
     public function data(array $aData)
     {
-        $this->aData = $aData;
+        if ($aData) {
+            $this->aData = $aData;
+        }
         return $this;
     }
 
@@ -324,18 +330,24 @@ class PDODecorator {
 
     public function group($sColumn)
     {
-        $this->sGroupBy = sprintf('GROUP BY %s' , $sColumn);
+        if ($sColumn) {
+            $this->sGroupBy = sprintf('GROUP BY %s' , $sColumn);
+        }
         return $this;
     }
     public function having($sHaving)
     {
-        $this->sHaving = sprintf('HAVING %s', $sHaving);
+        if ($sHaving) {
+            $this->sHaving = sprintf('HAVING %s', $sHaving);
+        }
         return $this;
     }
 
     public function order($sOrder)
     {
-        $this->sOrder = sprintf('ORDER BY %s', $sOrder);
+        if ($sOrder) {
+            $this->sOrder = sprintf('ORDER BY %s', $sOrder);
+        }
         return $this;
     }
 
@@ -784,3 +796,4 @@ class PDODecorator {
         $this->sOrder      = '';
     }
 }
+
