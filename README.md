@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-07-29 修复HttpCall事件监听，解决低PHP版本不支持self::no active...bug
+
 2015-07-26 RDB方法作检测，如果为空，则不设置
 
 2015-07-23 RDB添加查询表字段的方法getColumns

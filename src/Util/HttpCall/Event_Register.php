@@ -29,14 +29,14 @@ class Event_Register{
             Event::register(
                 self::E_ALL_BEFORE,
                 function(){
-                    Context::getInst()->Arr[self::E_REDIS_MODE] = microtime(true);
+                    Context::getInst()->Arr[\Hummer\Util\HttpCall\Event_Register::E_REDIS_MODE] = microtime(true);
                 }
             );
             Event::register(
                 self::E_ALL_AFTER,
                 function($sUrl, $aParam, $mResult=array()){
                     $Log   = Context::getInst()->Log;
-                    $iCost = @round(microtime(true) - Context::getInst()->Arr[self::E_REDIS_MODE], 6);
+                    $iCost = @round(microtime(true) - Context::getInst()->Arr[\Hummer\Util\HttpCall\Event_Register::E_REDIS_MODE], 6);
                     $Log->info(
                         '[HttpCall] : Time : {cost}; url : {url}; param: {param}; Result : {result}',
                         array(
