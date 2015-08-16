@@ -16,8 +16,14 @@ namespace Hummer\Component\Helper;
 
 class Arr{
 
-    public static function get($aData, $sKey, $sDefault = null)
+    public static function get($aData, $sKey, $sDefault = null, $bExplain=true)
     {
+        if (!is_array($aData)) {
+            return $aData;
+        }
+        if ($bExplain AND false !== strpos($sKey, '.')) {
+            return self::getBySmarty($aData, $sKey, $sDefault);
+        }
         return isset($aData[$sKey]) ? $aData[$sKey] : $sDefault;
     }
 
@@ -51,29 +57,20 @@ class Arr{
      *  Get Array Data By Smarty Way
      *  getBySmarty(array('name' => array('first' => 'zhang')), 'name.first');
      **/
-    public static function getBySmarty($mArr, $sKey = '', $sSepetator='.')
+    public static function getBySmarty($mArr, $sKey = '', $sDefault = null,  $sSepetator='.')
     {
         while ($sKey AND
                is_array($mArr) AND
                false !== ($iPos=strpos($sKey, $sSepetator))
         ){
             $sTK  = substr($sKey, 0, $iPos);
-            $mArr = Arr::get($mArr, $sTK, null);
+            $mArr = Arr::get($mArr, $sTK, $sDefault);
             $sKey = substr($sKey, $iPos + 1);
         }
-        return Helper::TOOP(is_array($mArr), Arr::get($mArr, $sKey, null), $mArr);
-    }
-
-    /*
-     *  Change Array By Add a PreKey to Key
-     */
-    public static function keyAddPre(array $aArr = array(), $sPre = '')
-    {
-        $sPre = trim($sPre);
-        $aNewArr = array();
-        if ($sPre) foreach ($aArr as $sK => $mV) {
-            $aNewArr[sprintf('%s%s', $sPre, $sK)] = $mV;
-        }
-        return $aNewArr ? $aNewArr : $aArr;
+        return Helper::TOOP(
+            is_array($mArr) AND $sKey,
+            Arr::get($mArr, $sKey, $sDefault, false),
+            $sDefault
+        );
     }
 }

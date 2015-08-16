@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-08-16 Arr::get支持直接xx.xx去取数组里的值
+
 2015-08-06 RDB支持 where   ==  is null
 
 2015-07-29 修复HttpCall事件监听，解决低PHP版本不支持self::no active...bug
