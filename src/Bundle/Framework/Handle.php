@@ -35,7 +35,7 @@ class Handle{
             $mCBErrorHandle,
             $iErrType === null ? (E_ALL | E_STRICT) : (int)$iErrType
         );
-        register_shutdown_function();
+        //register_shutdown_function();
         if ($mCBUncaughtException !== null) {
             self::$mCBUncaughtException = $mCBUncaughtException;
         }
