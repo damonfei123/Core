@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-08-24 Cache缓存添加Redis缓存
+
 2015-08-16 Arr::get支持直接xx.xx去取数组里的值
 
 2015-08-06 RDB支持 where   ==  is null
