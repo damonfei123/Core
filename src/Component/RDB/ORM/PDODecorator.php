@@ -616,7 +616,7 @@ class PDODecorator {
      *  @bAuthCheck boolean if check
      */
     public function update($mWhere=null, $bAuthCheck=true) {
-        if (false === $this->autoCheck(Model::MODEL_UPDATE)) {
+        if ($bAuthCheck && false === $this->autoCheck(Model::MODEL_UPDATE)) {
             return false;
         }
         if (!is_null($mWhere)) $this->where($mWhere);
