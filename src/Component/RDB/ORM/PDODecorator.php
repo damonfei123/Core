@@ -464,6 +464,11 @@ class PDODecorator {
         if (true !== self::$_Model[$this->sTable]->validator($iModel)) return false;
     }
 
+    /*
+     *  $aSaveData array SaveData
+     *  $bLastInsertId boolean if return lastinsertid
+     *  $bAuthCheck boolean if auto check model
+     */
     public function save($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
     {
         if ($aSaveData) {
@@ -606,7 +611,11 @@ class PDODecorator {
         );
     }
 
-    public function update($mWhere=null) {
+    /*
+     *  @mWhere     mix Where Condition
+     *  @bAuthCheck boolean if check
+     */
+    public function update($mWhere=null, $bAuthCheck=true) {
         if (false === $this->autoCheck(Model::MODEL_UPDATE)) {
             return false;
         }
