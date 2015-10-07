@@ -14,6 +14,7 @@
 **************************************************************************************/
 namespace Hummer\Bundle\Framework\Controller;
 
+use Hummer\Component\Helper\Arr;
 use Hummer\Component\Context\Context;
 
 class C_Api extends C_Web_TBase{
@@ -79,6 +80,14 @@ class C_Api extends C_Web_TBase{
     public function _renderJSON()
     {
         return json_encode($this->aData);
+    }
+
+    /**
+     *  XML
+     **/
+    public function _renderXML()
+    {
+        return Arr::Arr2XML(Arr::get($this->aData, $this->sKeyAData));
     }
 
     public function __after__()

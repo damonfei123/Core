@@ -73,4 +73,34 @@ class Arr{
             $sDefault
         );
     }
+
+    /*
+     *  Change Arr To XML
+     *  @param $aArr    Target Arr
+     *  @param $sRoot   Root Name
+     */
+    public static function Arr2XML(array $aArr = array(), $sRoot='root')
+    {
+        function create($arr, $xml) {
+            foreach($arr as $k=>$v) {
+                if(is_array($v)) {
+                    $x = $xml->addChild($k);
+                    create($v, $x);
+                }else {
+                    $xml->addChild($k, $v);
+                }
+            }
+        }
+        $xml = simplexml_load_string('<'.$sRoot.' />');
+        create($aArr, $xml);
+        return $xml->saveXML();
+    }
+
+    /*
+     *  XML Change To Arr
+     */
+    public function XML2Arr($xmlstring)
+    {
+        return json_decode(json_encode((array) simplexml_load_string($xmlstring)), true);
+    }
 }
