@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-10-14 加强Page类
+
 2015-10-07 Arr添加xml的互转，Api接口里增加返回XML的格式功能
 
 2015-09-10 update加参数是否使用Model Validate

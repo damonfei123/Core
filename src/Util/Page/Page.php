@@ -51,7 +51,7 @@ class Page {
     protected $bAssoc = false;
 
     public function __construct(
-        $iNumPerPage=10,
+        $iNumPerPage=20,
         $aPageConfig=array(),
         $sPageStyle=null,
         $mDefaultRender = array('Hummer\\Util\\Page\\Page', 'defaultRender')
@@ -68,21 +68,23 @@ class Page {
         $this->bAssoc = $bAssoc;
     }
 
-    public function getPage($M, &$aList)
+    public function getPage($M, &$aList, &$aParam = null)
     {
         $M->bMulti = true;
         $MM = clone $M;
         return $this->getPageFromCB(
             array($M, 'findCount'),
             array($MM, Helper::TOOP($this->bAssoc, 'findCustom', 'findMulti')),
-            $aList
+            $aList,
+            $aParam
         );
     }
 
     public function getPageFromCB(
         $mCountCB,
         $mListCB,
-        &$aList
+        &$aList,
+        &$aParam
     ) {
         $iPage             = max(1, (int)$this->HttpRequest->getGP('page'));
         $this->iNumPerPage = max(1, $this->iNumPerPage);
@@ -93,14 +95,21 @@ class Page {
         $iMaxPage    = ceil( $iTotal / $this->iNumPerPage );
 
         if ($iPage > $iMaxPage) {
-            throw new \InvalidArgumentException('[Page] : Page params error, page > maxpage');
+            //throw new \InvalidArgumentException('[Page] : Page params error, page > maxpage');
+            return false;
         }
         $M      = $mListCB[0];
         $M->select($sSelect);
         $M->limit(($iPage-1) * $this->iNumPerPage, $this->iNumPerPage);
         $aList  = call_user_func(array($M, $mListCB[1]));
+        $aParam = array(
+            'page'      => $iPage,
+            'iMaxPage'  => $iMaxPage,
+            'total'     => $iTotal
+        );
         return call_user_func_array($this->mDefaultRender,array($this->HttpRequest,array(
             'page'      => $iPage,
+            'iMaxPage'  => $iMaxPage,
             'total'     => $iTotal
         ),$this->aPageConfig, $this->sPageStyle));
     }
