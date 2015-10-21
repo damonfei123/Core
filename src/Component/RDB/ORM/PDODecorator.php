@@ -703,8 +703,10 @@ class PDODecorator {
                     $aWhereBuild[] = "$sKey BETWEEN ? AND ?";
                     $aArgs[]       = array_shift($mV);
                     $aArgs[]       = array_shift($mV);
-                }else if(strtoupper(trim($mV)) == 'IS NULL'){
+                }else if(str_replace(' ', '', strtoupper(trim($mV)) == 'ISNULL')){
                     $aWhereBuild[] = "$sKey IS NULL";
+                }else if (str_replace(' ', '', strtoupper(trim($mV)) == 'ISNOTNULL')){
+                    $aWhereBuild[] = "$sKey IS NOT NULL";
                 }else {
                     $aWhereBuild[] = sprintf(' %s %s ? ',$sKey, $sOP);
                     $aArgs[]       = $mV;

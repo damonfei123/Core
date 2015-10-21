@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-10-21 RDB添加is not null的支持
+
 2015-10-14 加强Page类
 
 2015-10-07 Arr添加xml的互转，Api接口里增加返回XML的格式功能
