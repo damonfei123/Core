@@ -101,6 +101,10 @@ class Bootstrap{
             #Smarty Exception
             $this->Context->Log->fatal($E->getMessage());
             exit(1);
+        }catch(\PDOException $E){
+            #PDOException Exception
+            $this->Context->Log->fatal($E->getMessage());
+            exit(1);
         }catch(\Exception $E){
             #Uncatch Error
             $this->Context->Log->warn($E->getMessage());

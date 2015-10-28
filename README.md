@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2015-10-22 caught pdoexception
+
 2015-10-21 RDB添加is not null的支持
 
 2015-10-14 加强Page类
