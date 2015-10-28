@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2015-10-22 caught pdoexception
+2015-10-28 caught pdoexception & 添加RDB Where表达式写法的支持
 
 2015-10-21 RDB添加is not null的支持
 

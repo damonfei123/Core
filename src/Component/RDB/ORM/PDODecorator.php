@@ -672,6 +672,7 @@ class PDODecorator {
 
         # 遍历条件
         $aWhere = $mWhere;
+
         foreach ($aWhere as $sK => $mV) {
             if (is_int($sK)) {
                 # 如果是子条件, 递归调用
@@ -681,8 +682,9 @@ class PDODecorator {
             } else {
                 # 如果不是子条件, 解析
                 list($sKey, $sOP) = array_replace(array('', '='), explode(' ', $sK, 2));
-                $sKey = self::addQuote($sKey);
-                $sOP  = trim(strtoupper($sOP));
+                $sOriginKey = $sKey;
+                $sKey       = self::addQuote($sKey);
+                $sOP        = trim(strtoupper($sOP));
                 if (in_array($sOP, array('IN', 'NOT IN'))) {
                     if (empty($mV)) {
                         $aWhereBuild[] = '1';
@@ -707,6 +709,11 @@ class PDODecorator {
                     $aWhereBuild[] = "$sKey IS NULL";
                 }else if (str_replace(' ', '', strtoupper(trim($mV))) == 'ISNOTNULL'){
                     $aWhereBuild[] = "$sKey IS NOT NULL";
+                }else if(
+                    in_array(strtoupper($sOriginKey), array('EX', 'EXPRESS')) AND
+                    strpos($sOriginKey, '`') === false
+                ){
+                    $aWhereBuild[] = $mV;
                 }else {
                     $aWhereBuild[] = sprintf(' %s %s ? ',$sKey, $sOP);
                     $aArgs[]       = $mV;
@@ -737,7 +744,7 @@ class PDODecorator {
 
     public static function _addQuote($sK)
     {
-        return $sK[0] === ':' ? substr($sK, 1) : "`$sK`";
+        return $sK[0] === ':' ? substr($sK, 1) : (false === strpos($sK, '`') ? "`$sK`" : "$sK");
     }
 
     /**
@@ -809,4 +816,3 @@ class PDODecorator {
         $this->sOrder      = '';
     }
 }
-
