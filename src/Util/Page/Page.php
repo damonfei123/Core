@@ -21,6 +21,11 @@ use Hummer\Component\Context\Context;
 class Page {
 
     /**
+     *  @var int
+     **/
+    public $iTotal = null;
+
+    /**
      *  @var $HttpRequest Context::HttpRequest
      **/
     protected $HttpRequest;
@@ -90,7 +95,7 @@ class Page {
         $this->iNumPerPage = max(1, $this->iNumPerPage);
         #get total
         $sSelect     = $mCountCB[0]->getSelect();
-        $iTotal      = call_user_func($mCountCB);
+        $iTotal      = null !== $this->iTotal ? $this->iTotal : call_user_func($mCountCB);
 
         $iMaxPage    = ceil( $iTotal / $this->iNumPerPage );
 
