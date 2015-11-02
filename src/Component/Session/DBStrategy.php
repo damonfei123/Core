@@ -88,7 +88,7 @@ class DBStrategy implements IStrategy{
     public function read($id)
     {
         $V = $this->DB->find(array($this->k => $id));
-        return $V ? $V->{$this->v} : null;
+        return \Hummer\Component\RDB\ORM\Factory::isModelDataEmpty($V) ? null : $V->{$this->v};
     }
 
     /**
