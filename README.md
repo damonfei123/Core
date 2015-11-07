@@ -5,6 +5,7 @@ Core
 
 更新LOG
 
+
 2015-11-01 Page: public total for user, solving group bug, fix session db
 
 2015-10-28 caught pdoexception & 添加RDB Where表达式写法的支持
