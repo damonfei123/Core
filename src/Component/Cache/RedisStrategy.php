@@ -17,7 +17,7 @@ namespace Hummer\Component\Cache;
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 
-class RedisStrategy implements IStrategy{
+class RedisStrategy extends BaseStrategy implements IStrategy{
 
     /**
      *  @var $sCacheDir Cache Dir
@@ -34,7 +34,7 @@ class RedisStrategy implements IStrategy{
     /**
      *  @var Private key
      **/
-    const __CACHE__KEY__ = 'hummer.src.Component.Cache.#(*@#&*@@)!_)#+';
+    const __CACHE__KEY__     = 'hummer.src.Component.Cache.#(*@#&*@@)!_)#+';
 
     /**
      *  @var $sCacheDir Cache Dir
@@ -55,12 +55,18 @@ class RedisStrategy implements IStrategy{
             if (is_resource($mVal)) {
                 throw new \InvalidArgumentException('[Cache] : ERROR serialize can a resource');
             }
-            return !!$this->Redis->set($this->getStoreFile($sKey), sprintf('%s:%s:%s',
+            if($bRet=!!$this->Redis->set($this->getStoreFile($sKey), sprintf('%s:%s:%s',
                 Helper::TOOP($iExpire, time() + $iExpire, time() + $this->iExpire),
                 Helper::TOOP(is_object($mVal), 1, 2),
                 Helper::TOOP(is_object($mVal), serialize($mVal), json_encode($mVal))
-            ));
+            ))){
+                if ($sKey != self::__CACHE_KEY_DATA__) {
+                    $this->addKey($sKey, $iExpire);
+                }
+            };
+            return $bRet;
         }else{
+            $aTData = $aData;
             foreach ($sKey as $aData) {
                 if(!$this->store(
                     $aData ? array_shift($aData) : null,
@@ -69,6 +75,9 @@ class RedisStrategy implements IStrategy{
                 )){
                     return false;
                 }
+            }
+            if ($sKey != self::__CACHE_KEY_DATA__) {
+                $this->addKey($sKey, $aTData);
             }
             return true;
         }
@@ -103,7 +112,7 @@ class RedisStrategy implements IStrategy{
      **/
     public function delete($sKey)
     {
-        $this->Redis->del($this->getStoreFile($sKey));
+        $this->Redis->del($this->getStoreFile($sKey)) AND $this->deleteKey($sKey);
     }
 
     /**

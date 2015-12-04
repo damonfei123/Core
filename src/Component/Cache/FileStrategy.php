@@ -18,7 +18,7 @@ use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;
 use Hummer\Component\Filesystem\Dir;
 
-class FileStrategy implements IStrategy{
+class FileStrategy extends BaseStrategy implements IStrategy{
 
     /**
      *  @var $sCacheDir Cache Dir
@@ -57,11 +57,16 @@ class FileStrategy implements IStrategy{
         if (is_resource($mVal)) {
             throw new \InvalidArgumentException('[Cache] : ERROR serialize can a resource');
         }
-        return !!file_put_contents($this->getStoreFile($sKey), sprintf('%s:%s:%s',
+        if($bRet = !!file_put_contents($this->getStoreFile($sKey), sprintf('%s:%s:%s',
             Helper::TOOP($iExpire, time() + $iExpire, time() + $this->iExpire),
             Helper::TOOP(is_object($mVal), 1, 2),
             Helper::TOOP(is_object($mVal), serialize($mVal), json_encode($mVal))
-        ));
+        ))){
+            if ($sKey != self::__CACHE_KEY_DATA__) {
+                $this->addKey($sKey, $iExpire);
+            }
+        };
+        return $bRet;
     }
 
     /**
@@ -95,7 +100,7 @@ class FileStrategy implements IStrategy{
     public function delete($sKey)
     {
         if(file_exists($sStoreFile=$this->getStoreFile($sKey))){
-            @unlink($sStoreFile);
+            @unlink($sStoreFile) AND $this->deleteKey($sKey);
         }
     }
 

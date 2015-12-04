@@ -40,4 +40,11 @@ interface IStrategy{
      **/
     public function delete($sKey);
 
+    /**
+     *  get Cache Keys Data
+     *  @param NULL
+     *  @return Array
+     **/
+    public function keys();
+
 }
