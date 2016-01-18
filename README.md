@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2016-01-18 Log类添加自定义日志存储管理 CTX()->Log->{filename}(/*loginfo*/);
+
 2015-11-04 添加对Cache类key的管理
 
 2015-11-01 Page: public total for user, solving group bug, fix session db
