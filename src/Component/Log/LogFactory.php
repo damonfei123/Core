@@ -27,6 +27,7 @@ class LogFactory implements ILogger{
     const DESC_NOTICE  = 'notice';
     const DESC_ERROR   = 'error';
     const DESC_FATEAL  = 'fatal';
+    const DESC_CUSTOM  = 'custom';
     const DESC_ALL     = 'all';
 
     const LEVEL_DEBUG   = 1;
@@ -35,6 +36,7 @@ class LogFactory implements ILogger{
     const LEVEL_NOTICE  = 8;
     const LEVEL_ERROR   = 16;
     const LEVEL_FATEAL  = 32;
+    const LEVEL_CUSTOM  = 128;
     const LEVEL_ALL     = 255;
 
     public static $aLogInfo = array(
@@ -43,6 +45,7 @@ class LogFactory implements ILogger{
         self::LEVEL_WARN    => self::DESC_WARN,
         self::LEVEL_NOTICE  => self::DESC_NOTICE,
         self::LEVEL_ERROR   => self::DESC_ERROR,
+        self::LEVEL_CUSTOM  => self::DESC_CUSTOM,
         self::LEVEL_FATEAL  => self::DESC_FATEAL
     );
     public static function getLogNameByLevelID($iLevel)
@@ -90,6 +93,11 @@ class LogFactory implements ILogger{
     public function fatal($sMessage, array $aContext = array())
     {
         $this->log(self::LEVEL_FATEAL, $sMessage, $aContext);
+    }
+    public function __call($name, $args)
+    {
+        self::$aLogInfo[self::LEVEL_CUSTOM] = $name;
+        $this->log(self::LEVEL_CUSTOM, array_shift($args), array());
     }
 
     public function log($iLevel, $sMessage, $aContext=array())
