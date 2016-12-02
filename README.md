@@ -5,7 +5,7 @@ Core
 
 更新LOG
 
-2016-12-02 Lock类添加文件缓存,Cache缓存类文件整理
+2016-12-02 1.Lock类添加文件缓存, 2.Cache缓存类文件整理
 
 2016-01-18 Log类添加自定义日志存储管理 CTX()->Log->{filename}(/*loginfo*/);
 
