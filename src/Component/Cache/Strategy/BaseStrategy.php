@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Cache;
+namespace Hummer\Component\Cache\Strategy;
 
 class BaseStrategy{
 

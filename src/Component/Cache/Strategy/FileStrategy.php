@@ -12,7 +12,7 @@
    +-----------------------------------------------------------------------------+
 
 **************************************************************************************/
-namespace Hummer\Component\Cache;
+namespace Hummer\Component\Cache\Strategy;
 
 use Hummer\Component\Helper\Arr;
 use Hummer\Component\Helper\Helper;

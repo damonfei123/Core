@@ -26,7 +26,12 @@ class CacheFactory{
     public function __construct()
     {
         $aArgs = func_get_args();
-        $this->Cache = Suger::createObjAdaptor(__NAMESPACE__, $aArgs, '', 'Strategy');
+        $this->Cache = Suger::createObjAdaptor(
+            sprintf('%s\%s', __NAMESPACE__, 'Strategy'),
+            $aArgs,
+            '',
+            'Strategy'
+        );
     }
 
 
