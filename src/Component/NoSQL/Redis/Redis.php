@@ -48,8 +48,28 @@ class Redis{
                     $this->Redis,
                     Helper::TOOP(isset($this->aConfig['pconnect']),'pconnect','connect')
                 ),
-                $this->aConfig['server']
+                array_slice($this->aConfig['server'], 0, 2)
             );
+            $sAuth = null;
+            if (
+                isset($this->aConfig['server'][2]) &&
+                isset($this->aConfig['server'][3])
+            ) {
+                $sAuth = sprintf(
+                    '%s:%s',
+                    $this->aConfig['server'][2],
+                    $this->aConfig['server'][3]
+                );
+            }else if (isset($this->aConfig['server'][2])){
+                $sAuth = $this->aConfig['server'][2];
+            }
+            if ($sAuth && $this->Redis->auth($sAuth) == false) {
+                throw new \Exception(sprintf(
+                    'Redis Server Auth Error, Please Check RedisConfig: %s,%s',
+                    $sAuth,
+                    print_r($this->aConfig['server'], true)
+                ));
+            }
         }
         return $this->Redis;
     }
