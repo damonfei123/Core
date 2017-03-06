@@ -91,7 +91,7 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
     public function fetch($sKey, $bGC = true)
     {
         $sStoreFile = $this->getStoreFile($sKey);
-        if(!$sContent = apc_get($sStoreFile)){
+        if(!$sContent = apc_exists($sStoreFile)){
             return null;
         };
         $iExpire    = substr($sContent, 0, strpos($sContent, ':'));
@@ -114,7 +114,8 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
      **/
     public function delete($sKey)
     {
-        apc_delete($this->getStoreFile($sKey)) AND $this->deleteKey($sKey);
+        $sStoreFile = $this->getStoreFile($sKey);
+        apc_exists($sStoreFile) AND apc_delete($sStoreFile) AND $this->deleteKey($sKey);
     }
 
     /**
