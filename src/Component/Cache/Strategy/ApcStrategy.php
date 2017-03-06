@@ -53,18 +53,12 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
 
     /**
      *  Cache Data
+     *  Apc cache caches mix data,such as int, string, array, object ...
      **/
     public function store($sKey, $mVal=null, $iExpire=null)
     {
         if (!is_array($sKey)) {
-            if (is_resource($mVal)) {
-                throw new \InvalidArgumentException('[Cache] : ERROR serialize can a resource');
-            }
-            if($bRet=!!apc_store($this->getStoreFile($sKey), sprintf('%s:%s:%s',
-                Helper::TOOP($iExpire, time() + $iExpire, time() + $this->iExpire),
-                Helper::TOOP(is_object($mVal), 1, 2),
-                Helper::TOOP(is_object($mVal), serialize($mVal), json_encode($mVal))
-            ))){
+            if($bRet=!!apc_store($this->getStoreFile($sKey), $mVal, Helper::TOOP($iExpire, time() + $iExpire, time() + $this->iExpire))){
                 if ($sKey != self::__CACHE_KEY_DATA__) {
                     $this->addKey($sKey, $iExpire);
                 }
@@ -94,22 +88,7 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
     public function fetch($sKey, $bGC = true)
     {
         $sStoreFile = $this->getStoreFile($sKey);
-        if(!$sContent = apc_exists($sStoreFile)){
-            return null;
-        };
-        $iExpire    = substr($sContent, 0, strpos($sContent, ':'));
-        $sContent   = substr($sContent, strpos($sContent, ':') + 1);
-        $iType      = substr($sContent, 0, strpos($sContent, ':'));
-        $sContent   = substr($sContent, strpos($sContent, ':') + 1);
-        $mStoreData = 1 == $iType ?
-            unserialize($sContent) :
-            json_decode($sContent, true);
-        //expire
-        if ($iExpire < time()) {
-            if ($bGC) $this->delete($sKey);
-            return null;
-        }
-        return $mStoreData;
+        return apc_exists($sStoreFile) ? apc_get($sStoreFile) : null;
     }
 
     /**
