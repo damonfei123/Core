@@ -45,6 +45,9 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
         if ( ! extension_loaded('apc')) {
             throw new ModuleErrorException('[Cache] : module apc extension is not loaded');
         }
+        if(strtolower(PHP_SAPI) === \Hummer\Bundle\Framework\Bootstrap::S_RUN_CLI AND !ini_get('apc.enable_cli')) {
+            throw new ModuleErrorException('[Cache] : apc cli module is not allowed, please enable apc in cli by config ini=> apc.enable_cli');
+        }
         $this->iExpire = $iExpire;
     }
 
