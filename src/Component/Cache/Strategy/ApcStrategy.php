@@ -40,7 +40,7 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
      *  @var $sCacheDir Cache Dir
      *  @var $iCacheTime Default Expire Time
      **/
-    public function __construct($apc, $iExpire = 86400)
+    public function __construct($apc=null, $iExpire = 86400)
     {
         if ( ! extension_loaded('apc')) {
             throw new ModuleErrorException('[Cache] : module apc extension is not loaded');
@@ -88,7 +88,7 @@ class ApcStrategy extends BaseStrategy implements IStrategy{
     public function fetch($sKey, $bGC = true)
     {
         $sStoreFile = $this->getStoreFile($sKey);
-        return apc_exists($sStoreFile) ? apc_get($sStoreFile) : null;
+        return apc_exists($sStoreFile) ? apc_fetch($sStoreFile) : null;
     }
 
     /**
