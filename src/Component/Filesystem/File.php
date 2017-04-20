@@ -38,7 +38,7 @@ class File extends Filesystem{
     public static function getFileToArr(
         $sFilePath,
         $iLenth=1024,
-        $aCallable=array('\\Hummer\\Component\\Helper\\File', 'Handle')
+        $aCallable=array('\\Hummer\\Component\\Filesystem\\File', 'Handle')
     ) {
         if (self::Exists($sFilePath)) {
             $aRet = array();
