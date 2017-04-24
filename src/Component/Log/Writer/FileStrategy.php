@@ -129,8 +129,8 @@ class FileStrategy implements IStrategy{
                 array($sLevelName, $sDate, $sMonth),
                 $this->sFileFormat
             );
-            if(!Dir::makeDir(dirname($sFilePath))){
-                throw new \RuntimeException('[Log] : Make Dir Error');
+            if(!Dir::makeDir($sDirPath=dirname($sFilePath))){
+                throw new \RuntimeException('[Log] : Make Dir Error, Dir Path : ' . $sDirPath);
             }
             file_put_contents(
                 $sFilePath ,
