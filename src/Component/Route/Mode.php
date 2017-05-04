@@ -75,7 +75,8 @@ class Mode{
         array $aDefaultCA = array('main', 'default')
     ) {
         $aParam     = isset($aArgv[2]) ? (array)json_decode($aArgv[2], true) : array();
-        $sRoute     = Helper::TrimInValidURI($aArgv[1], '..', '.');
+        $sCliRoute  = isset($aArgv[1]) ? $aArgv[1] : implode('.', $aDefaultCA);
+        $sRoute     = Helper::TrimInValidURI($sCliRoute, '..', '.');
         $aURLPATH   = explode('.', $sRoute);
         #Action
         $sURIAction = array_pop($aURLPATH);
