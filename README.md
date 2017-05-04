@@ -7,6 +7,8 @@ Core
 
 2017-05-04 Fix bug where cli no controller.action input Warrning
 
+2017-03-06 缓存类添加APC模块
+
 2016-12-18 fix redis auth bug
 
 2016-12-02 1.Lock类添加文件缓存, 2.Cache缓存类文件整理
