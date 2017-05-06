@@ -121,6 +121,10 @@ class FileStrategy implements IStrategy{
      **/
     public function __destruct()
     {
+        $this->flush();
+    }
+    public function flush()
+    {
         $sDate  = Time::time(null,$this->sDateFormat);
         $sMonth = Time::time(null,$this->sMonthFormat);
         foreach ($this->aData as $sLevelName => $aContent) {
