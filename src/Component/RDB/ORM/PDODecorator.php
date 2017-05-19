@@ -99,7 +99,7 @@ class PDODecorator {
 
     public function __set($sKey, $sVal)
     {
-        Arr::get(self::$_Model, $this->sTable)->$sKey = $sVal;
+        Arr::get(self::$_Model, $this->sTable, null, FALSE)->$sKey = $sVal;
         return true;
     }
 

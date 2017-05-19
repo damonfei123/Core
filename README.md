@@ -5,6 +5,8 @@ Core
 
 更新LOG
 
+2017-05-19 M()带db的时候有bug，紧急修复
+
 2017-05-04 Fix bug where cli no controller.action input Warrning
 
 2017-03-06 缓存类添加APC模块
