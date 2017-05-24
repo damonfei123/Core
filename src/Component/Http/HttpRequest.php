@@ -83,7 +83,7 @@ class HttpRequest{
 
     public function issetG($mKey=null)
     {
-        return $mKeyOrKeys === null ? false : $this->BagGET->checkIsSet($mKey);
+        return $mKey === null ? false : $this->BagGET->checkIsSet($mKey);
     }
 
     public function getG($mKeyOrKeys=null)
