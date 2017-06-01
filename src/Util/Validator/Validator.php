@@ -40,6 +40,7 @@ class Validator {
         'email'   => 'EmailValidator',
         'express' => 'ExpressValidator',
         'unique'  => 'UniqueValidator',
+        'date'    => 'DateValidator',
     );
 
     /**

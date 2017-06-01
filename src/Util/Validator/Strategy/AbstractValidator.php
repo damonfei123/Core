@@ -80,6 +80,8 @@ abstract class AbstractValidator {
             'mobile'  => '{key} is not a mobile',
             //email
             'email'   => '{key} : {value} is not a email',
+            //date
+            'date'   => '{key} : {value} is not a valid date',
         );
         $iPosKeyRuleName = false !== ($iPos = strpos($sKey, '.')) ? $iPos+1 : 0;
         $sMessage = Arr::get(
