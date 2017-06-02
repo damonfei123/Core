@@ -98,9 +98,7 @@ class Validator {
     public function validate()
     {
         foreach ($this->aRule as $aRule) {
-            if (count($aRule) < 2) {
-                throw new ValidatorException('[Validator] : Rule Error : '.var_export($aRule, true));
-            }
+            if (count($aRule) < 2) { continue; }
             $sKey       = array_shift($aRule);
             $sValidator = array_shift($aRule);
             $Validator  = $this->createValidator(
