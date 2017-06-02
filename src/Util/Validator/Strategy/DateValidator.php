@@ -33,15 +33,19 @@ class DateValidator extends AbstractValidator{
         'y/m/d H:i:s',
     );
 
+    /**
+     *  @Rule
+     *  array('key')
+     *  array('key', array('Y-m')) or array('key', 'Y-m')   only validate for array('Y-m')
+     *  array('key', array('Y-m'), 1)  validate for array('Y-m') + $this->aDateFormateValidate
+     **/
     public function validator()
     {
-        if(!$mDateFormateValidate=array_shift($this->aRule)) {
+        if(!$mDateFormateValidate=(array)array_shift($this->aRule)) {
             $mDateFormateValidate = $this->aDateFormateValidate;
         }
-        if (!is_array($mDateFormateValidate)) {
-            $mDateFormateValidate = (array)$mDateFormateValidate;
-        }
-        foreach ($mDateFormateValidate as $sFormatDate) {
+        array_shift($this->aRule) && ($mDateFormateValidate=array_merge($mDateFormateValidate, $this->aDateFormateValidate));
+        foreach (array_unique($mDateFormateValidate) as $sFormatDate) {
             if (date($sFormatDate, strtotime($this->mValue)) == $this->mValue) {
                 return true;
             }
