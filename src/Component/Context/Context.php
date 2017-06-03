@@ -109,7 +109,7 @@ class Context {
             }
         }
         if (!isset($this->__aModuleConf__[$sModelName])) {
-            throw new \DomainException('[CTX] : Error : no module found');
+            throw new \DomainException('[CTX] : Error : no module['.$sModelName.'] found');
         }
         return $this->__aModuleConf__[$sModelName];
     }

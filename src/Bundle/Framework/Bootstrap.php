@@ -52,29 +52,30 @@ class Bootstrap{
     public function __construct(
         $Configure,
         $sEnv = null,
+        $sDefaultLog = 'Log',
         $Template = 'Template'
     ) {
         Context::makeInst();
         $this->Context = Context::getInst();
+        $sRunMode      = Helper::TOOP( strtolower(PHP_SAPI) === self::S_RUN_CLI, self::S_RUN_CLI, self::S_RUN_HTTP);
         $aRegisterMap = array(
-            'Config'    => $Configure,
             'sEnv'      => $sEnv,
             'Arr'       => array(),
-            'Route'     => new Route($this->Context),
-            'sRunMode'  => Helper::TOOP(
-                strtolower(PHP_SAPI) === self::S_RUN_CLI,
-                self::S_RUN_CLI,
-                self::S_RUN_HTTP
-            )
+            'Route'     => new Route($this->Context)
         );
 
-        if (self::S_RUN_HTTP == $aRegisterMap['sRunMode']) {
+        if (self::S_RUN_HTTP == $sRunMode) {
             $aRegisterMap['HttpRequest']  = new HttpRequest();
             $aRegisterMap['HttpResponse'] = new HttpResponse();
-        }elseif(self::S_RUN_CLI == $aRegisterMap['sRunMode']){
+        }elseif(self::S_RUN_CLI == $sRunMode){
             $aRegisterMap['aArgv'] = $GLOBALS['argv'];
         }
         #Register
+        $this->Context->registerMulti(array(
+            'Config'    =>  $Configure,
+            'sRunMode'  => $sRunMode
+        ));
+        $this->Context->register('Log', $this->Context->$sDefaultLog);//default log
         $this->Context->registerMulti($aRegisterMap);
         $this->Context->register('Template', $this->Context->$Template);
     }
