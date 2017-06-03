@@ -92,14 +92,16 @@ class C_Api extends C_Web_TBase{
 
     public function __after__()
     {
+        /*
         #disable WebLog
         foreach ($this->Log->aWriter as $aWriter) {
             if ($aWriter instanceof \Hummer\Component\Log\Writer\WebPageStrategy){
                 $aWriter->disable();
             }
         }
-        $sMethod = sprintf('_render%s', strtoupper($this->sRetType));
         $this->HttpResponse->setHeader('Content-Type', 'text/javascript', false);
+        */
+        $sMethod = sprintf('_render%s', strtoupper($this->sRetType));
         $this->HttpResponse->setContent($this->$sMethod());
         $this->HttpResponse->send();
     }
