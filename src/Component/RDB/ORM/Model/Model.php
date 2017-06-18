@@ -72,6 +72,10 @@ class Model{
      */
     public $_auto;
 
+    /**
+     *  @var $sPrimaryKey PK
+     **/
+    public $sPrimaryKey  = 'id';
     /*
      * PDO Attr
      */
@@ -121,12 +125,13 @@ class Model{
         #table
         $this->setTable($sModelName);
 
-        #primary key
-        if (isset($aConfig['pk'])) {
-            $this->PDODecorator->sPrimaryKey = $aConfig['pk'];
-        }
         #check Property
         $this->getModelProperty(new \ReflectionClass($this));
+
+        #primary key
+        if (isset($aConfig['pk'])) {
+            $this->sPrimaryKey = $aConfig['pk'];
+        }
 
         #$this->PDODecorator->_Model[$this->sTable] = $this;
         $this->PDODecorator->setModel($this->sTable, $this);

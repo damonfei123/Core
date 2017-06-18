@@ -39,13 +39,13 @@ class PDODecorator {
      *  @var primary key & foreign key
      **/
     public $bTmpSelectPK = false;
-    public $sPrimaryKey  = 'id';
 
     /**
      *  @var Table Condition
      **/
     public $sTable;
     public $aTableAsMap = array();
+    //public $sPrimaryKey  = 'id';
     //public $aWhere      = array();
     //public $aData       = array();
     //public $sSelect     = '*';
@@ -126,7 +126,7 @@ class PDODecorator {
      **/
     public function getPrimaryKey($bSplit=false)
     {
-        return Helper::TOOP($bSplit, explode(',', $this->sPrimaryKey), $this->sPrimaryKey);
+        return Helper::TOOP($bSplit, explode(',', $this->sPrimaryKey), 'id');
     }
     /**
      *  Is PK Multi
@@ -221,13 +221,13 @@ class PDODecorator {
 
     public function getRealMapTable()
     {
-        $sAsTable = Arr::get($this->aTableAsMap, $this->sTable, '');
+        $sAsTable = Arr::get($this->aTableAsMap, $this->sTable, '', false);
         return sprintf('%s %s',$this->sTable, $sAsTable);
     }
 
     public function getTableAsMap()
     {
-        return Arr::get($this->aTableAsMap, $this->sTable, $this->sTable);
+        return Arr::get($this->aTableAsMap, $this->sTable, $this->sTable, false);
     }
 
     public function select($sSelect)
@@ -372,7 +372,8 @@ class PDODecorator {
     public function query($sSQL, $aArgs=array(), $iFetchMode=\PDO::FETCH_ASSOC)
     {
         $STMT = $this->Instance->prepare($sSQL);
-        $STMT->execute($aArgs);
+        $this->bindValues($STMT, $aArgs);
+        $STMT->execute();
         $STMT->setFetchMode($iFetchMode ? $iFetchMode : \PDO::FETCH_ASSOC);
         return $STMT->fetchAll();
     }
@@ -798,6 +799,19 @@ class PDODecorator {
             }
         }
         return true;
+    }
+
+    /**
+     *  BindValue
+     **/
+    public function bindValues($STMT, $aArgs=array())
+    {
+        if ($aArgs) foreach($aArgs as $key => $value) {
+            $STMT->bindValue(
+                is_string($key) ? $key : $key+1,
+                $value,
+                is_int($value) ? \PDO::PARAM_INT : \PDO::PARAM_STR);
+        }
     }
 
     public function resetCondition()
