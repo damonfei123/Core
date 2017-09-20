@@ -141,6 +141,7 @@ class FileStrategy implements IStrategy{
                 sprintf('%s[%s]%s%s',PHP_EOL, $this->sGUID, PHP_EOL,implode('',$aContent)),
                 FILE_APPEND|LOCK_EX
             );
+            unset($this->aData[$sLevelName]);
         }
     }
 }
