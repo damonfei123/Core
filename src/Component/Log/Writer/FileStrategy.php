@@ -14,9 +14,11 @@
 **************************************************************************************/
 namespace Hummer\Component\Log\Writer;
 
+use Hummer\Bundle\Framework\Bootstrap;
 use Hummer\Component\Helper\Time;
 use Hummer\Component\Filesystem\Dir;
 use Hummer\Component\Log\LogFactory;
+use Hummer\Component\Context\Context;
 
 class FileStrategy implements IStrategy{
 
@@ -107,6 +109,7 @@ class FileStrategy implements IStrategy{
 
         #Add to queue
         $this->aData[$sLevelName][] = $sLogMsg;
+        Context::getInst()->sRunMode == Bootstrap::S_RUN_CLI && $this->flush();
     }
 
     public function setGUID($sGUID)

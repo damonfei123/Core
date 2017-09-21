@@ -7,6 +7,9 @@ Core
 
 更新LOG
 
+2017-09-21 cli模式的file log及时flush
+:xa
+
 2017-09-20 支持web端日志强制flush
 
 2017-06-18 修复RDB嵌套model，而主键为非id的bug
