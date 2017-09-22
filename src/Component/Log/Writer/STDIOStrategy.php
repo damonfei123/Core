@@ -99,7 +99,7 @@ class STDIOStrategy implements IStrategy{
             ) . PHP_EOL;
 
             #flush to STDIO
-            fprintf(STDOUT, sprintf('%s', self::handle($aRow['iLevel'], $sLogMsg)), null);
+            fprintf(STDOUT, sprintf('%s', str_replace('%', '%%', self::handle($aRow['iLevel'], $sLogMsg))), null);
         }
     }
 
