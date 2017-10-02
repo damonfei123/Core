@@ -470,16 +470,16 @@ class PDODecorator {
      *  $bLastInsertId boolean if return lastinsertid
      *  $bAuthCheck boolean if auto check model
      */
-    public function save($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
+    public function save($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true, $bReplace=false)
     {
         if ($aSaveData) {
             $this->data($aSaveData);
         }
-        if ($bAuthCheck && false === $this->autoCheck(Model::MODEL_INSERT)) {
+        if ($bAuthCheck && !$bReplace && false === $this->autoCheck(Model::MODEL_INSERT)) {
             return false;
         }
         $aArgs        = array();
-        $sSQLPrepare  = $this->buildSaveSQL($aArgs);
+        $sSQLPrepare  = $this->buildSaveSQL($aArgs, $bReplace);
         $STMT         = $this->Instance->prepare($sSQLPrepare);
         $bExecute     = $STMT->execute($aArgs);
         if (!$this->bMulti) {
@@ -490,6 +490,11 @@ class PDODecorator {
             $this->Instance->lastInsertId(),
             $bExecute
         );
+    }
+
+    public function replace($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
+    {
+        return $this->save($aSaveData, $bLastInsertId, $bAuthCheck, true);
     }
 
     public function add($aSaveData=array(), $bLastInsertId=true, $bAuthCheck=true)
@@ -507,7 +512,7 @@ class PDODecorator {
         return Arr::get($mResult, 'total', 0);
     }
 
-    public function buildSaveSQL(&$aArgs)
+    public function buildSaveSQL(&$aArgs, $bReplace=false)
     {
         $aData = $this->aData;
         if (empty($aData) || !is_array($aData)) {
@@ -521,7 +526,8 @@ class PDODecorator {
         }
         $sField     = trim($sField, ',');
         $sBindParam = trim($sBindParam, ',');
-        return sprintf('INSERT INTO %s(%s) values(%s)',
+        return sprintf('%s INTO %s(%s) values(%s)',
+            $bReplace ? 'REPLACE' : 'INSERT',
             $this->sTable,
             $sField,
             $sBindParam
