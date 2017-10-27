@@ -150,7 +150,7 @@ class Page {
         if ($aParam) foreach ($aParam as $sParam) {
             $aItemParam = explode('=', $sParam);
             if ($aItemParam AND count($aItemParam) == 2 AND $aItemParam[0] != 'page'){
-                $aBindParam[$aItemParam[0]] = $aItemParam[1];
+                $aBindParam[$aItemParam[0]] = urlencode($aItemParam[1]);
             }
         }
         #page stat
