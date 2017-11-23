@@ -7,6 +7,8 @@ Core
 
 更新LOG
 
+2017-11-23 flush log
+
 2017-10-02 RDB添加M()->data()->replace()
 
 2017-09-21 cli模式的file log及时flush

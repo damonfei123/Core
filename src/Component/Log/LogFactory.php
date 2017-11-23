@@ -136,4 +136,14 @@ class LogFactory implements ILogger{
         }
         return strtr($sMessage, $aReplace);
     }
+
+    /**
+     *  flush log
+     **/
+    public function flush()
+    {
+        foreach ($this->aWriter as $Writer) {
+            method_exists($Writer, 'flush') &&  $Writer->flush();
+        }
+    }
 }

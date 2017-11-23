@@ -104,10 +104,12 @@ class Handle{
                 case E_USER_ERROR:
                 case E_COMPILE_ERROR: //64
                     $CTX->Log->error($sStr);
+                    $CTX->Log->flush();
                     throw new \ErrorException('[Bootstrap] : Error' . $sStr);
                     break;
                 case E_PARSE: //4
                     $CTX->Log->fatal($sStr);
+                    $CTX->Log->flush();
                     break;
                 case E_CORE_WARNING: //32
                 case E_USER_WARNING: //512
